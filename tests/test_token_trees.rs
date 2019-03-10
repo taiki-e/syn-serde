@@ -1,12 +1,7 @@
-extern crate proc_macro2;
-#[macro_use]
-extern crate quote;
-extern crate syn;
-
-mod features;
-
-use proc_macro2::Delimiter::*;
+/* TODO
 use proc_macro2::*;
+use proc_macro2::Delimiter::*;
+use quote::quote;
 use syn::{AttrStyle, Attribute, Lit};
 
 fn alone(c: char) -> TokenTree {
@@ -90,3 +85,4 @@ fn test_literal_mangling() {
     let parsed: Lit = syn::parse_str(raw).unwrap();
     assert_eq!(raw, quote!(#parsed).to_string());
 }
+*/

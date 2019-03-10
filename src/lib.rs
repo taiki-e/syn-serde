@@ -1,309 +1,121 @@
-//! Syn is a parsing library for parsing a stream of Rust tokens into a syntax
-//! tree of Rust source code.
+//! Library to serialize and deserialize [Syn] syntax trees.
 //!
-//! Currently this library is geared toward use in Rust procedural macros, but
-//! contains some APIs that may be useful more generally.
-//!
-//! - **Data structures** — Syn provides a complete syntax tree that can
-//!   represent any valid Rust source code. The syntax tree is rooted at
-//!   [`syn::File`] which represents a full source file, but there are other
-//!   entry points that may be useful to procedural macros including
-//!   [`syn::Item`], [`syn::Expr`] and [`syn::Type`].
-//!
-//! - **Custom derives** — Of particular interest to custom derives is
-//!   [`syn::DeriveInput`] which is any of the three legal input items to a
-//!   derive macro. An example below shows using this type in a library that can
-//!   derive implementations of a trait of your own.
-//!
-//! - **Parsing** — Parsing in Syn is built around [parser functions] with the
-//!   signature `fn(ParseStream) -> Result<T>`. Every syntax tree node defined
-//!   by Syn is individually parsable and may be used as a building block for
-//!   custom syntaxes, or you may dream up your own brand new syntax without
-//!   involving any of our syntax tree types.
-//!
-//! - **Location information** — Every token parsed by Syn is associated with a
-//!   `Span` that tracks line and column information back to the source of that
-//!   token. These spans allow a procedural macro to display detailed error
-//!   messages pointing to all the right places in the user's code. There is an
-//!   example of this below.
-//!
-//! - **Feature flags** — Functionality is aggressively feature gated so your
-//!   procedural macros enable only what they need, and do not pay in compile
-//!   time for all the rest.
-//!
-//! [`syn::File`]: struct.File.html
-//! [`syn::Item`]: enum.Item.html
-//! [`syn::Expr`]: enum.Expr.html
-//! [`syn::Type`]: enum.Type.html
-//! [`syn::DeriveInput`]: struct.DeriveInput.html
-//! [parser functions]: parse/index.html
-//!
-//! *Version requirement: Syn supports any compiler version back to Rust's very
-//! first support for procedural macros in Rust 1.15.0. Some features especially
-//! around error reporting are only available in newer compilers or on the
-//! nightly channel.*
-//!
-//! ## Example of a custom derive
-//!
-//! The canonical custom derive using Syn looks like this. We write an ordinary
-//! Rust function tagged with a `proc_macro_derive` attribute and the name of
-//! the trait we are deriving. Any time that derive appears in the user's code,
-//! the Rust compiler passes their data structure as tokens into our macro. We
-//! get to execute arbitrary Rust code to figure out what to do with those
-//! tokens, then hand some tokens back to the compiler to compile into the
-//! user's crate.
-//!
-//! [`TokenStream`]: https://doc.rust-lang.org/proc_macro/struct.TokenStream.html
+//! ## Examples
 //!
 //! ```toml
 //! [dependencies]
-//! syn = "0.15"
-//! quote = "0.6"
-//!
-//! [lib]
-//! proc-macro = true
+//! serde_syn = { version = "0.0.1", features = ["json"] }
+//! syn = { version = "0.15", features = ["full"] }
 //! ```
 //!
-//! ```edition2018
-//! extern crate proc_macro;
+//! ```rust
+//! # #[cfg(feature = "json")]
+//! # fn foo() -> serde_json::Result<()> {
+//! use serde_syn::json;
 //!
-//! use proc_macro::TokenStream;
-//! use quote::quote;
-//! use syn::{parse_macro_input, DeriveInput};
-//!
-//! # const IGNORE_TOKENS: &str = stringify! {
-//! #[proc_macro_derive(MyMacro)]
-//! # };
-//! pub fn my_macro(input: TokenStream) -> TokenStream {
-//!     // Parse the input tokens into a syntax tree
-//!     let input = parse_macro_input!(input as DeriveInput);
-//!
-//!     // Build the output, possibly using quasi-quotation
-//!     let expanded = quote! {
-//!         // ...
-//!     };
-//!
-//!     // Hand the output tokens back to the compiler
-//!     TokenStream::from(expanded)
-//! }
-//! ```
-//!
-//! The [`heapsize`] example directory shows a complete working Macros 1.1
-//! implementation of a custom derive. It works on any Rust compiler 1.15+.
-//! The example derives a `HeapSize` trait which computes an estimate of the
-//! amount of heap memory owned by a value.
-//!
-//! [`heapsize`]: https://github.com/dtolnay/syn/tree/master/examples/heapsize
-//!
-//! ```edition2018
-//! pub trait HeapSize {
-//!     /// Total number of bytes of heap memory owned by `self`.
-//!     fn heap_size_of_children(&self) -> usize;
-//! }
-//! ```
-//!
-//! The custom derive allows users to write `#[derive(HeapSize)]` on data
-//! structures in their program.
-//!
-//! ```edition2018
-//! # const IGNORE_TOKENS: &str = stringify! {
-//! #[derive(HeapSize)]
-//! # };
-//! struct Demo<'a, T: ?Sized> {
-//!     a: Box<T>,
-//!     b: u8,
-//!     c: &'a str,
-//!     d: String,
-//! }
-//! ```
-//!
-//! ## Spans and error reporting
-//!
-//! The token-based procedural macro API provides great control over where the
-//! compiler's error messages are displayed in user code. Consider the error the
-//! user sees if one of their field types does not implement `HeapSize`.
-//!
-//! ```edition2018
-//! # const IGNORE_TOKENS: &str = stringify! {
-//! #[derive(HeapSize)]
-//! # };
-//! struct Broken {
-//!     ok: String,
-//!     bad: std::thread::Thread,
-//! }
-//! ```
-//!
-//! By tracking span information all the way through the expansion of a
-//! procedural macro as shown in the `heapsize` example, token-based macros in
-//! Syn are able to trigger errors that directly pinpoint the source of the
-//! problem.
-//!
-//! ```text
-//! error[E0277]: the trait bound `std::thread::Thread: HeapSize` is not satisfied
-//!  --> src/main.rs:7:5
-//!   |
-//! 7 |     bad: std::thread::Thread,
-//!   |     ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `HeapSize` is not implemented for `Thread`
-//! ```
-//!
-//! ## Parsing a custom syntax
-//!
-//! The [`lazy-static`] example directory shows the implementation of a
-//! `functionlike!(...)` procedural macro in which the input tokens are parsed
-//! using Syn's parsing API.
-//!
-//! [`lazy-static`]: https://github.com/dtolnay/syn/tree/master/examples/lazy-static
-//!
-//! The example reimplements the popular `lazy_static` crate from crates.io as a
-//! procedural macro.
-//!
-//! ```edition2018
-//! # macro_rules! lazy_static {
-//! #     ($($tt:tt)*) => {}
+//! let syn_file: syn::File = syn::parse_quote! {
+//!     fn main() {
+//!         println!("Hello, world!");
+//!     }
+//! };
+//! println!("{}", json::to_string_pretty(&syn_file)?);
+//! # Ok(())
 //! # }
-//! #
-//! lazy_static! {
-//!     static ref USERNAME: Regex = Regex::new("^[a-z0-9_-]{3,16}$").unwrap();
+//! ```
+//!
+//! This prints the following JSON:
+//!
+//! ```json
+//! {
+//!   "items": [
+//!     {
+//!       "fn": {
+//!         "ident": "main",
+//!         "inputs": [],
+//!         "output": null,
+//!         "stmts": [
+//!           {
+//!             "semi": {
+//!               "macro": {
+//!                 "path": {
+//!                   "segments": [
+//!                     {
+//!                       "ident": "println"
+//!                     }
+//!                   ]
+//!                 },
+//!                 "delimiter": "paren",
+//!                 "tts": [
+//!                   {
+//!                     "lit": "\"Hello, world!\""
+//!                   }
+//!                 ]
+//!               }
+//!             }
+//!           }
+//!         ]
+//!       }
+//!     }
+//!   ]
 //! }
 //! ```
 //!
-//! The implementation shows how to trigger custom warnings and error messages
-//! on the macro input.
+//! ### Rust source file -> JSON representation of the syntax tree
 //!
-//! ```text
-//! warning: come on, pick a more creative name
-//!   --> src/main.rs:10:16
-//!    |
-//! 10 |     static ref FOO: String = "lazy_static".to_owned();
-//!    |                ^^^
-//! ```
+//! The [`rust2json`] example parse a Rust source file into a `serde_syn::File`
+//! and print out a JSON representation of the syntax tree.
 //!
-//! ## Debugging
+//! ### JSON file -> Rust syntax tree
 //!
-//! When developing a procedural macro it can be helpful to look at what the
-//! generated code looks like. Use `cargo rustc -- -Zunstable-options
-//! --pretty=expanded` or the [`cargo expand`] subcommand.
-//!
-//! [`cargo expand`]: https://github.com/dtolnay/cargo-expand
-//!
-//! To show the expanded code for some crate that uses your procedural macro,
-//! run `cargo expand` from that crate. To show the expanded code for one of
-//! your own test cases, run `cargo expand --test the_test_case` where the last
-//! argument is the name of the test file without the `.rs` extension.
-//!
-//! This write-up by Brandon W Maister discusses debugging in more detail:
-//! [Debugging Rust's new Custom Derive system][debugging].
-//!
-//! [debugging]: https://quodlibetor.github.io/posts/debugging-rusts-new-custom-derive-system/
+//! The [`json2rust`] example parse a JSON file into a `serde_syn::File` and
+//! print out a Rust syntax tree.
 //!
 //! ## Optional features
 //!
-//! Syn puts a lot of functionality behind optional features in order to
-//! optimize compile time for the most common use cases. The following features
-//! are available.
-//!
-//! - **`derive`** *(enabled by default)* — Data structures for representing the
-//!   possible input to a custom derive, including structs and enums and types.
-//! - **`full`** — Data structures for representing the syntax tree of all valid
-//!   Rust source code, including items and expressions.
-//! - **`parsing`** *(enabled by default)* — Ability to parse input tokens into
-//!   a syntax tree node of a chosen type.
-//! - **`printing`** *(enabled by default)* — Ability to print a syntax tree
-//!   node as tokens of Rust source code.
-//! - **`visit`** — Trait for traversing a syntax tree.
-//! - **`visit-mut`** — Trait for traversing and mutating in place a syntax
-//!   tree.
-//! - **`fold`** — Trait for transforming an owned syntax tree.
-//! - **`clone-impls`** *(enabled by default)* — Clone impls for all syntax tree
-//!   types.
+//! - **`json`** — Provides functions for JSON <-> Rust serializing and
+//!   deserializing.
+//! - **`clone-impls`** — Clone impls for all syntax tree types.
 //! - **`extra-traits`** — Debug, Eq, PartialEq, Hash impls for all syntax tree
 //!   types.
-//! - **`proc-macro`** *(enabled by default)* — Runtime dependency on the
-//!   dynamic library libproc_macro from rustc toolchain.
+//!
+//! [Syn]: https://github.com/dtolnay/syn
+//! [`rust2json`]: https://github.com/taiki-e/serde-syn/tree/master/examples/rust2json
+//! [`json2rust`]: https://github.com/taiki-e/serde-syn/tree/master/examples/json2rust
 
-// Syn types in rustdoc of other crates get linked to here.
-#![doc(html_root_url = "https://docs.rs/syn/0.15.29")]
-#![cfg_attr(feature = "cargo-clippy", allow(renamed_and_removed_lints))]
-#![cfg_attr(feature = "cargo-clippy", deny(clippy, clippy_pedantic))]
-// Ignored clippy lints.
-#![cfg_attr(
-    feature = "cargo-clippy",
-    allow(
-        block_in_if_condition_stmt,
-        cognitive_complexity,
-        const_static_lifetime,
-        deprecated_cfg_attr,
-        doc_markdown,
-        eval_order_dependence,
-        large_enum_variant,
-        needless_pass_by_value,
-        never_loop,
-        redundant_field_names,
-        too_many_arguments,
-    )
+// Serde Syn types in rustdoc of other crates get linked to here.
+#![doc(html_root_url = "https://docs.rs/serde_syn/0.0.1")]
+#![deny(unsafe_code)]
+#![deny(rust_2018_idioms, unreachable_pub)]
+#![cfg_attr(feature = "clone-impls", deny(missing_copy_implementations))]
+#![cfg_attr(feature = "extra-traits", deny(missing_debug_implementations))]
+#![deny(clippy::all, clippy::pedantic)]
+// Ignored clippy::all lints.
+#![allow(clippy::large_enum_variant)]
+// Ignored clippy::pedantic lints.
+#![allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::doc_markdown,
+    clippy::if_not_else,
+    clippy::module_name_repetitions,
+    clippy::shadow_unrelated,
+    clippy::similar_names,
+    clippy::single_match_else
 )]
-// Ignored clippy_pedantic lints.
-#![cfg_attr(
-    feature = "cargo-clippy",
-    allow(
-        cast_possible_truncation,
-        cast_possible_wrap,
-        empty_enum,
-        if_not_else,
-        items_after_statements,
-        module_name_repetitions,
-        shadow_unrelated,
-        similar_names,
-        single_match_else,
-        unseparated_literal_suffix,
-        use_self,
-        used_underscore_binding,
-    )
-)]
-
-#[cfg(all(
-    not(all(target_arch = "wasm32", target_os = "unknown")),
-    feature = "proc-macro"
-))]
-extern crate proc_macro;
-extern crate proc_macro2;
-extern crate unicode_xid;
-
-#[cfg(feature = "printing")]
-extern crate quote;
 
 #[macro_use]
 mod macros;
 
-// Not public API.
-#[cfg(feature = "parsing")]
-#[doc(hidden)]
-#[macro_use]
-pub mod group;
-
-#[macro_use]
-pub mod token;
-
-mod ident;
-pub use ident::Ident;
-
-#[cfg(any(feature = "full", feature = "derive"))]
 mod attr;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use attr::{AttrStyle, Attribute, AttributeArgs, Meta, MetaList, MetaNameValue, NestedMeta};
+pub use self::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue, NestedMeta};
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod data;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use data::{
-    Field, Fields, FieldsNamed, FieldsUnnamed, Variant, VisCrate, VisPublic, VisRestricted,
-    Visibility,
+pub use self::data::{
+    Field, Fields, FieldsNamed, FieldsUnnamed, Variant, VisRestricted, Visibility,
 };
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod expr;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use expr::{
+pub use self::expr::{
     Expr, ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprBinary, ExprBlock, ExprBox,
     ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop, ExprGroup,
     ExprIf, ExprInPlace, ExprIndex, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch,
@@ -312,414 +124,176 @@ pub use expr::{
     ExprWhile, ExprYield, Index, Member,
 };
 
-#[cfg(feature = "full")]
-pub use expr::{
+pub use self::expr::{
     Arm, Block, FieldPat, FieldValue, GenericMethodArgument, Label, Local, MethodTurbofish, Pat,
     PatBox, PatIdent, PatLit, PatMacro, PatPath, PatRange, PatRef, PatSlice, PatStruct, PatTuple,
-    PatTupleStruct, PatVerbatim, PatWild, RangeLimits, Stmt,
+    PatTupleStruct, PatVerbatim, RangeLimits, Stmt,
 };
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod generics;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use generics::{
+pub use self::generics::{
     BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeDef, PredicateEq,
     PredicateLifetime, PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound,
     WhereClause, WherePredicate,
 };
-#[cfg(all(any(feature = "full", feature = "derive"), feature = "printing"))]
-pub use generics::{ImplGenerics, Turbofish, TypeGenerics};
 
-#[cfg(feature = "full")]
 mod item;
-#[cfg(feature = "full")]
-pub use item::{
+pub use self::item::{
     ArgCaptured, ArgSelf, ArgSelfRef, FnArg, FnDecl, ForeignItem, ForeignItemFn, ForeignItemMacro,
     ForeignItemStatic, ForeignItemType, ForeignItemVerbatim, ImplItem, ImplItemConst,
     ImplItemExistential, ImplItemMacro, ImplItemMethod, ImplItemType, ImplItemVerbatim, Item,
     ItemConst, ItemEnum, ItemExistential, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl,
     ItemMacro, ItemMacro2, ItemMod, ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType,
     ItemUnion, ItemUse, ItemVerbatim, MethodSig, TraitItem, TraitItemConst, TraitItemMacro,
-    TraitItemMethod, TraitItemType, TraitItemVerbatim, UseGlob, UseGroup, UseName, UsePath,
-    UseRename, UseTree,
+    TraitItemMethod, TraitItemType, TraitItemVerbatim, UseGroup, UseName, UsePath, UseRename,
+    UseTree,
 };
 
-#[cfg(feature = "full")]
 mod file;
-#[cfg(feature = "full")]
-pub use file::File;
+pub use self::file::File;
 
 mod lifetime;
-pub use lifetime::Lifetime;
+pub use self::lifetime::Lifetime;
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod lit;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use lit::{
-    FloatSuffix, IntSuffix, Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr,
-    LitVerbatim, StrStyle,
+pub use self::lit::{
+    Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr, LitVerbatim,
 };
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod mac;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use mac::{Macro, MacroDelimiter};
+pub use self::mac::{Macro, MacroDelimiter};
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod derive;
-#[cfg(feature = "derive")]
-pub use derive::{Data, DataEnum, DataStruct, DataUnion, DeriveInput};
+pub use self::derive::{Data, DataEnum, DataStruct, DataUnion, DeriveInput};
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod op;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use op::{BinOp, UnOp};
+pub use self::op::{BinOp, UnOp};
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod ty;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use ty::{
+pub use self::ty::{
     Abi, BareFnArg, BareFnArgName, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
-    TypeImplTrait, TypeInfer, TypeMacro, TypeNever, TypeParen, TypePath, TypePtr, TypeReference,
-    TypeSlice, TypeTraitObject, TypeTuple, TypeVerbatim,
+    TypeImplTrait, TypeMacro, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
+    TypeTraitObject, TypeTuple, TypeVerbatim,
 };
 
-#[cfg(any(feature = "full", feature = "derive"))]
 mod path;
-#[cfg(any(feature = "full", feature = "derive"))]
-pub use path::{
+pub use self::path::{
     AngleBracketedGenericArguments, Binding, Constraint, GenericArgument,
     ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
 };
 
-#[cfg(feature = "parsing")]
-pub mod buffer;
-#[cfg(feature = "parsing")]
-pub mod ext;
-pub mod punctuated;
-#[cfg(all(any(feature = "full", feature = "derive"), feature = "extra-traits"))]
-mod tt;
+mod token_stream;
+pub use self::token_stream::{
+    Delimiter, Group, Ident, Literal, Punct, Spacing, TokenStream, TokenTree,
+};
 
-// Not public API except the `parse_quote!` macro.
-#[cfg(feature = "parsing")]
-#[doc(hidden)]
-pub mod parse_quote;
-
-// Not public API except the `parse_macro_input!` macro.
-#[cfg(all(
-    not(all(target_arch = "wasm32", target_os = "unknown")),
-    feature = "parsing",
-    feature = "proc-macro"
-))]
-#[doc(hidden)]
-pub mod parse_macro_input;
-
-#[cfg(all(feature = "parsing", feature = "printing"))]
-pub mod spanned;
-
-mod gen {
-    /// Syntax tree traversal to walk a shared borrow of a syntax tree.
-    ///
-    /// Each method of the [`Visit`] trait is a hook that can be overridden to
-    /// customize the behavior when visiting the corresponding type of node. By
-    /// default, every method recursively visits the substructure of the input
-    /// by invoking the right visitor method of each of its fields.
-    ///
-    /// [`Visit`]: trait.Visit.html
-    ///
-    /// ```edition2018
-    /// # use syn::{Attribute, BinOp, Expr, ExprBinary};
-    /// #
-    /// pub trait Visit<'ast> {
-    ///     /* ... */
-    ///
-    ///     fn visit_expr_binary(&mut self, node: &'ast ExprBinary) {
-    ///         for attr in &node.attrs {
-    ///             self.visit_attribute(attr);
-    ///         }
-    ///         self.visit_expr(&*node.left);
-    ///         self.visit_bin_op(&node.op);
-    ///         self.visit_expr(&*node.right);
-    ///     }
-    ///
-    ///     /* ... */
-    ///     # fn visit_attribute(&mut self, node: &'ast Attribute);
-    ///     # fn visit_expr(&mut self, node: &'ast Expr);
-    ///     # fn visit_bin_op(&mut self, node: &'ast BinOp);
-    /// }
-    /// ```
-    ///
-    /// *This module is available if Syn is built with the `"visit"` feature.*
-    #[cfg(feature = "visit")]
-    pub mod visit;
-
-    /// Syntax tree traversal to mutate an exclusive borrow of a syntax tree in
-    /// place.
-    ///
-    /// Each method of the [`VisitMut`] trait is a hook that can be overridden
-    /// to customize the behavior when mutating the corresponding type of node.
-    /// By default, every method recursively visits the substructure of the
-    /// input by invoking the right visitor method of each of its fields.
-    ///
-    /// [`VisitMut`]: trait.VisitMut.html
-    ///
-    /// ```edition2018
-    /// # use syn::{Attribute, BinOp, Expr, ExprBinary};
-    /// #
-    /// pub trait VisitMut {
-    ///     /* ... */
-    ///
-    ///     fn visit_expr_binary_mut(&mut self, node: &mut ExprBinary) {
-    ///         for attr in &mut node.attrs {
-    ///             self.visit_attribute_mut(attr);
-    ///         }
-    ///         self.visit_expr_mut(&mut *node.left);
-    ///         self.visit_bin_op_mut(&mut node.op);
-    ///         self.visit_expr_mut(&mut *node.right);
-    ///     }
-    ///
-    ///     /* ... */
-    ///     # fn visit_attribute_mut(&mut self, node: &mut Attribute);
-    ///     # fn visit_expr_mut(&mut self, node: &mut Expr);
-    ///     # fn visit_bin_op_mut(&mut self, node: &mut BinOp);
-    /// }
-    /// ```
-    ///
-    /// *This module is available if Syn is built with the `"visit-mut"`
-    /// feature.*
-    #[cfg(feature = "visit-mut")]
-    pub mod visit_mut;
-
-    /// Syntax tree traversal to transform the nodes of an owned syntax tree.
-    ///
-    /// Each method of the [`Fold`] trait is a hook that can be overridden to
-    /// customize the behavior when transforming the corresponding type of node.
-    /// By default, every method recursively visits the substructure of the
-    /// input by invoking the right visitor method of each of its fields.
-    ///
-    /// [`Fold`]: trait.Fold.html
-    ///
-    /// ```edition2018
-    /// # use syn::{Attribute, BinOp, Expr, ExprBinary};
-    /// #
-    /// pub trait Fold {
-    ///     /* ... */
-    ///
-    ///     fn fold_expr_binary(&mut self, node: ExprBinary) -> ExprBinary {
-    ///         ExprBinary {
-    ///             attrs: node.attrs
-    ///                        .into_iter()
-    ///                        .map(|attr| self.fold_attribute(attr))
-    ///                        .collect(),
-    ///             left: Box::new(self.fold_expr(*node.left)),
-    ///             op: self.fold_bin_op(node.op),
-    ///             right: Box::new(self.fold_expr(*node.right)),
-    ///         }
-    ///     }
-    ///
-    ///     /* ... */
-    ///     # fn fold_attribute(&mut self, node: Attribute) -> Attribute;
-    ///     # fn fold_expr(&mut self, node: Expr) -> Expr;
-    ///     # fn fold_bin_op(&mut self, node: BinOp) -> BinOp;
-    /// }
-    /// ```
-    ///
-    /// *This module is available if Syn is built with the `"fold"` feature.*
-    #[cfg(feature = "fold")]
-    pub mod fold;
-
-    #[cfg(any(feature = "full", feature = "derive"))]
-    #[path = "../gen_helper.rs"]
-    mod helper;
-}
-pub use gen::*;
-
-// Not public API.
-#[doc(hidden)]
-pub mod export;
-
-mod keyword;
-
-#[cfg(feature = "parsing")]
-mod lookahead;
-
-#[cfg(feature = "parsing")]
-pub mod parse;
-
-mod span;
-
-#[cfg(all(any(feature = "full", feature = "derive"), feature = "printing"))]
-mod print;
-
-mod thread;
+#[cfg(feature = "json")]
+pub mod json;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#[cfg(any(feature = "parsing", feature = "full", feature = "derive"))]
-#[allow(non_camel_case_types)]
-struct private;
+use serde_derive::{Deserialize, Serialize};
 
-////////////////////////////////////////////////////////////////////////////////
+// assertions
+// `syn::perse*` functions will detect these, but there is a possibility to
+// generate incorrect code by subsequent operations.
+use self::data::assert_struct_semi;
 
-mod error;
-pub use error::{Error, Result};
+type Punctuated<T> = Vec<T>;
 
-/// Parse tokens of source code into the chosen syntax tree node.
-///
-/// This is preferred over parsing a string because tokens are able to preserve
-/// information about where in the user's code they were originally written (the
-/// "span" of the token), possibly allowing the compiler to produce better error
-/// messages.
-///
-/// This function parses a `proc_macro::TokenStream` which is the type used for
-/// interop with the compiler in a procedural macro. To parse a
-/// `proc_macro2::TokenStream`, use [`syn::parse2`] instead.
-///
-/// [`syn::parse2`]: fn.parse2.html
-///
-/// *This function is available if Syn is built with both the `"parsing"` and
-/// `"proc-macro"` features.*
-///
-/// # Examples
-///
-/// ```edition2018
-/// extern crate proc_macro;
-///
-/// use proc_macro::TokenStream;
-/// use quote::quote;
-/// use syn::DeriveInput;
-///
-/// # const IGNORE_TOKENS: &str = stringify! {
-/// #[proc_macro_derive(MyMacro)]
-/// # };
-/// pub fn my_macro(input: TokenStream) -> TokenStream {
-///     // Parse the tokens into a syntax tree
-///     let ast: DeriveInput = syn::parse(input).unwrap();
-///
-///     // Build the output, possibly using quasi-quotation
-///     let expanded = quote! {
-///         /* ... */
-///     };
-///
-///     // Convert into a token stream and return it
-///     expanded.into()
-/// }
-/// ```
-#[cfg(all(
-    not(all(target_arch = "wasm32", target_os = "unknown")),
-    feature = "parsing",
-    feature = "proc-macro"
-))]
-pub fn parse<T: parse::Parse>(tokens: proc_macro::TokenStream) -> Result<T> {
-    parse::Parser::parse(T::parse, tokens)
+fn default<T: Default>() -> T {
+    T::default()
 }
 
-/// Parse a proc-macro2 token stream into the chosen syntax tree node.
-///
-/// This function parses a `proc_macro2::TokenStream` which is commonly useful
-/// when the input comes from a node of the Syn syntax tree, for example the tts
-/// of a [`Macro`] node. When in a procedural macro parsing the
-/// `proc_macro::TokenStream` provided by the compiler, use [`syn::parse`]
-/// instead.
-///
-/// [`Macro`]: struct.Macro.html
-/// [`syn::parse`]: fn.parse.html
-///
-/// *This function is available if Syn is built with the `"parsing"` feature.*
-#[cfg(feature = "parsing")]
-pub fn parse2<T: parse::Parse>(tokens: proc_macro2::TokenStream) -> Result<T> {
-    parse::Parser::parse2(T::parse, tokens)
-}
-
-/// Parse a string of Rust code into the chosen syntax tree node.
-///
-/// *This function is available if Syn is built with the `"parsing"` feature.*
-///
-/// # Hygiene
-///
-/// Every span in the resulting syntax tree will be set to resolve at the macro
-/// call site.
-///
-/// # Examples
-///
-/// ```edition2018
-/// use syn::{Expr, Result};
-///
-/// fn run() -> Result<()> {
-///     let code = "assert_eq!(u8::max_value(), 255)";
-///     let expr = syn::parse_str::<Expr>(code)?;
-///     println!("{:#?}", expr);
-///     Ok(())
-/// }
-/// #
-/// # fn main() {
-/// #     run().unwrap();
-/// # }
-/// ```
-#[cfg(feature = "parsing")]
-pub fn parse_str<T: parse::Parse>(s: &str) -> Result<T> {
-    parse::Parser::parse_str(T::parse, s)
-}
-
-// FIXME the name parse_file makes it sound like you might pass in a path to a
-// file, rather than the content.
-/// Parse the content of a file of Rust code.
-///
-/// This is different from `syn::parse_str::<File>(content)` in two ways:
-///
-/// - It discards a leading byte order mark `\u{FEFF}` if the file has one.
-/// - It preserves the shebang line of the file, such as `#!/usr/bin/env rustx`.
-///
-/// If present, either of these would be an error using `from_str`.
-///
-/// *This function is available if Syn is built with the `"parsing"` and
-/// `"full"` features.*
-///
-/// # Examples
-///
-/// ```edition2018,no_run
-/// use std::error::Error;
-/// use std::fs::File;
-/// use std::io::Read;
-///
-/// fn run() -> Result<(), Box<Error>> {
-///     let mut file = File::open("path/to/code.rs")?;
-///     let mut content = String::new();
-///     file.read_to_string(&mut content)?;
-///
-///     let ast = syn::parse_file(&content)?;
-///     if let Some(shebang) = ast.shebang {
-///         println!("{}", shebang);
-///     }
-///     println!("{} items", ast.items.len());
-///
-///     Ok(())
-/// }
-/// #
-/// # fn main() {
-/// #     run().unwrap();
-/// # }
-/// ```
-#[cfg(all(feature = "parsing", feature = "full"))]
-pub fn parse_file(mut content: &str) -> Result<File> {
-    // Strip the BOM if it is present
-    const BOM: &'static str = "\u{feff}";
-    if content.starts_with(BOM) {
-        content = &content[BOM.len()..];
+fn default_or_none<T: Default>(x: bool) -> Option<T> {
+    if x {
+        Some(T::default())
+    } else {
+        None
     }
+}
 
-    let mut shebang = None;
-    if content.starts_with("#!") && !content.starts_with("#![") {
-        if let Some(idx) = content.find('\n') {
-            shebang = Some(content[..idx].to_string());
-            content = &content[idx..];
-        } else {
-            shebang = Some(content.to_string());
-            content = "";
-        }
+fn not<T: std::ops::Not>(x: T) -> T::Output {
+    !x
+}
+
+// https://github.com/rust-lang/rust/issues/51443
+trait RefInto<U>: Sized {
+    fn ref_into<'a>(&'a self) -> U
+    where
+        &'a Self: Into<U>,
+    {
+        self.into()
     }
+}
 
-    let mut file: File = parse_str(content)?;
-    file.shebang = shebang;
-    Ok(file)
+impl<T, U> RefInto<U> for T {}
+
+trait MapInto<U, M> {
+    type T: ?Sized;
+    fn ref_map<'a, F>(&'a self, f: F) -> M
+    where
+        Self::T: 'a,
+        F: FnMut(&'a Self::T) -> U;
+
+    fn map_into<'a>(&'a self) -> M
+    where
+        Self::T: 'a,
+        &'a Self::T: Into<U>,
+    {
+        self.ref_map(Into::into)
+    }
+}
+
+impl<T, U> MapInto<U, Vec<U>> for Vec<T> {
+    type T = T;
+    fn ref_map<'a, F>(&'a self, f: F) -> Vec<U>
+    where
+        F: FnMut(&'a Self::T) -> U,
+    {
+        self.iter().map(f).collect()
+    }
+}
+
+impl<T, U, P: Default> MapInto<U, syn::punctuated::Punctuated<U, P>> for Vec<T> {
+    type T = T;
+    fn ref_map<'a, F>(&'a self, f: F) -> syn::punctuated::Punctuated<U, P>
+    where
+        F: FnMut(&'a Self::T) -> U,
+    {
+        self.iter().map(f).collect()
+    }
+}
+
+impl<T, U, P: Default> MapInto<U, Vec<U>> for syn::punctuated::Punctuated<T, P> {
+    type T = T;
+    fn ref_map<'a, F>(&'a self, f: F) -> Vec<U>
+    where
+        F: FnMut(&'a Self::T) -> U,
+    {
+        self.iter().map(f).collect()
+    }
+}
+
+impl<T, U> MapInto<U, Option<U>> for Option<T> {
+    type T = T;
+    fn ref_map<'a, F>(&'a self, f: F) -> Option<U>
+    where
+        F: FnMut(&'a Self::T) -> U,
+    {
+        self.as_ref().map(f)
+    }
+}
+
+// Clippy false positive
+// https://github.com/rust-lang/rust-clippy/issues/3410
+#[allow(clippy::use_self)]
+impl<T, U> MapInto<U, Box<U>> for Box<T> {
+    type T = T;
+    fn ref_map<'a, F>(&'a self, mut f: F) -> Box<U>
+    where
+        F: FnMut(&'a Self::T) -> U,
+    {
+        Box::new(f(&**self))
+    }
 }

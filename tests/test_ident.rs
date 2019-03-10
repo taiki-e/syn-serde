@@ -1,53 +1,7 @@
-extern crate proc_macro2;
-extern crate syn;
-
-mod features;
-
-use proc_macro2::{Ident, Span, TokenStream};
-use std::str::FromStr;
-use syn::Result;
-
-fn parse(s: &str) -> Result<Ident> {
-    syn::parse2(TokenStream::from_str(s).unwrap())
-}
+use serde_syn::Ident;
 
 fn new(s: &str) -> Ident {
-    Ident::new(s, Span::call_site())
-}
-
-#[test]
-fn ident_parse() {
-    parse("String").unwrap();
-}
-
-#[test]
-fn ident_parse_keyword() {
-    parse("abstract").unwrap_err();
-}
-
-#[test]
-fn ident_parse_empty() {
-    parse("").unwrap_err();
-}
-
-#[test]
-fn ident_parse_lifetime() {
-    parse("'static").unwrap_err();
-}
-
-#[test]
-fn ident_parse_underscore() {
-    parse("_").unwrap_err();
-}
-
-#[test]
-fn ident_parse_number() {
-    parse("255").unwrap_err();
-}
-
-#[test]
-fn ident_parse_invalid() {
-    parse("a#").unwrap_err();
+    Ident::new(s)
 }
 
 #[test]

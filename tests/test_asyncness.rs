@@ -1,8 +1,3 @@
-extern crate proc_macro2;
-extern crate syn;
-
-mod features;
-
 use proc_macro2::Span;
 use syn::punctuated::Punctuated;
 use syn::{Block, Expr, ExprBlock, ExprClosure, FnDecl, Ident, ItemFn, ReturnType, Visibility};
@@ -33,7 +28,21 @@ fn test_async_fn() {
         }),
     };
 
-    assert_eq!(expected, syn::parse_str(raw).unwrap());
+    let json = r#"{
+        "async": true,
+        "ident": "process",
+        "inputs": [],
+        "output": null,
+        "stmts": []
+    }"#;
+
+    let actual: ItemFn = syn::parse_str(raw).unwrap();
+    let json: serde_syn::ItemFn = serde_json::from_str(json).unwrap();
+    let json = ItemFn::from(&json);
+
+    assert_eq!(expected, actual);
+    assert_eq!(expected, json);
+    assert_eq!(json, actual);
 }
 
 #[test]
@@ -59,5 +68,23 @@ fn test_async_closure() {
         })),
     });
 
-    assert_eq!(expected, syn::parse_str(raw).unwrap());
+    let json = r#"{
+        "closure": {
+            "async": true,
+            "inputs": [],
+            "body": {
+                "block": {
+                    "stmts": []
+                }
+            }
+        }
+    }"#;
+
+    let actual: Expr = syn::parse_str(raw).unwrap();
+    let json: serde_syn::Expr = serde_json::from_str(json).unwrap();
+    let json = Expr::from(&json);
+
+    assert_eq!(expected, actual);
+    assert_eq!(expected, json);
+    assert_eq!(json, actual);
 }

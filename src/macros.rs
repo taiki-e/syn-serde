@@ -1,31 +1,13 @@
-#[cfg(any(feature = "full", feature = "derive"))]
 macro_rules! ast_struct {
     (
         $(#[$attr:meta])*
-        pub struct $name:ident #full $($rest:tt)*
+        pub struct $name:ident #transparent $($rest:tt)*
     ) => {
-        #[cfg(feature = "full")]
         $(#[$attr])*
         #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
         #[cfg_attr(feature = "clone-impls", derive(Clone))]
-        pub struct $name $($rest)*
-
-        #[cfg(not(feature = "full"))]
-        $(#[$attr])*
-        #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-        #[cfg_attr(feature = "clone-impls", derive(Clone))]
-        pub struct $name {
-            _noconstruct: (),
-        }
-    };
-
-    (
-        $(#[$attr:meta])*
-        pub struct $name:ident #manual_extra_traits $($rest:tt)*
-    ) => {
-        $(#[$attr])*
-        #[cfg_attr(feature = "extra-traits", derive(Debug))]
-        #[cfg_attr(feature = "clone-impls", derive(Clone))]
+        #[derive(crate::Serialize, crate::Deserialize)]
+        #[serde(transparent)]
         pub struct $name $($rest)*
     };
 
@@ -36,41 +18,82 @@ macro_rules! ast_struct {
         $(#[$attr])*
         #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
         #[cfg_attr(feature = "clone-impls", derive(Clone))]
+        #[derive(crate::Serialize, crate::Deserialize)]
         pub struct $name $($rest)*
     };
 }
 
-#[cfg(any(feature = "full", feature = "derive"))]
 macro_rules! ast_enum {
     (
         $(#[$enum_attr:meta])*
-        pub enum $name:ident $(# $tags:ident)* { $($variants:tt)* }
+        pub enum $name:ident #manual_from_impl { $($variants:tt)* }
     ) => (
         $(#[$enum_attr])*
         #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
         #[cfg_attr(feature = "clone-impls", derive(Clone))]
+        #[derive(crate::Serialize, crate::Deserialize)]
+        #[serde(rename_all = "snake_case")]
         pub enum $name {
             $($variants)*
         }
-    )
+    );
+
+    (
+        $(#[$enum_attr:meta])*
+        pub enum $name:ident $(# $tags:ident)* {
+            $(
+                $(#[$variant_attr:meta])*
+                $variant:ident $( ($member:ident $($rest:tt)*) )*,
+            )*
+        }
+    ) => (
+        $(#[$enum_attr])*
+        #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
+        #[cfg_attr(feature = "clone-impls", derive(Clone))]
+        #[derive(crate::Serialize, crate::Deserialize)]
+        #[serde(rename_all = "snake_case")]
+        pub enum $name {
+            $(
+                $(#[$variant_attr])*
+                $variant $( ($member $($rest)*) )*,
+            )*
+        }
+
+        impl From<&syn::$name> for $name {
+            fn from(other: &syn::$name) -> Self {
+                match other {
+                    $(
+                        syn::$name::$variant(x) => $name::$variant(x.into()),
+                    )*
+                }
+            }
+        }
+
+        impl From<&$name> for syn::$name {
+            fn from(other: &$name) -> Self {
+                match other {
+                    $(
+                        $name::$variant(x) => syn::$name::$variant(x.into()),
+                    )*
+                }
+            }
+        }
+    );
 }
 
-#[cfg(any(feature = "full", feature = "derive"))]
 macro_rules! ast_enum_of_structs {
     (
         $(#[$enum_attr:meta])*
-        pub enum $name:ident {
+        pub enum $name:ident $(# $tags:ident)* {
             $(
                 $(#[$variant_attr:meta])*
                 pub $variant:ident $( ($member:ident $($rest:tt)*) )*,
             )*
         }
-
-        $($remaining:tt)*
     ) => (
         ast_enum! {
             $(#[$enum_attr])*
-            pub enum $name {
+            pub enum $name $(# $tags)* {
                 $(
                     $(#[$variant_attr])*
                     $variant $( ($member) )*,
@@ -88,71 +111,15 @@ macro_rules! ast_enum_of_structs {
 
             $(
                 impl From<$member> for $name {
-                    fn from(e: $member) -> $name {
+                    fn from(e: $member) -> Self {
                         $name::$variant(e)
                     }
                 }
             )*
         )*
-
-        #[cfg(feature = "printing")]
-        generate_to_tokens! {
-            $($remaining)*
-            ()
-            tokens
-            $name { $($variant $( [$($rest)*] )*,)* }
-        }
     )
 }
 
-#[cfg(all(feature = "printing", any(feature = "full", feature = "derive")))]
-macro_rules! generate_to_tokens {
-    (do_not_generate_to_tokens $($foo:tt)*) => ();
-
-    (($($arms:tt)*) $tokens:ident $name:ident { $variant:ident, $($next:tt)*}) => {
-        generate_to_tokens!(
-            ($($arms)* $name::$variant => {})
-            $tokens $name { $($next)* }
-        );
-    };
-
-    (($($arms:tt)*) $tokens:ident $name:ident { $variant:ident [$($rest:tt)*], $($next:tt)*}) => {
-        generate_to_tokens!(
-            ($($arms)* $name::$variant(ref _e) => to_tokens_call!(_e, $tokens, $($rest)*),)
-            $tokens $name { $($next)* }
-        );
-    };
-
-    (($($arms:tt)*) $tokens:ident $name:ident {}) => {
-        impl ::quote::ToTokens for $name {
-            fn to_tokens(&self, $tokens: &mut ::proc_macro2::TokenStream) {
-                match *self {
-                    $($arms)*
-                }
-            }
-        }
-    };
-}
-
-#[cfg(all(feature = "printing", feature = "full"))]
-macro_rules! to_tokens_call {
-    ($e:ident, $tokens:ident, $($rest:tt)*) => {
-        $e.to_tokens($tokens)
-    };
-}
-
-#[cfg(all(feature = "printing", feature = "derive", not(feature = "full")))]
-macro_rules! to_tokens_call {
-    // If the variant is marked as #full, don't auto-generate to-tokens for it.
-    ($e:ident, $tokens:ident, #full $($rest:tt)*) => {
-        unreachable!()
-    };
-    ($e:ident, $tokens:ident, $($rest:tt)*) => {
-        $e.to_tokens($tokens)
-    };
-}
-
-#[cfg(any(feature = "full", feature = "derive"))]
 macro_rules! maybe_ast_struct {
     (
         $(#[$attr:meta])*

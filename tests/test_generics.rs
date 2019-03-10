@@ -1,18 +1,11 @@
 #![recursion_limit = "1024"]
 
-extern crate syn;
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::quote;
 use syn::*;
 
 #[macro_use]
-extern crate quote;
-
-extern crate proc_macro2;
-use proc_macro2::{Ident, Span, TokenStream};
-
-#[macro_use]
 mod macros;
-
-mod features;
 
 fn ident(s: &str) -> Ident {
     Ident::new(s, Span::call_site())
@@ -98,8 +91,93 @@ fn test_split_for_impl() {
     };
     let expected = "Test :: < 'a , 'b , T >";
     assert_eq!(expected, tokens.to_string());
+
+    let json = r#"
+{
+  "params": [
+    {
+      "lifetime": {
+        "lifetime": "a"
+      }
+    },
+    {
+      "lifetime": {
+        "lifetime": "b",
+        "colon_token": true,
+        "bounds": [
+          "a"
+        ]
+      }
+    },
+    {
+      "type": {
+        "attrs": [
+          {
+            "style": "outer",
+            "path": {
+              "segments": [
+                {
+                  "ident": "may_dangle"
+                }
+              ]
+            }
+          }
+        ],
+        "ident": "T",
+        "colon_token": true,
+        "bounds": [
+          {
+            "lifetime": "a"
+          }
+        ],
+        "default": {
+          "tuple": {
+            "elems": []
+          }
+        }
+      }
+    }
+  ],
+  "where_clause": {
+    "predicates": [
+      {
+        "type": {
+          "bounded_ty": {
+            "path": {
+              "segments": [
+                {
+                  "ident": "T"
+                }
+              ]
+            }
+          },
+          "bounds": [
+            {
+              "trait": {
+                "path": {
+                  "segments": [
+                    {
+                      "ident": "Debug"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+"#;
+
+    let json: serde_syn::Generics = serde_json::from_str(json).unwrap();
+    let json = Generics::from(&json);
+
+    assert_eq!(generics, json);
 }
 
+/*
 #[test]
 fn test_ty_param_bound() {
     let tokens = quote!('a);
@@ -163,3 +241,4 @@ fn test_where_clause_at_end_of_input() {
     let where_clause = syn::parse2::<WhereClause>(tokens).unwrap();
     assert_eq!(where_clause.predicates.len(), 0);
 }
+*/
