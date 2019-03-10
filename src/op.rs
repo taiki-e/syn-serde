@@ -1,230 +1,210 @@
 ast_enum! {
     /// A binary operator: `+`, `+=`, `&`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     #[cfg_attr(feature = "clone-impls", derive(Copy))]
-    pub enum BinOp {
+    pub enum BinOp #manual_from_impl {
         /// The `+` operator (addition)
-        Add(Token![+]),
+        #[serde(rename = "+")]
+        Add,
         /// The `-` operator (subtraction)
-        Sub(Token![-]),
+        #[serde(rename = "-")]
+        Sub,
         /// The `*` operator (multiplication)
-        Mul(Token![*]),
+        #[serde(rename = "*")]
+        Mul,
         /// The `/` operator (division)
-        Div(Token![/]),
+        #[serde(rename = "/")]
+        Div,
         /// The `%` operator (modulus)
-        Rem(Token![%]),
+        #[serde(rename = "%")]
+        Rem,
         /// The `&&` operator (logical and)
-        And(Token![&&]),
+        #[serde(rename = "&&")]
+        And,
         /// The `||` operator (logical or)
-        Or(Token![||]),
+        #[serde(rename = "||")]
+        Or,
         /// The `^` operator (bitwise xor)
-        BitXor(Token![^]),
+        #[serde(rename = "^")]
+        BitXor,
         /// The `&` operator (bitwise and)
-        BitAnd(Token![&]),
+        #[serde(rename = "&")]
+        BitAnd,
         /// The `|` operator (bitwise or)
-        BitOr(Token![|]),
+        #[serde(rename = "|")]
+        BitOr,
         /// The `<<` operator (shift left)
-        Shl(Token![<<]),
+        #[serde(rename = "<<")]
+        Shl,
         /// The `>>` operator (shift right)
-        Shr(Token![>>]),
+        #[serde(rename = ">>")]
+        Shr,
         /// The `==` operator (equality)
-        Eq(Token![==]),
+        #[serde(rename = "==")]
+        Eq,
         /// The `<` operator (less than)
-        Lt(Token![<]),
+        #[serde(rename = "<")]
+        Lt,
         /// The `<=` operator (less than or equal to)
-        Le(Token![<=]),
+        #[serde(rename = "<=")]
+        Le,
         /// The `!=` operator (not equal to)
-        Ne(Token![!=]),
+        #[serde(rename = "!=")]
+        Ne,
         /// The `>=` operator (greater than or equal to)
-        Ge(Token![>=]),
+        #[serde(rename = ">=")]
+        Ge,
         /// The `>` operator (greater than)
-        Gt(Token![>]),
+        #[serde(rename = ">")]
+        Gt,
         /// The `+=` operator
-        AddEq(Token![+=]),
+        #[serde(rename = "+=")]
+        AddEq,
         /// The `-=` operator
-        SubEq(Token![-=]),
+        #[serde(rename = "-=")]
+        SubEq,
         /// The `*=` operator
-        MulEq(Token![*=]),
+        #[serde(rename = "*=")]
+        MulEq,
         /// The `/=` operator
-        DivEq(Token![/=]),
+        #[serde(rename = "/=")]
+        DivEq,
         /// The `%=` operator
-        RemEq(Token![%=]),
+        #[serde(rename = "%=")]
+        RemEq,
         /// The `^=` operator
-        BitXorEq(Token![^=]),
+        #[serde(rename = "^=")]
+        BitXorEq,
         /// The `&=` operator
-        BitAndEq(Token![&=]),
+        #[serde(rename = "&=")]
+        BitAndEq,
         /// The `|=` operator
-        BitOrEq(Token![|=]),
+        #[serde(rename = "|=")]
+        BitOrEq,
         /// The `<<=` operator
-        ShlEq(Token![<<=]),
+        #[serde(rename = "<<=")]
+        ShlEq,
         /// The `>>=` operator
-        ShrEq(Token![>>=]),
+        #[serde(rename = ">>=")]
+        ShrEq,
     }
 }
 
 ast_enum! {
     /// A unary operator: `*`, `!`, `-`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     #[cfg_attr(feature = "clone-impls", derive(Copy))]
-    pub enum UnOp {
+    pub enum UnOp #manual_from_impl {
         /// The `*` operator for dereferencing
-        Deref(Token![*]),
+        #[serde(rename = "*")]
+        Deref,
         /// The `!` operator for logical inversion
-        Not(Token![!]),
+        #[serde(rename = "!")]
+        Not,
         /// The `-` operator for negation
-        Neg(Token![-]),
+        #[serde(rename = "-")]
+        Neg,
     }
 }
 
-#[cfg(feature = "parsing")]
-pub mod parsing {
+mod convert {
+    use super::super::*;
     use super::*;
 
-    use parse::{Parse, ParseStream, Result};
+    // BinOp
 
-    fn parse_binop(input: ParseStream) -> Result<BinOp> {
-        if input.peek(Token![&&]) {
-            input.parse().map(BinOp::And)
-        } else if input.peek(Token![||]) {
-            input.parse().map(BinOp::Or)
-        } else if input.peek(Token![<<]) {
-            input.parse().map(BinOp::Shl)
-        } else if input.peek(Token![>>]) {
-            input.parse().map(BinOp::Shr)
-        } else if input.peek(Token![==]) {
-            input.parse().map(BinOp::Eq)
-        } else if input.peek(Token![<=]) {
-            input.parse().map(BinOp::Le)
-        } else if input.peek(Token![!=]) {
-            input.parse().map(BinOp::Ne)
-        } else if input.peek(Token![>=]) {
-            input.parse().map(BinOp::Ge)
-        } else if input.peek(Token![+]) {
-            input.parse().map(BinOp::Add)
-        } else if input.peek(Token![-]) {
-            input.parse().map(BinOp::Sub)
-        } else if input.peek(Token![*]) {
-            input.parse().map(BinOp::Mul)
-        } else if input.peek(Token![/]) {
-            input.parse().map(BinOp::Div)
-        } else if input.peek(Token![%]) {
-            input.parse().map(BinOp::Rem)
-        } else if input.peek(Token![^]) {
-            input.parse().map(BinOp::BitXor)
-        } else if input.peek(Token![&]) {
-            input.parse().map(BinOp::BitAnd)
-        } else if input.peek(Token![|]) {
-            input.parse().map(BinOp::BitOr)
-        } else if input.peek(Token![<]) {
-            input.parse().map(BinOp::Lt)
-        } else if input.peek(Token![>]) {
-            input.parse().map(BinOp::Gt)
-        } else {
-            Err(input.error("expected binary operator"))
-        }
-    }
-
-    impl Parse for BinOp {
-        #[cfg(not(feature = "full"))]
-        fn parse(input: ParseStream) -> Result<Self> {
-            parse_binop(input)
-        }
-
-        #[cfg(feature = "full")]
-        fn parse(input: ParseStream) -> Result<Self> {
-            if input.peek(Token![+=]) {
-                input.parse().map(BinOp::AddEq)
-            } else if input.peek(Token![-=]) {
-                input.parse().map(BinOp::SubEq)
-            } else if input.peek(Token![*=]) {
-                input.parse().map(BinOp::MulEq)
-            } else if input.peek(Token![/=]) {
-                input.parse().map(BinOp::DivEq)
-            } else if input.peek(Token![%=]) {
-                input.parse().map(BinOp::RemEq)
-            } else if input.peek(Token![^=]) {
-                input.parse().map(BinOp::BitXorEq)
-            } else if input.peek(Token![&=]) {
-                input.parse().map(BinOp::BitAndEq)
-            } else if input.peek(Token![|=]) {
-                input.parse().map(BinOp::BitOrEq)
-            } else if input.peek(Token![<<=]) {
-                input.parse().map(BinOp::ShlEq)
-            } else if input.peek(Token![>>=]) {
-                input.parse().map(BinOp::ShrEq)
-            } else {
-                parse_binop(input)
+    impl From<&syn::BinOp> for BinOp {
+        fn from(other: &syn::BinOp) -> Self {
+            use super::BinOp::*;
+            use syn::BinOp;
+            match other {
+                BinOp::Add(_) => Add,
+                BinOp::Sub(_) => Sub,
+                BinOp::Mul(_) => Mul,
+                BinOp::Div(_) => Div,
+                BinOp::Rem(_) => Rem,
+                BinOp::And(_) => And,
+                BinOp::Or(_) => Or,
+                BinOp::BitXor(_) => BitXor,
+                BinOp::BitAnd(_) => BitAnd,
+                BinOp::BitOr(_) => BitOr,
+                BinOp::Shl(_) => Shl,
+                BinOp::Shr(_) => Shr,
+                BinOp::Eq(_) => Eq,
+                BinOp::Lt(_) => Lt,
+                BinOp::Le(_) => Le,
+                BinOp::Ne(_) => Ne,
+                BinOp::Ge(_) => Ge,
+                BinOp::Gt(_) => Gt,
+                BinOp::AddEq(_) => AddEq,
+                BinOp::SubEq(_) => SubEq,
+                BinOp::MulEq(_) => MulEq,
+                BinOp::DivEq(_) => DivEq,
+                BinOp::RemEq(_) => RemEq,
+                BinOp::BitXorEq(_) => BitXorEq,
+                BinOp::BitAndEq(_) => BitAndEq,
+                BinOp::BitOrEq(_) => BitOrEq,
+                BinOp::ShlEq(_) => ShlEq,
+                BinOp::ShrEq(_) => ShrEq,
             }
         }
     }
 
-    impl Parse for UnOp {
-        fn parse(input: ParseStream) -> Result<Self> {
-            let lookahead = input.lookahead1();
-            if lookahead.peek(Token![*]) {
-                input.parse().map(UnOp::Deref)
-            } else if lookahead.peek(Token![!]) {
-                input.parse().map(UnOp::Not)
-            } else if lookahead.peek(Token![-]) {
-                input.parse().map(UnOp::Neg)
-            } else {
-                Err(lookahead.error())
-            }
-        }
-    }
-}
-
-#[cfg(feature = "printing")]
-mod printing {
-    use super::*;
-    use proc_macro2::TokenStream;
-    use quote::ToTokens;
-
-    impl ToTokens for BinOp {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            match *self {
-                BinOp::Add(ref t) => t.to_tokens(tokens),
-                BinOp::Sub(ref t) => t.to_tokens(tokens),
-                BinOp::Mul(ref t) => t.to_tokens(tokens),
-                BinOp::Div(ref t) => t.to_tokens(tokens),
-                BinOp::Rem(ref t) => t.to_tokens(tokens),
-                BinOp::And(ref t) => t.to_tokens(tokens),
-                BinOp::Or(ref t) => t.to_tokens(tokens),
-                BinOp::BitXor(ref t) => t.to_tokens(tokens),
-                BinOp::BitAnd(ref t) => t.to_tokens(tokens),
-                BinOp::BitOr(ref t) => t.to_tokens(tokens),
-                BinOp::Shl(ref t) => t.to_tokens(tokens),
-                BinOp::Shr(ref t) => t.to_tokens(tokens),
-                BinOp::Eq(ref t) => t.to_tokens(tokens),
-                BinOp::Lt(ref t) => t.to_tokens(tokens),
-                BinOp::Le(ref t) => t.to_tokens(tokens),
-                BinOp::Ne(ref t) => t.to_tokens(tokens),
-                BinOp::Ge(ref t) => t.to_tokens(tokens),
-                BinOp::Gt(ref t) => t.to_tokens(tokens),
-                BinOp::AddEq(ref t) => t.to_tokens(tokens),
-                BinOp::SubEq(ref t) => t.to_tokens(tokens),
-                BinOp::MulEq(ref t) => t.to_tokens(tokens),
-                BinOp::DivEq(ref t) => t.to_tokens(tokens),
-                BinOp::RemEq(ref t) => t.to_tokens(tokens),
-                BinOp::BitXorEq(ref t) => t.to_tokens(tokens),
-                BinOp::BitAndEq(ref t) => t.to_tokens(tokens),
-                BinOp::BitOrEq(ref t) => t.to_tokens(tokens),
-                BinOp::ShlEq(ref t) => t.to_tokens(tokens),
-                BinOp::ShrEq(ref t) => t.to_tokens(tokens),
+    impl From<&BinOp> for syn::BinOp {
+        fn from(other: &BinOp) -> Self {
+            use syn::BinOp::*;
+            match other {
+                BinOp::Add => Add(default()),
+                BinOp::Sub => Sub(default()),
+                BinOp::Mul => Mul(default()),
+                BinOp::Div => Div(default()),
+                BinOp::Rem => Rem(default()),
+                BinOp::And => And(default()),
+                BinOp::Or => Or(default()),
+                BinOp::BitXor => BitXor(default()),
+                BinOp::BitAnd => BitAnd(default()),
+                BinOp::BitOr => BitOr(default()),
+                BinOp::Shl => Shl(default()),
+                BinOp::Shr => Shr(default()),
+                BinOp::Eq => Eq(default()),
+                BinOp::Lt => Lt(default()),
+                BinOp::Le => Le(default()),
+                BinOp::Ne => Ne(default()),
+                BinOp::Ge => Ge(default()),
+                BinOp::Gt => Gt(default()),
+                BinOp::AddEq => AddEq(default()),
+                BinOp::SubEq => SubEq(default()),
+                BinOp::MulEq => MulEq(default()),
+                BinOp::DivEq => DivEq(default()),
+                BinOp::RemEq => RemEq(default()),
+                BinOp::BitXorEq => BitXorEq(default()),
+                BinOp::BitAndEq => BitAndEq(default()),
+                BinOp::BitOrEq => BitOrEq(default()),
+                BinOp::ShlEq => ShlEq(default()),
+                BinOp::ShrEq => ShrEq(default()),
             }
         }
     }
 
-    impl ToTokens for UnOp {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            match *self {
-                UnOp::Deref(ref t) => t.to_tokens(tokens),
-                UnOp::Not(ref t) => t.to_tokens(tokens),
-                UnOp::Neg(ref t) => t.to_tokens(tokens),
+    // UnOp
+
+    impl From<&syn::UnOp> for UnOp {
+        fn from(other: &syn::UnOp) -> Self {
+            use super::UnOp::*;
+            use syn::UnOp;
+            match other {
+                UnOp::Deref(_) => Deref,
+                UnOp::Not(_) => Not,
+                UnOp::Neg(_) => Neg,
+            }
+        }
+    }
+
+    impl From<&UnOp> for syn::UnOp {
+        fn from(other: &UnOp) -> Self {
+            use syn::UnOp::*;
+            match other {
+                UnOp::Deref => Deref(default()),
+                UnOp::Not => Not(default()),
+                UnOp::Neg => Neg(default()),
             }
         }
     }

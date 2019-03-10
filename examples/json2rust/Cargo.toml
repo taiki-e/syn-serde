@@ -1,0 +1,13 @@
+[package]
+name = "json2rust"
+version = "0.0.0"
+authors = ["Taiki Endo <te316e89@gmail.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+failure = "0.1.5"
+quote = "0.6.8"
+serde_syn = { path = "../..", features = ["json"] }
+syn = { version = "0.15", features = ["full"] }
+tempfile = "3.0"

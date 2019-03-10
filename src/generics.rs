@@ -1,27 +1,30 @@
 use super::*;
-use punctuated::{Iter, IterMut, Punctuated};
 
 ast_struct! {
     /// Lifetimes and type parameters attached to a declaration of a function,
     /// enum, trait, etc.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     #[derive(Default)]
     pub struct Generics {
-        pub lt_token: Option<Token![<]>,
-        pub params: Punctuated<GenericParam, Token![,]>,
-        pub gt_token: Option<Token![>]>,
+        // #[serde(default, skip_serializing_if = "not")]
+        // pub lt_token: bool,
+        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+        pub params: Punctuated<GenericParam>,
+        // #[serde(default, skip_serializing_if = "not")]
+        // pub gt_token: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         pub where_clause: Option<WhereClause>,
+    }
+}
+
+impl Generics {
+    pub(crate) fn is_none(&self) -> bool {
+        self.params.is_empty() && self.where_clause.is_none() // && !self.lt_token && !self.gt_token
     }
 }
 
 ast_enum_of_structs! {
     /// A generic type parameter, lifetime, or const generic: `T: Into<String>`,
     /// `'a: 'b`, `const LEN: usize`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     ///
     /// # Syntax tree enum
     ///
@@ -30,328 +33,58 @@ ast_enum_of_structs! {
     /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
     pub enum GenericParam {
         /// A generic type parameter: `T: Into<String>`.
-        ///
-        /// *This type is available if Syn is built with the `"derive"` or
-        /// `"full"` feature.*
         pub Type(TypeParam {
+            #[serde(default, skip_serializing_if = "Vec::is_empty")]
             pub attrs: Vec<Attribute>,
             pub ident: Ident,
-            pub colon_token: Option<Token![:]>,
-            pub bounds: Punctuated<TypeParamBound, Token![+]>,
-            pub eq_token: Option<Token![=]>,
+            #[serde(default, skip_serializing_if = "not")]
+            pub colon_token: bool,
+            #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+            pub bounds: Punctuated<TypeParamBound>,
+            #[serde(default, skip_serializing_if = "not")]
+            pub eq_token: bool,
+            #[serde(default, skip_serializing_if = "Option::is_none")]
             pub default: Option<Type>,
         }),
 
         /// A lifetime definition: `'a: 'b + 'c + 'd`.
-        ///
-        /// *This type is available if Syn is built with the `"derive"` or
-        /// `"full"` feature.*
         pub Lifetime(LifetimeDef {
+            #[serde(default, skip_serializing_if = "Vec::is_empty")]
             pub attrs: Vec<Attribute>,
             pub lifetime: Lifetime,
-            pub colon_token: Option<Token![:]>,
-            pub bounds: Punctuated<Lifetime, Token![+]>,
+            #[serde(default, skip_serializing_if = "not")]
+            pub colon_token: bool,
+            #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+            pub bounds: Punctuated<Lifetime>,
         }),
 
         /// A const generic parameter: `const LENGTH: usize`.
-        ///
-        /// *This type is available if Syn is built with the `"derive"` or
-        /// `"full"` feature.*
         pub Const(ConstParam {
+            #[serde(default, skip_serializing_if = "Vec::is_empty")]
             pub attrs: Vec<Attribute>,
-            pub const_token: Token![const],
             pub ident: Ident,
-            pub colon_token: Token![:],
             pub ty: Type,
-            pub eq_token: Option<Token![=]>,
+            #[serde(default, skip_serializing_if = "not")]
+            pub eq_token: bool,
+            #[serde(default, skip_serializing_if = "Option::is_none")]
             pub default: Option<Expr>,
         }),
     }
 }
 
-impl Generics {
-    /// Returns an
-    /// <code
-    ///   style="padding-right:0;">Iterator&lt;Item = &amp;</code><a
-    ///   href="struct.TypeParam.html"><code
-    ///   style="padding-left:0;padding-right:0;">TypeParam</code></a><code
-    ///   style="padding-left:0;">&gt;</code>
-    /// over the type parameters in `self.params`.
-    pub fn type_params(&self) -> TypeParams {
-        TypeParams(self.params.iter())
-    }
-
-    /// Returns an
-    /// <code
-    ///   style="padding-right:0;">Iterator&lt;Item = &amp;mut </code><a
-    ///   href="struct.TypeParam.html"><code
-    ///   style="padding-left:0;padding-right:0;">TypeParam</code></a><code
-    ///   style="padding-left:0;">&gt;</code>
-    /// over the type parameters in `self.params`.
-    pub fn type_params_mut(&mut self) -> TypeParamsMut {
-        TypeParamsMut(self.params.iter_mut())
-    }
-
-    /// Returns an
-    /// <code
-    ///   style="padding-right:0;">Iterator&lt;Item = &amp;</code><a
-    ///   href="struct.LifetimeDef.html"><code
-    ///   style="padding-left:0;padding-right:0;">LifetimeDef</code></a><code
-    ///   style="padding-left:0;">&gt;</code>
-    /// over the lifetime parameters in `self.params`.
-    pub fn lifetimes(&self) -> Lifetimes {
-        Lifetimes(self.params.iter())
-    }
-
-    /// Returns an
-    /// <code
-    ///   style="padding-right:0;">Iterator&lt;Item = &amp;mut </code><a
-    ///   href="struct.LifetimeDef.html"><code
-    ///   style="padding-left:0;padding-right:0;">LifetimeDef</code></a><code
-    ///   style="padding-left:0;">&gt;</code>
-    /// over the lifetime parameters in `self.params`.
-    pub fn lifetimes_mut(&mut self) -> LifetimesMut {
-        LifetimesMut(self.params.iter_mut())
-    }
-
-    /// Returns an
-    /// <code
-    ///   style="padding-right:0;">Iterator&lt;Item = &amp;</code><a
-    ///   href="struct.ConstParam.html"><code
-    ///   style="padding-left:0;padding-right:0;">ConstParam</code></a><code
-    ///   style="padding-left:0;">&gt;</code>
-    /// over the constant parameters in `self.params`.
-    pub fn const_params(&self) -> ConstParams {
-        ConstParams(self.params.iter())
-    }
-
-    /// Returns an
-    /// <code
-    ///   style="padding-right:0;">Iterator&lt;Item = &amp;mut </code><a
-    ///   href="struct.ConstParam.html"><code
-    ///   style="padding-left:0;padding-right:0;">ConstParam</code></a><code
-    ///   style="padding-left:0;">&gt;</code>
-    /// over the constant parameters in `self.params`.
-    pub fn const_params_mut(&mut self) -> ConstParamsMut {
-        ConstParamsMut(self.params.iter_mut())
-    }
-
-    /// Initializes an empty `where`-clause if there is not one present already.
-    pub fn make_where_clause(&mut self) -> &mut WhereClause {
-        // This is Option::get_or_insert_with in Rust 1.20.
-        if self.where_clause.is_none() {
-            self.where_clause = Some(WhereClause {
-                where_token: <Token![where]>::default(),
-                predicates: Punctuated::new(),
-            });
-        }
-        match self.where_clause {
-            Some(ref mut where_clause) => where_clause,
-            None => unreachable!(),
-        }
-    }
-}
-
-pub struct TypeParams<'a>(Iter<'a, GenericParam>);
-
-impl<'a> Iterator for TypeParams<'a> {
-    type Item = &'a TypeParam;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0.next() {
-            Some(item) => item,
-            None => return None,
-        };
-        if let GenericParam::Type(ref type_param) = *next {
-            Some(type_param)
-        } else {
-            self.next()
-        }
-    }
-}
-
-pub struct TypeParamsMut<'a>(IterMut<'a, GenericParam>);
-
-impl<'a> Iterator for TypeParamsMut<'a> {
-    type Item = &'a mut TypeParam;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0.next() {
-            Some(item) => item,
-            None => return None,
-        };
-        if let GenericParam::Type(ref mut type_param) = *next {
-            Some(type_param)
-        } else {
-            self.next()
-        }
-    }
-}
-
-pub struct Lifetimes<'a>(Iter<'a, GenericParam>);
-
-impl<'a> Iterator for Lifetimes<'a> {
-    type Item = &'a LifetimeDef;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0.next() {
-            Some(item) => item,
-            None => return None,
-        };
-        if let GenericParam::Lifetime(ref lifetime) = *next {
-            Some(lifetime)
-        } else {
-            self.next()
-        }
-    }
-}
-
-pub struct LifetimesMut<'a>(IterMut<'a, GenericParam>);
-
-impl<'a> Iterator for LifetimesMut<'a> {
-    type Item = &'a mut LifetimeDef;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0.next() {
-            Some(item) => item,
-            None => return None,
-        };
-        if let GenericParam::Lifetime(ref mut lifetime) = *next {
-            Some(lifetime)
-        } else {
-            self.next()
-        }
-    }
-}
-
-pub struct ConstParams<'a>(Iter<'a, GenericParam>);
-
-impl<'a> Iterator for ConstParams<'a> {
-    type Item = &'a ConstParam;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0.next() {
-            Some(item) => item,
-            None => return None,
-        };
-        if let GenericParam::Const(ref const_param) = *next {
-            Some(const_param)
-        } else {
-            self.next()
-        }
-    }
-}
-
-pub struct ConstParamsMut<'a>(IterMut<'a, GenericParam>);
-
-impl<'a> Iterator for ConstParamsMut<'a> {
-    type Item = &'a mut ConstParam;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0.next() {
-            Some(item) => item,
-            None => return None,
-        };
-        if let GenericParam::Const(ref mut const_param) = *next {
-            Some(const_param)
-        } else {
-            self.next()
-        }
-    }
-}
-
-/// Returned by `Generics::split_for_impl`.
-///
-/// *This type is available if Syn is built with the `"derive"` or `"full"`
-/// feature and the `"printing"` feature.*
-#[cfg(feature = "printing")]
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-#[cfg_attr(feature = "clone-impls", derive(Clone))]
-pub struct ImplGenerics<'a>(&'a Generics);
-
-/// Returned by `Generics::split_for_impl`.
-///
-/// *This type is available if Syn is built with the `"derive"` or `"full"`
-/// feature and the `"printing"` feature.*
-#[cfg(feature = "printing")]
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-#[cfg_attr(feature = "clone-impls", derive(Clone))]
-pub struct TypeGenerics<'a>(&'a Generics);
-
-/// Returned by `TypeGenerics::as_turbofish`.
-///
-/// *This type is available if Syn is built with the `"derive"` or `"full"`
-/// feature and the `"printing"` feature.*
-#[cfg(feature = "printing")]
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-#[cfg_attr(feature = "clone-impls", derive(Clone))]
-pub struct Turbofish<'a>(&'a Generics);
-
-#[cfg(feature = "printing")]
-impl Generics {
-    /// Split a type's generics into the pieces required for impl'ing a trait
-    /// for that type.
-    ///
-    /// ```edition2018
-    /// # use proc_macro2::{Span, Ident};
-    /// # use quote::quote;
-    /// #
-    /// # fn main() {
-    /// #     let generics: syn::Generics = Default::default();
-    /// #     let name = Ident::new("MyType", Span::call_site());
-    /// #
-    /// let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-    /// quote! {
-    ///     impl #impl_generics MyTrait for #name #ty_generics #where_clause {
-    ///         // ...
-    ///     }
-    /// }
-    /// #     ;
-    /// # }
-    /// ```
-    ///
-    /// *This method is available if Syn is built with the `"derive"` or
-    /// `"full"` feature and the `"printing"` feature.*
-    pub fn split_for_impl(&self) -> (ImplGenerics, TypeGenerics, Option<&WhereClause>) {
-        (
-            ImplGenerics(self),
-            TypeGenerics(self),
-            self.where_clause.as_ref(),
-        )
-    }
-}
-
-#[cfg(feature = "printing")]
-impl<'a> TypeGenerics<'a> {
-    /// Turn a type's generics like `<X, Y>` into a turbofish like `::<X, Y>`.
-    ///
-    /// *This method is available if Syn is built with the `"derive"` or
-    /// `"full"` feature and the `"printing"` feature.*
-    pub fn as_turbofish(&self) -> Turbofish {
-        Turbofish(self.0)
-    }
-}
-
 ast_struct! {
     /// A set of bound lifetimes: `for<'a, 'b, 'c>`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
-    #[derive(Default)]
     pub struct BoundLifetimes {
-        pub for_token: Token![for],
-        pub lt_token: Token![<],
-        pub lifetimes: Punctuated<LifetimeDef, Token![,]>,
-        pub gt_token: Token![>],
+        pub lifetimes: Punctuated<LifetimeDef>,
     }
 }
 
-impl LifetimeDef {
-    pub fn new(lifetime: Lifetime) -> Self {
-        LifetimeDef {
+impl From<Lifetime> for LifetimeDef {
+    fn from(lifetime: Lifetime) -> Self {
+        Self {
             attrs: Vec::new(),
-            lifetime: lifetime,
-            colon_token: None,
+            lifetime,
+            colon_token: false,
             bounds: Punctuated::new(),
         }
     }
@@ -359,12 +92,12 @@ impl LifetimeDef {
 
 impl From<Ident> for TypeParam {
     fn from(ident: Ident) -> Self {
-        TypeParam {
+        Self {
             attrs: vec![],
-            ident: ident,
-            colon_token: None,
+            ident,
+            colon_token: false,
             bounds: Punctuated::new(),
-            eq_token: None,
+            eq_token: false,
             default: None,
         }
     }
@@ -372,9 +105,6 @@ impl From<Ident> for TypeParam {
 
 ast_enum_of_structs! {
     /// A trait or lifetime used as a bound on a type parameter.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     pub enum TypeParamBound {
         pub Trait(TraitBound),
         pub Lifetime(Lifetime),
@@ -383,13 +113,13 @@ ast_enum_of_structs! {
 
 ast_struct! {
     /// A trait used as a bound on a type parameter.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     pub struct TraitBound {
-        pub paren_token: Option<token::Paren>,
+        #[serde(default, skip_serializing_if = "not")]
+        pub paren_token: bool,
+        #[serde(default, skip_serializing_if = "TraitBoundModifier::is_none")]
         pub modifier: TraitBoundModifier,
         /// The `for<'a>` in `for<'a> Foo<&'a T>`
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         pub lifetimes: Option<BoundLifetimes>,
         /// The `Foo<&'a T>` in `for<'a> Foo<&'a T>`
         pub path: Path,
@@ -399,33 +129,39 @@ ast_struct! {
 ast_enum! {
     /// A modifier on a trait bound, currently only used for the `?` in
     /// `?Sized`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     #[cfg_attr(feature = "clone-impls", derive(Copy))]
-    pub enum TraitBoundModifier {
+    pub enum TraitBoundModifier #manual_from_impl {
         None,
-        Maybe(Token![?]),
+        Maybe,
+    }
+}
+
+impl TraitBoundModifier {
+    #[allow(clippy::trivially_copy_pass_by_ref)]
+    fn is_none(&self) -> bool {
+        match self {
+            TraitBoundModifier::None => true,
+            TraitBoundModifier::Maybe => false,
+        }
+    }
+}
+
+impl Default for TraitBoundModifier {
+    fn default() -> Self {
+        TraitBoundModifier::None
     }
 }
 
 ast_struct! {
     /// A `where` clause in a definition: `where T: Deserialize<'de>, D:
     /// 'static`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     pub struct WhereClause {
-        pub where_token: Token![where],
-        pub predicates: Punctuated<WherePredicate, Token![,]>,
+        pub predicates: Punctuated<WherePredicate>,
     }
 }
 
 ast_enum_of_structs! {
     /// A single predicate in a `where` clause: `T: Deserialize<'de>`.
-    ///
-    /// *This type is available if Syn is built with the `"derive"` or `"full"`
-    /// feature.*
     ///
     /// # Syntax tree enum
     ///
@@ -434,683 +170,296 @@ ast_enum_of_structs! {
     /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
     pub enum WherePredicate {
         /// A type predicate in a `where` clause: `for<'c> Foo<'c>: Trait<'c>`.
-        ///
-        /// *This type is available if Syn is built with the `"derive"` or
-        /// `"full"` feature.*
         pub Type(PredicateType {
             /// Any lifetimes from a `for` binding
+            #[serde(default, skip_serializing_if = "Option::is_none")]
             pub lifetimes: Option<BoundLifetimes>,
             /// The type being bounded
             pub bounded_ty: Type,
-            pub colon_token: Token![:],
             /// Trait and lifetime bounds (`Clone+Send+'static`)
-            pub bounds: Punctuated<TypeParamBound, Token![+]>,
+            pub bounds: Punctuated<TypeParamBound>,
         }),
 
         /// A lifetime predicate in a `where` clause: `'a: 'b + 'c`.
-        ///
-        /// *This type is available if Syn is built with the `"derive"` or
-        /// `"full"` feature.*
         pub Lifetime(PredicateLifetime {
             pub lifetime: Lifetime,
-            pub colon_token: Token![:],
-            pub bounds: Punctuated<Lifetime, Token![+]>,
+            pub bounds: Punctuated<Lifetime>,
         }),
 
         /// An equality predicate in a `where` clause (unsupported).
-        ///
-        /// *This type is available if Syn is built with the `"derive"` or
-        /// `"full"` feature.*
         pub Eq(PredicateEq {
             pub lhs_ty: Type,
-            pub eq_token: Token![=],
             pub rhs_ty: Type,
         }),
     }
 }
 
-#[cfg(feature = "parsing")]
-pub mod parsing {
+mod convert {
     use super::*;
 
-    use parse::{Parse, ParseStream, Result};
+    // Generics
 
-    impl Parse for Generics {
-        fn parse(input: ParseStream) -> Result<Self> {
-            if !input.peek(Token![<]) {
-                return Ok(Generics::default());
-            }
+    /* TODO: document
+    /// # Panics
+    ///
+     */
+    impl From<&syn::Generics> for Generics {
+        fn from(other: &syn::Generics) -> Self {
+            // `ident ..>` or `ident <..`
+            assert_eq!(other.lt_token.is_some(), other.gt_token.is_some());
+            // `ident T`
+            assert!(
+                other.params.is_empty() || other.lt_token.is_some(),
+                "expected `<`"
+            );
 
-            let lt_token: Token![<] = input.parse()?;
-
-            let mut params = Punctuated::new();
-            let mut has_type_param = false;
-            loop {
-                if input.peek(Token![>]) {
-                    break;
-                }
-
-                let attrs = input.call(Attribute::parse_outer)?;
-                let lookahead = input.lookahead1();
-                if !has_type_param && lookahead.peek(Lifetime) {
-                    params.push_value(GenericParam::Lifetime(LifetimeDef {
-                        attrs: attrs,
-                        ..input.parse()?
-                    }));
-                } else if lookahead.peek(Ident) {
-                    has_type_param = true;
-                    params.push_value(GenericParam::Type(TypeParam {
-                        attrs: attrs,
-                        ..input.parse()?
-                    }));
-                } else {
-                    return Err(lookahead.error());
-                }
-
-                if input.peek(Token![>]) {
-                    break;
-                }
-                let punct = input.parse()?;
-                params.push_punct(punct);
-            }
-
-            let gt_token: Token![>] = input.parse()?;
-
-            Ok(Generics {
-                lt_token: Some(lt_token),
-                params: params,
-                gt_token: Some(gt_token),
-                where_clause: None,
-            })
-        }
-    }
-
-    impl Parse for GenericParam {
-        fn parse(input: ParseStream) -> Result<Self> {
-            let attrs = input.call(Attribute::parse_outer)?;
-
-            let lookahead = input.lookahead1();
-            if lookahead.peek(Ident) {
-                Ok(GenericParam::Type(TypeParam {
-                    attrs: attrs,
-                    ..input.parse()?
-                }))
-            } else if lookahead.peek(Lifetime) {
-                Ok(GenericParam::Lifetime(LifetimeDef {
-                    attrs: attrs,
-                    ..input.parse()?
-                }))
-            } else if lookahead.peek(Token![const]) {
-                Ok(GenericParam::Const(ConstParam {
-                    attrs: attrs,
-                    ..input.parse()?
-                }))
-            } else {
-                Err(lookahead.error())
+            Self {
+                params: other.params.map_into(),
+                where_clause: other.where_clause.map_into(),
             }
         }
     }
 
-    impl Parse for LifetimeDef {
-        fn parse(input: ParseStream) -> Result<Self> {
-            let has_colon;
-            Ok(LifetimeDef {
-                attrs: input.call(Attribute::parse_outer)?,
-                lifetime: input.parse()?,
-                colon_token: {
-                    if input.peek(Token![:]) {
-                        has_colon = true;
-                        Some(input.parse()?)
-                    } else {
-                        has_colon = false;
-                        None
-                    }
-                },
-                bounds: {
-                    let mut bounds = Punctuated::new();
-                    if has_colon {
-                        loop {
-                            if input.peek(Token![,]) || input.peek(Token![>]) {
-                                break;
-                            }
-                            let value = input.parse()?;
-                            bounds.push_value(value);
-                            if !input.peek(Token![+]) {
-                                break;
-                            }
-                            let punct = input.parse()?;
-                            bounds.push_punct(punct);
-                        }
-                    }
-                    bounds
-                },
-            })
-        }
-    }
-
-    impl Parse for BoundLifetimes {
-        fn parse(input: ParseStream) -> Result<Self> {
-            Ok(BoundLifetimes {
-                for_token: input.parse()?,
-                lt_token: input.parse()?,
-                lifetimes: {
-                    let mut lifetimes = Punctuated::new();
-                    while !input.peek(Token![>]) {
-                        lifetimes.push_value(input.parse()?);
-                        if input.peek(Token![>]) {
-                            break;
-                        }
-                        lifetimes.push_punct(input.parse()?);
-                    }
-                    lifetimes
-                },
-                gt_token: input.parse()?,
-            })
-        }
-    }
-
-    impl Parse for Option<BoundLifetimes> {
-        fn parse(input: ParseStream) -> Result<Self> {
-            if input.peek(Token![for]) {
-                input.parse().map(Some)
-            } else {
-                Ok(None)
+    impl From<&Generics> for syn::Generics {
+        fn from(other: &Generics) -> Self {
+            Self {
+                lt_token: default_or_none(!other.params.is_empty()),
+                params: other.params.map_into(),
+                gt_token: default_or_none(!other.params.is_empty()),
+                where_clause: other.where_clause.map_into(),
             }
         }
     }
 
-    impl Parse for TypeParam {
-        fn parse(input: ParseStream) -> Result<Self> {
-            let has_colon;
-            let has_default;
-            Ok(TypeParam {
-                attrs: input.call(Attribute::parse_outer)?,
-                ident: input.parse()?,
-                colon_token: {
-                    if input.peek(Token![:]) {
-                        has_colon = true;
-                        Some(input.parse()?)
-                    } else {
-                        has_colon = false;
-                        None
-                    }
-                },
-                bounds: {
-                    let mut bounds = Punctuated::new();
-                    if has_colon {
-                        loop {
-                            if input.peek(Token![,])
-                                || input.peek(Token![>])
-                                || input.peek(Token![=])
-                            {
-                                break;
-                            }
-                            let value = input.parse()?;
-                            bounds.push_value(value);
-                            if !input.peek(Token![+]) {
-                                break;
-                            }
-                            let punct = input.parse()?;
-                            bounds.push_punct(punct);
-                        }
-                    }
-                    bounds
-                },
-                eq_token: {
-                    if input.peek(Token![=]) {
-                        has_default = true;
-                        Some(input.parse()?)
-                    } else {
-                        has_default = false;
-                        None
-                    }
-                },
-                default: {
-                    if has_default {
-                        Some(input.parse()?)
-                    } else {
-                        None
-                    }
-                },
-            })
-        }
-    }
+    // TypeParam
 
-    impl Parse for TypeParamBound {
-        fn parse(input: ParseStream) -> Result<Self> {
-            if input.peek(Lifetime) {
-                return input.parse().map(TypeParamBound::Lifetime);
-            }
-
-            if input.peek(token::Paren) {
-                let content;
-                let paren_token = parenthesized!(content in input);
-                let mut bound: TraitBound = content.parse()?;
-                bound.paren_token = Some(paren_token);
-                return Ok(TypeParamBound::Trait(bound));
-            }
-
-            input.parse().map(TypeParamBound::Trait)
-        }
-    }
-
-    impl Parse for TraitBound {
-        fn parse(input: ParseStream) -> Result<Self> {
-            let modifier: TraitBoundModifier = input.parse()?;
-            let lifetimes: Option<BoundLifetimes> = input.parse()?;
-
-            let mut path: Path = input.parse()?;
-            if path.segments.last().unwrap().value().arguments.is_empty()
-                && input.peek(token::Paren)
-            {
-                let parenthesized = PathArguments::Parenthesized(input.parse()?);
-                path.segments.last_mut().unwrap().value_mut().arguments = parenthesized;
-            }
-
-            Ok(TraitBound {
-                paren_token: None,
-                modifier: modifier,
-                lifetimes: lifetimes,
-                path: path,
-            })
-        }
-    }
-
-    impl Parse for TraitBoundModifier {
-        fn parse(input: ParseStream) -> Result<Self> {
-            if input.peek(Token![?]) {
-                input.parse().map(TraitBoundModifier::Maybe)
-            } else {
-                Ok(TraitBoundModifier::None)
+    impl From<&syn::TypeParam> for TypeParam {
+        fn from(other: &syn::TypeParam) -> Self {
+            Self {
+                attrs: other.attrs.map_into(),
+                ident: other.ident.ref_into(),
+                colon_token: other.colon_token.is_some(),
+                bounds: other.bounds.map_into(),
+                eq_token: other.eq_token.is_some(),
+                default: other.default.map_into(),
             }
         }
     }
 
-    impl Parse for ConstParam {
-        fn parse(input: ParseStream) -> Result<Self> {
-            let mut default = None;
-            Ok(ConstParam {
-                attrs: input.call(Attribute::parse_outer)?,
-                const_token: input.parse()?,
-                ident: input.parse()?,
-                colon_token: input.parse()?,
-                ty: input.parse()?,
-                eq_token: {
-                    if input.peek(Token![=]) {
-                        let eq_token = input.parse()?;
-                        default = Some(input.parse::<Expr>()?);
-                        Some(eq_token)
-                    } else {
-                        None
-                    }
-                },
-                default: default,
-            })
-        }
-    }
-
-    impl Parse for WhereClause {
-        fn parse(input: ParseStream) -> Result<Self> {
-            Ok(WhereClause {
-                where_token: input.parse()?,
-                predicates: {
-                    let mut predicates = Punctuated::new();
-                    loop {
-                        if input.is_empty()
-                            || input.peek(token::Brace)
-                            || input.peek(Token![,])
-                            || input.peek(Token![;])
-                            || input.peek(Token![:]) && !input.peek(Token![::])
-                            || input.peek(Token![=])
-                        {
-                            break;
-                        }
-                        let value = input.parse()?;
-                        predicates.push_value(value);
-                        if !input.peek(Token![,]) {
-                            break;
-                        }
-                        let punct = input.parse()?;
-                        predicates.push_punct(punct);
-                    }
-                    predicates
-                },
-            })
-        }
-    }
-
-    impl Parse for Option<WhereClause> {
-        fn parse(input: ParseStream) -> Result<Self> {
-            if input.peek(Token![where]) {
-                input.parse().map(Some)
-            } else {
-                Ok(None)
+    impl From<&TypeParam> for syn::TypeParam {
+        fn from(other: &TypeParam) -> Self {
+            Self {
+                attrs: other.attrs.map_into(),
+                ident: other.ident.ref_into(),
+                colon_token: default_or_none(other.colon_token),
+                bounds: other.bounds.map_into(),
+                eq_token: default_or_none(other.eq_token),
+                default: other.default.map_into(),
             }
         }
     }
 
-    impl Parse for WherePredicate {
-        fn parse(input: ParseStream) -> Result<Self> {
-            if input.peek(Lifetime) && input.peek2(Token![:]) {
-                Ok(WherePredicate::Lifetime(PredicateLifetime {
-                    lifetime: input.parse()?,
-                    colon_token: input.parse()?,
-                    bounds: {
-                        let mut bounds = Punctuated::new();
-                        loop {
-                            if input.peek(token::Brace)
-                                || input.peek(Token![,])
-                                || input.peek(Token![;])
-                                || input.peek(Token![:])
-                                || input.peek(Token![=])
-                            {
-                                break;
-                            }
-                            let value = input.parse()?;
-                            bounds.push_value(value);
-                            if !input.peek(Token![+]) {
-                                break;
-                            }
-                            let punct = input.parse()?;
-                            bounds.push_punct(punct);
-                        }
-                        bounds
-                    },
-                }))
-            } else {
-                Ok(WherePredicate::Type(PredicateType {
-                    lifetimes: input.parse()?,
-                    bounded_ty: input.parse()?,
-                    colon_token: input.parse()?,
-                    bounds: {
-                        let mut bounds = Punctuated::new();
-                        loop {
-                            if input.peek(token::Brace)
-                                || input.peek(Token![,])
-                                || input.peek(Token![;])
-                                || input.peek(Token![:]) && !input.peek(Token![::])
-                                || input.peek(Token![=])
-                            {
-                                break;
-                            }
-                            let value = input.parse()?;
-                            bounds.push_value(value);
-                            if !input.peek(Token![+]) {
-                                break;
-                            }
-                            let punct = input.parse()?;
-                            bounds.push_punct(punct);
-                        }
-                        bounds
-                    },
-                }))
-            }
-        }
-    }
-}
+    // LifetimeDef
 
-#[cfg(feature = "printing")]
-mod printing {
-    use super::*;
-
-    use proc_macro2::TokenStream;
-    use quote::{ToTokens, TokenStreamExt};
-
-    use attr::FilterAttrs;
-    use print::TokensOrDefault;
-
-    impl ToTokens for Generics {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            if self.params.is_empty() {
-                return;
-            }
-
-            TokensOrDefault(&self.lt_token).to_tokens(tokens);
-
-            // Print lifetimes before types and consts, regardless of their
-            // order in self.params.
-            //
-            // TODO: ordering rules for const parameters vs type parameters have
-            // not been settled yet. https://github.com/rust-lang/rust/issues/44580
-            let mut trailing_or_empty = true;
-            for param in self.params.pairs() {
-                if let GenericParam::Lifetime(_) = **param.value() {
-                    param.to_tokens(tokens);
-                    trailing_or_empty = param.punct().is_some();
-                }
-            }
-            for param in self.params.pairs() {
-                match **param.value() {
-                    GenericParam::Type(_) | GenericParam::Const(_) => {
-                        if !trailing_or_empty {
-                            <Token![,]>::default().to_tokens(tokens);
-                            trailing_or_empty = true;
-                        }
-                        param.to_tokens(tokens);
-                    }
-                    GenericParam::Lifetime(_) => {}
-                }
-            }
-
-            TokensOrDefault(&self.gt_token).to_tokens(tokens);
-        }
-    }
-
-    impl<'a> ToTokens for ImplGenerics<'a> {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            if self.0.params.is_empty() {
-                return;
-            }
-
-            TokensOrDefault(&self.0.lt_token).to_tokens(tokens);
-
-            // Print lifetimes before types and consts, regardless of their
-            // order in self.params.
-            //
-            // TODO: ordering rules for const parameters vs type parameters have
-            // not been settled yet. https://github.com/rust-lang/rust/issues/44580
-            let mut trailing_or_empty = true;
-            for param in self.0.params.pairs() {
-                if let GenericParam::Lifetime(_) = **param.value() {
-                    param.to_tokens(tokens);
-                    trailing_or_empty = param.punct().is_some();
-                }
-            }
-            for param in self.0.params.pairs() {
-                if let GenericParam::Lifetime(_) = **param.value() {
-                    continue;
-                }
-                if !trailing_or_empty {
-                    <Token![,]>::default().to_tokens(tokens);
-                    trailing_or_empty = true;
-                }
-                match **param.value() {
-                    GenericParam::Lifetime(_) => unreachable!(),
-                    GenericParam::Type(ref param) => {
-                        // Leave off the type parameter defaults
-                        tokens.append_all(param.attrs.outer());
-                        param.ident.to_tokens(tokens);
-                        if !param.bounds.is_empty() {
-                            TokensOrDefault(&param.colon_token).to_tokens(tokens);
-                            param.bounds.to_tokens(tokens);
-                        }
-                    }
-                    GenericParam::Const(ref param) => {
-                        // Leave off the const parameter defaults
-                        tokens.append_all(param.attrs.outer());
-                        param.const_token.to_tokens(tokens);
-                        param.ident.to_tokens(tokens);
-                        param.colon_token.to_tokens(tokens);
-                        param.ty.to_tokens(tokens);
-                    }
-                }
-                param.punct().to_tokens(tokens);
-            }
-
-            TokensOrDefault(&self.0.gt_token).to_tokens(tokens);
-        }
-    }
-
-    impl<'a> ToTokens for TypeGenerics<'a> {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            if self.0.params.is_empty() {
-                return;
-            }
-
-            TokensOrDefault(&self.0.lt_token).to_tokens(tokens);
-
-            // Print lifetimes before types and consts, regardless of their
-            // order in self.params.
-            //
-            // TODO: ordering rules for const parameters vs type parameters have
-            // not been settled yet. https://github.com/rust-lang/rust/issues/44580
-            let mut trailing_or_empty = true;
-            for param in self.0.params.pairs() {
-                if let GenericParam::Lifetime(ref def) = **param.value() {
-                    // Leave off the lifetime bounds and attributes
-                    def.lifetime.to_tokens(tokens);
-                    param.punct().to_tokens(tokens);
-                    trailing_or_empty = param.punct().is_some();
-                }
-            }
-            for param in self.0.params.pairs() {
-                if let GenericParam::Lifetime(_) = **param.value() {
-                    continue;
-                }
-                if !trailing_or_empty {
-                    <Token![,]>::default().to_tokens(tokens);
-                    trailing_or_empty = true;
-                }
-                match **param.value() {
-                    GenericParam::Lifetime(_) => unreachable!(),
-                    GenericParam::Type(ref param) => {
-                        // Leave off the type parameter defaults
-                        param.ident.to_tokens(tokens);
-                    }
-                    GenericParam::Const(ref param) => {
-                        // Leave off the const parameter defaults
-                        param.ident.to_tokens(tokens);
-                    }
-                }
-                param.punct().to_tokens(tokens);
-            }
-
-            TokensOrDefault(&self.0.gt_token).to_tokens(tokens);
-        }
-    }
-
-    impl<'a> ToTokens for Turbofish<'a> {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            if !self.0.params.is_empty() {
-                <Token![::]>::default().to_tokens(tokens);
-                TypeGenerics(self.0).to_tokens(tokens);
+    impl From<&syn::LifetimeDef> for LifetimeDef {
+        fn from(other: &syn::LifetimeDef) -> Self {
+            Self {
+                attrs: other.attrs.map_into(),
+                lifetime: other.lifetime.ref_into(),
+                colon_token: other.colon_token.is_some(),
+                bounds: other.bounds.map_into(),
             }
         }
     }
 
-    impl ToTokens for BoundLifetimes {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            self.for_token.to_tokens(tokens);
-            self.lt_token.to_tokens(tokens);
-            self.lifetimes.to_tokens(tokens);
-            self.gt_token.to_tokens(tokens);
-        }
-    }
-
-    impl ToTokens for LifetimeDef {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            tokens.append_all(self.attrs.outer());
-            self.lifetime.to_tokens(tokens);
-            if !self.bounds.is_empty() {
-                TokensOrDefault(&self.colon_token).to_tokens(tokens);
-                self.bounds.to_tokens(tokens);
+    impl From<&LifetimeDef> for syn::LifetimeDef {
+        fn from(other: &LifetimeDef) -> Self {
+            Self {
+                attrs: other.attrs.map_into(),
+                lifetime: other.lifetime.ref_into(),
+                colon_token: default_or_none(other.colon_token),
+                bounds: other.bounds.map_into(),
             }
         }
     }
 
-    impl ToTokens for TypeParam {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            tokens.append_all(self.attrs.outer());
-            self.ident.to_tokens(tokens);
-            if !self.bounds.is_empty() {
-                TokensOrDefault(&self.colon_token).to_tokens(tokens);
-                self.bounds.to_tokens(tokens);
-            }
-            if self.default.is_some() {
-                TokensOrDefault(&self.eq_token).to_tokens(tokens);
-                self.default.to_tokens(tokens);
-            }
-        }
-    }
+    // ConstParam
 
-    impl ToTokens for TraitBound {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            let to_tokens = |tokens: &mut TokenStream| {
-                self.modifier.to_tokens(tokens);
-                self.lifetimes.to_tokens(tokens);
-                self.path.to_tokens(tokens);
-            };
-            match self.paren_token {
-                Some(ref paren) => paren.surround(tokens, to_tokens),
-                None => to_tokens(tokens),
+    impl From<&syn::ConstParam> for ConstParam {
+        fn from(other: &syn::ConstParam) -> Self {
+            Self {
+                attrs: other.attrs.map_into(),
+                ident: other.ident.ref_into(),
+                ty: other.ty.ref_into(),
+                eq_token: other.eq_token.is_some(),
+                default: other.default.map_into(),
             }
         }
     }
 
-    impl ToTokens for TraitBoundModifier {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            match *self {
-                TraitBoundModifier::None => {}
-                TraitBoundModifier::Maybe(ref t) => t.to_tokens(tokens),
+    impl From<&ConstParam> for syn::ConstParam {
+        fn from(other: &ConstParam) -> Self {
+            Self {
+                attrs: other.attrs.map_into(),
+                const_token: default(),
+                ident: other.ident.ref_into(),
+                colon_token: default(),
+                ty: other.ty.ref_into(),
+                eq_token: default_or_none(other.eq_token),
+                default: other.default.map_into(),
             }
         }
     }
 
-    impl ToTokens for ConstParam {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            tokens.append_all(self.attrs.outer());
-            self.const_token.to_tokens(tokens);
-            self.ident.to_tokens(tokens);
-            self.colon_token.to_tokens(tokens);
-            self.ty.to_tokens(tokens);
-            if self.default.is_some() {
-                TokensOrDefault(&self.eq_token).to_tokens(tokens);
-                self.default.to_tokens(tokens);
+    // BoundLifetimes
+
+    impl From<&syn::BoundLifetimes> for BoundLifetimes {
+        fn from(other: &syn::BoundLifetimes) -> Self {
+            Self {
+                lifetimes: other.lifetimes.map_into(),
             }
         }
     }
 
-    impl ToTokens for WhereClause {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            if !self.predicates.is_empty() {
-                self.where_token.to_tokens(tokens);
-                self.predicates.to_tokens(tokens);
+    impl From<&BoundLifetimes> for syn::BoundLifetimes {
+        fn from(other: &BoundLifetimes) -> Self {
+            Self {
+                for_token: default(),
+                lt_token: default(),
+                lifetimes: other.lifetimes.map_into(),
+                gt_token: default(),
             }
         }
     }
 
-    impl ToTokens for PredicateType {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            self.lifetimes.to_tokens(tokens);
-            self.bounded_ty.to_tokens(tokens);
-            self.colon_token.to_tokens(tokens);
-            self.bounds.to_tokens(tokens);
+    // TraitBound
+
+    impl From<&syn::TraitBound> for TraitBound {
+        fn from(other: &syn::TraitBound) -> Self {
+            Self {
+                paren_token: other.paren_token.is_some(),
+                modifier: other.modifier.ref_into(),
+                lifetimes: other.lifetimes.map_into(),
+                path: other.path.ref_into(),
+            }
         }
     }
 
-    impl ToTokens for PredicateLifetime {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            self.lifetime.to_tokens(tokens);
-            self.colon_token.to_tokens(tokens);
-            self.bounds.to_tokens(tokens);
+    impl From<&TraitBound> for syn::TraitBound {
+        fn from(other: &TraitBound) -> Self {
+            Self {
+                paren_token: default_or_none(other.paren_token),
+                modifier: other.modifier.ref_into(),
+                lifetimes: other.lifetimes.map_into(),
+                path: other.path.ref_into(),
+            }
         }
     }
 
-    impl ToTokens for PredicateEq {
-        fn to_tokens(&self, tokens: &mut TokenStream) {
-            self.lhs_ty.to_tokens(tokens);
-            self.eq_token.to_tokens(tokens);
-            self.rhs_ty.to_tokens(tokens);
+    // TraitBoundModifier
+
+    impl From<&syn::TraitBoundModifier> for TraitBoundModifier {
+        fn from(other: &syn::TraitBoundModifier) -> Self {
+            use super::TraitBoundModifier::*;
+            use syn::TraitBoundModifier;
+            match other {
+                TraitBoundModifier::None => None,
+                TraitBoundModifier::Maybe(_) => Maybe,
+            }
+        }
+    }
+
+    impl From<&TraitBoundModifier> for syn::TraitBoundModifier {
+        fn from(other: &TraitBoundModifier) -> Self {
+            use syn::TraitBoundModifier::*;
+            match other {
+                TraitBoundModifier::None => None,
+                TraitBoundModifier::Maybe => Maybe(default()),
+            }
+        }
+    }
+
+    // WhereClause
+
+    impl From<&syn::WhereClause> for WhereClause {
+        fn from(other: &syn::WhereClause) -> Self {
+            Self {
+                predicates: other.predicates.map_into(),
+            }
+        }
+    }
+
+    impl From<&WhereClause> for syn::WhereClause {
+        fn from(other: &WhereClause) -> Self {
+            Self {
+                where_token: default(),
+                predicates: other.predicates.map_into(),
+            }
+        }
+    }
+
+    // PredicateType
+
+    impl From<&syn::PredicateType> for PredicateType {
+        fn from(other: &syn::PredicateType) -> Self {
+            Self {
+                lifetimes: other.lifetimes.map_into(),
+                bounded_ty: other.bounded_ty.ref_into(),
+                bounds: other.bounds.map_into(),
+            }
+        }
+    }
+
+    impl From<&PredicateType> for syn::PredicateType {
+        fn from(other: &PredicateType) -> Self {
+            Self {
+                lifetimes: other.lifetimes.map_into(),
+                bounded_ty: other.bounded_ty.ref_into(),
+                colon_token: default(),
+                bounds: other.bounds.map_into(),
+            }
+        }
+    }
+
+    // PredicateLifetime
+
+    impl From<&syn::PredicateLifetime> for PredicateLifetime {
+        fn from(other: &syn::PredicateLifetime) -> Self {
+            Self {
+                lifetime: other.lifetime.ref_into(),
+                bounds: other.bounds.map_into(),
+            }
+        }
+    }
+
+    impl From<&PredicateLifetime> for syn::PredicateLifetime {
+        fn from(other: &PredicateLifetime) -> Self {
+            Self {
+                lifetime: other.lifetime.ref_into(),
+                colon_token: default(),
+                bounds: other.bounds.map_into(),
+            }
+        }
+    }
+
+    // PredicateEq
+
+    impl From<&syn::PredicateEq> for PredicateEq {
+        fn from(other: &syn::PredicateEq) -> Self {
+            Self {
+                lhs_ty: other.lhs_ty.ref_into(),
+                rhs_ty: other.rhs_ty.ref_into(),
+            }
+        }
+    }
+
+    impl From<&PredicateEq> for syn::PredicateEq {
+        fn from(other: &PredicateEq) -> Self {
+            Self {
+                lhs_ty: other.lhs_ty.ref_into(),
+                eq_token: default(),
+                rhs_ty: other.rhs_ty.ref_into(),
+            }
         }
     }
 }
