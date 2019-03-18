@@ -4,8 +4,6 @@ macro_rules! ast_struct {
         pub struct $name:ident #transparent $($rest:tt)*
     ) => {
         $(#[$attr])*
-        #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-        #[cfg_attr(feature = "clone-impls", derive(Clone))]
         #[derive(crate::Serialize, crate::Deserialize)]
         #[serde(transparent)]
         pub struct $name $($rest)*
@@ -16,8 +14,6 @@ macro_rules! ast_struct {
         pub struct $name:ident $($rest:tt)*
     ) => {
         $(#[$attr])*
-        #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-        #[cfg_attr(feature = "clone-impls", derive(Clone))]
         #[derive(crate::Serialize, crate::Deserialize)]
         pub struct $name $($rest)*
     };
@@ -29,8 +25,6 @@ macro_rules! ast_enum {
         pub enum $name:ident #manual_from_impl { $($variants:tt)* }
     ) => (
         $(#[$enum_attr])*
-        #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-        #[cfg_attr(feature = "clone-impls", derive(Clone))]
         #[derive(crate::Serialize, crate::Deserialize)]
         #[serde(rename_all = "snake_case")]
         pub enum $name {
@@ -48,8 +42,6 @@ macro_rules! ast_enum {
         }
     ) => (
         $(#[$enum_attr])*
-        #[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
-        #[cfg_attr(feature = "clone-impls", derive(Clone))]
         #[derive(crate::Serialize, crate::Deserialize)]
         #[serde(rename_all = "snake_case")]
         pub enum $name {

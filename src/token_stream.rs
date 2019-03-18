@@ -9,7 +9,6 @@ use std::vec::IntoIter;
 ///
 /// This type provides interfaces for iterating over token trees and for
 /// collecting token trees into one stream.
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone, Default)]
 #[serde(transparent)]
 pub struct TokenStream {
@@ -89,7 +88,6 @@ impl IntoIterator for TokenStream {
 }
 
 /// A single token or a delimited sequence of token trees (e.g. `[1, (), ..]`).
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum TokenTree {
@@ -143,7 +141,6 @@ impl Display for TokenTree {
 ///
 /// A `Group` internally contains a `TokenStream` which is surrounded by
 /// `Delimiter`s.
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Group {
     delimiter: Delimiter,
@@ -151,7 +148,6 @@ pub struct Group {
 }
 
 /// Describes how a sequence of token trees is delimited.
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum Delimiter {
@@ -201,7 +197,6 @@ impl Display for Group {
 ///
 /// Multicharacter operators like `+=` are represented as two instances of
 /// `Punct` with different forms of `Spacing` returned.
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone, Copy)]
 pub struct Punct {
     op: char,
@@ -210,7 +205,6 @@ pub struct Punct {
 
 /// Whether an `Punct` is followed immediately by another `Punct` or followed by
 /// another token or whitespace.
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum Spacing {
@@ -263,7 +257,6 @@ impl Display for Punct {
 ///
 /// - The empty string is not an identifier. Use `Option<Ident>`.
 /// - A lifetime is not an identifier. Use `syn::Lifetime` instead.
-#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(transparent)]
 pub struct Ident {
@@ -306,7 +299,6 @@ impl Display for Ident {
 ///
 /// Boolean literals like `true` and `false` do not belong here, they are
 /// `Ident`s.
-#[cfg_attr(feature = "extra-traits", derive(Debug, Eq, PartialEq, Hash))]
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(transparent)]
 pub struct Literal {

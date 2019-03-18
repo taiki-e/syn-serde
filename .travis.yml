@@ -14,9 +14,6 @@ script:
   - shopt -s expand_aliases
   - alias build="cargo build ${TARGET+--target=$TARGET}"
   - build
-  - build --features json
-  - build --features clone-impls
-  - build --features extra-traits
   - build --all-features
 
 matrix:

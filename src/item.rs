@@ -596,9 +596,6 @@ ast_enum_of_structs! {
     }
 }
 
-#[cfg(feature = "clone-impls")]
-impl Copy for ArgSelf {}
-
 mod convert {
     use super::*;
 

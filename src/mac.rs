@@ -11,7 +11,6 @@ ast_struct! {
 
 ast_enum! {
     /// A grouping token that surrounds a macro body: `m!(...)` or `m!{...}` or `m![...]`.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum MacroDelimiter #manual_from_impl {
         Paren,
         Brace,

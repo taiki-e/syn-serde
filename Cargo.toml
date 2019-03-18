@@ -21,8 +21,6 @@ include = [
 
 [features]
 default = []
-clone-impls = []
-extra-traits = []
 json = ["serde_json"]
 
 [dependencies]

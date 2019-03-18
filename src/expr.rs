@@ -395,7 +395,6 @@ ast_enum! {
 
 ast_struct! {
     /// The index of an unnamed tuple struct field.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     #[serde(transparent)]
     pub struct Index {
         pub index: u32,
@@ -657,7 +656,6 @@ ast_struct! {
 
 ast_enum! {
     /// Limit types of a range, inclusive or exclusive.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum RangeLimits #manual_from_impl {
         /// Inclusive at the beginning, exclusive at the end.
         #[serde(rename = "..")]

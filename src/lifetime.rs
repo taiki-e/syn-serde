@@ -12,7 +12,6 @@ use std::fmt::{self, Display};
 ///   the XID_Start property.
 /// - All following characters must be Unicode code points with the XID_Continue
 ///   property.
-#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(transparent)]
 pub struct Lifetime {

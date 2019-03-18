@@ -1,6 +1,5 @@
 ast_enum! {
     /// A binary operator: `+`, `+=`, `&`.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum BinOp #manual_from_impl {
         /// The `+` operator (addition)
         #[serde(rename = "+")]
@@ -91,7 +90,6 @@ ast_enum! {
 
 ast_enum! {
     /// A unary operator: `*`, `!`, `-`.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum UnOp #manual_from_impl {
         /// The `*` operator for dereferencing
         #[serde(rename = "*")]

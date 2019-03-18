@@ -183,9 +183,6 @@ impl LitFloat {
     }
 }
 
-#[cfg(feature = "clone-impls")]
-impl Copy for LitBool {}
-
 mod convert {
     use super::*;
 

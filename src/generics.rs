@@ -129,7 +129,6 @@ ast_struct! {
 ast_enum! {
     /// A modifier on a trait bound, currently only used for the `?` in
     /// `?Sized`.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum TraitBoundModifier #manual_from_impl {
         None,
         Maybe,
@@ -137,7 +136,6 @@ ast_enum! {
 }
 
 impl TraitBoundModifier {
-    #[allow(clippy::trivially_copy_pass_by_ref)]
     fn is_none(&self) -> bool {
         match self {
             TraitBoundModifier::None => true,
