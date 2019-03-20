@@ -158,9 +158,6 @@ pub use self::lit::{
 mod mac;
 pub use self::mac::{Macro, MacroDelimiter};
 
-mod derive;
-pub use self::derive::{Data, DataEnum, DataStruct, DataUnion, DeriveInput};
-
 mod op;
 pub use self::op::{BinOp, UnOp};
 

@@ -28,7 +28,7 @@ proc-macro2 = { version = "0.4.21", default-features = false }
 serde = ">=1.0.59, <2"
 serde_derive = ">=1.0.59, <2" # This is necessary to make `-Z minimal-versions` build successful.
 serde_json = { version = "1", optional = true }
-syn = { version = "0.15.29", default-features = false, features = ["derive", "full"] }
+syn = { version = "0.15.29", default-features = false, features = ["full"] }
 
 [dev-dependencies]
 syn = { version = "0.15.29", features = ["full", "extra-traits"] }

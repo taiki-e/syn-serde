@@ -252,35 +252,6 @@ ast_enum_of_structs! {
     }
 }
 
-impl From<DeriveInput> for Item {
-    fn from(input: DeriveInput) -> Self {
-        match input.data {
-            Data::Struct(data) => Item::Struct(ItemStruct {
-                attrs: input.attrs,
-                vis: input.vis,
-                ident: input.ident,
-                generics: input.generics,
-                fields: data.fields,
-                // semi_token: data.semi_token,
-            }),
-            Data::Enum(data) => Item::Enum(ItemEnum {
-                attrs: input.attrs,
-                vis: input.vis,
-                ident: input.ident,
-                generics: input.generics,
-                variants: data.variants,
-            }),
-            Data::Union(data) => Item::Union(ItemUnion {
-                attrs: input.attrs,
-                vis: input.vis,
-                ident: input.ident,
-                generics: input.generics,
-                fields: data.fields,
-            }),
-        }
-    }
-}
-
 ast_enum_of_structs! {
     /// A suffix of an import tree in a `use` item: `Type as Renamed` or `*`.
     ///

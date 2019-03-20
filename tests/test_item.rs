@@ -31,7 +31,7 @@ fn delimited(delim: Delimiter, tokens: Vec<TokenTree>) -> TokenTree {
 fn test_unit() {
     let raw = "struct Unit;";
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("Unit"),
         vis: Visibility::Inherited,
         attrs: Vec::new(),
@@ -41,26 +41,24 @@ fn test_unit() {
             struct_token: Default::default(),
             fields: Fields::Unit,
         }),
-    };
+    });
 
     let json = r#"
-{
-  "ident": "Unit",
-  "data": {
-    "struct": {
-      "fields": "unit"
+    {
+      "struct": {
+        "ident": "Unit",
+        "fields": "unit"
+      }
     }
-  }
-}
-"#;
+    "#;
 
-    let raw: DeriveInput = syn::parse_str(raw).unwrap();
-    let ser: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let ser = DeriveInput::from(&ser);
+    let actual = syn::parse_str(raw).unwrap();
+    let ser: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let ser = Item::from(&ser);
 
-    assert_eq!(expected, raw);
+    assert_eq!(expected, actual);
     assert_eq!(expected, ser);
-    assert_eq!(ser, raw);
+    assert_eq!(ser, actual);
 }
 
 #[test]
@@ -73,7 +71,7 @@ fn test_struct() {
         }
     ";
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("Item"),
         vis: Visibility::Public(VisPublic {
             pub_token: Default::default(),
@@ -142,123 +140,106 @@ fn test_struct() {
                 ],
             }),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "attrs": [
     {
-      "style": "outer",
-      "path": {
-        "segments": [
+      "struct": {
+        "attrs": [
           {
-            "ident": "derive"
-          }
-        ]
-      },
-      "tts": [
-        {
-          "group": {
-            "delimiter": "parenthesis",
-            "stream": [
-              {
-                "ident": "Debug"
-              },
-              {
-                "punct": {
-                  "op": ",",
-                  "spacing": "alone"
+            "style": "outer",
+            "path": {
+              "segments": [
+                {
+                  "ident": "derive"
                 }
-              },
+              ]
+            },
+            "tts": [
               {
-                "ident": "Clone"
+                "group": {
+                  "delimiter": "parenthesis",
+                  "stream": [
+                    {
+                      "ident": "Debug"
+                    },
+                    {
+                      "punct": {
+                        "op": ",",
+                        "spacing": "alone"
+                      }
+                    },
+                    {
+                      "ident": "Clone"
+                    }
+                  ]
+                }
               }
             ]
           }
-        }
-      ]
-    }
-  ],
-  "vis": "pub",
-  "ident": "Item",
-  "data": {
-    "struct": {
-      "fields": {
-        "named": [
-          {
-            "vis": "pub",
-            "ident": "ident",
-            "colon_token": true,
-            "ty": {
-              "path": {
-                "segments": [
-                  {
-                    "ident": "Ident"
-                  }
-                ]
+        ],
+        "vis": "pub",
+        "ident": "Item",
+        "fields": {
+          "named": [
+            {
+              "vis": "pub",
+              "ident": "ident",
+              "colon_token": true,
+              "ty": {
+                "path": {
+                  "segments": [
+                    {
+                      "ident": "Ident"
+                    }
+                  ]
+                }
               }
-            }
-          },
-          {
-            "vis": "pub",
-            "ident": "attrs",
-            "colon_token": true,
-            "ty": {
-              "path": {
-                "segments": [
-                  {
-                    "ident": "Vec",
-                    "arguments": {
-                      "angle_bracketed": {
-                        "args": [
-                          {
-                            "type": {
-                              "path": {
-                                "segments": [
-                                  {
-                                    "ident": "Attribute"
-                                  }
-                                ]
+            },
+            {
+              "vis": "pub",
+              "ident": "attrs",
+              "colon_token": true,
+              "ty": {
+                "path": {
+                  "segments": [
+                    {
+                      "ident": "Vec",
+                      "arguments": {
+                        "angle_bracketed": {
+                          "args": [
+                            {
+                              "type": {
+                                "path": {
+                                  "segments": [
+                                    {
+                                      "ident": "Attribute"
+                                    }
+                                  ]
+                                }
                               }
                             }
-                          }
-                        ]
+                          ]
+                        }
                       }
                     }
-                  }
-                ]
+                  ]
+                }
               }
             }
-          }
-        ]
+          ]
+        }
       }
     }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
     assert_eq!(json, actual);
-
-    let expected_meta_item: Meta = MetaList {
-        ident: ident("derive"),
-        paren_token: Default::default(),
-        nested: punctuated![
-            NestedMeta::Meta(Meta::Word(ident("Debug"))),
-            NestedMeta::Meta(Meta::Word(ident("Clone"))),
-        ],
-    }
-    .into();
-
-    assert_eq!(
-        expected_meta_item,
-        actual.attrs[0].interpret_meta().unwrap()
-    );
 }
 
 #[test]
@@ -270,7 +251,7 @@ fn test_union() {
         }
     ";
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("MaybeUninit"),
         vis: Visibility::Inherited,
         attrs: Vec::new(),
@@ -317,54 +298,52 @@ fn test_union() {
                 ],
             },
         }),
-    };
+    });
 
     let json = r#"
-{
-  "ident": "MaybeUninit",
-  "generics": {
-    "params": [
-      {
-        "type": {
-          "ident": "T"
-        }
-      }
-    ]
-  },
-  "data": {
-    "union": {
-      "fields": [
-        {
-          "ident": "uninit",
-          "colon_token": true,
-          "ty": {
-            "tuple": {
-              "elems": []
+    {
+      "union": {
+        "ident": "MaybeUninit",
+        "generics": {
+          "params": [
+            {
+              "type": {
+                "ident": "T"
+              }
             }
-          }
+          ]
         },
-        {
-          "ident": "value",
-          "colon_token": true,
-          "ty": {
-            "path": {
-              "segments": [
-                {
-                  "ident": "T"
-                }
-              ]
+        "fields": [
+          {
+            "ident": "uninit",
+            "colon_token": true,
+            "ty": {
+              "tuple": {
+                "elems": []
+              }
+            }
+          },
+          {
+            "ident": "value",
+            "colon_token": true,
+            "ty": {
+              "path": {
+                "segments": [
+                  {
+                    "ident": "T"
+                  }
+                ]
+              }
             }
           }
-        }
-      ]
+        ]
+      }
     }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
@@ -387,7 +366,7 @@ fn test_enum() {
         }
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("Result"),
         vis: Visibility::Public(VisPublic {
             pub_token: Default::default(),
@@ -526,166 +505,143 @@ fn test_enum() {
             brace_token: Default::default(),
             enum_token: Default::default(),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "attrs": [
     {
-      "style": "outer",
-      "path": {
-        "segments": [
+      "enum": {
+        "attrs": [
           {
-            "ident": "doc"
-          }
-        ]
-      },
-      "tts": [
-        {
-          "punct": {
-            "op": "=",
-            "spacing": "alone"
-          }
-        },
-        {
-          "lit": "\" See the std::result module documentation for details.\""
-        }
-      ]
-    },
-    {
-      "style": "outer",
-      "path": {
-        "segments": [
-          {
-            "ident": "must_use"
-          }
-        ]
-      }
-    }
-  ],
-  "vis": "pub",
-  "ident": "Result",
-  "generics": {
-    "params": [
-      {
-        "type": {
-          "ident": "T"
-        }
-      },
-      {
-        "type": {
-          "ident": "E"
-        }
-      }
-    ]
-  },
-  "data": {
-    "enum": {
-      "variants": [
-        {
-          "ident": "Ok",
-          "fields": {
-            "unnamed": [
-              {
-                "ty": {
-                  "path": {
-                    "segments": [
-                      {
-                        "ident": "T"
-                      }
-                    ]
-                  }
+            "style": "outer",
+            "path": {
+              "segments": [
+                {
+                  "ident": "doc"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "ident": "Err",
-          "fields": {
-            "unnamed": [
+              ]
+            },
+            "tts": [
               {
-                "ty": {
-                  "path": {
-                    "segments": [
-                      {
-                        "ident": "E"
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "ident": "Surprise",
-          "fields": "unit",
-          "discriminant": {
-            "lit": {
-              "int": "0isize"
-            }
-          }
-        },
-        {
-          "ident": "ProcMacroHack",
-          "fields": "unit",
-          "discriminant": {
-            "field": {
-              "base": {
-                "tuple": {
-                  "elems": [
-                    {
-                      "lit": {
-                        "int": "0"
-                      }
-                    },
-                    {
-                      "lit": {
-                        "str": "\"data\""
-                      }
-                    }
-                  ]
+                "punct": {
+                  "op": "=",
+                  "spacing": "alone"
                 }
               },
-              "index": 0
+              {
+                "lit": "\" See the std::result module documentation for details.\""
+              }
+            ]
+          },
+          {
+            "style": "outer",
+            "path": {
+              "segments": [
+                {
+                  "ident": "must_use"
+                }
+              ]
             }
           }
-        }
-      ]
+        ],
+        "vis": "pub",
+        "ident": "Result",
+        "generics": {
+          "params": [
+            {
+              "type": {
+                "ident": "T"
+              }
+            },
+            {
+              "type": {
+                "ident": "E"
+              }
+            }
+          ]
+        },
+        "variants": [
+          {
+            "ident": "Ok",
+            "fields": {
+              "unnamed": [
+                {
+                  "ty": {
+                    "path": {
+                      "segments": [
+                        {
+                          "ident": "T"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "ident": "Err",
+            "fields": {
+              "unnamed": [
+                {
+                  "ty": {
+                    "path": {
+                      "segments": [
+                        {
+                          "ident": "E"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "ident": "Surprise",
+            "fields": "unit",
+            "discriminant": {
+              "lit": {
+                "int": "0isize"
+              }
+            }
+          },
+          {
+            "ident": "ProcMacroHack",
+            "fields": "unit",
+            "discriminant": {
+              "field": {
+                "base": {
+                  "tuple": {
+                    "elems": [
+                      {
+                        "lit": {
+                          "int": "0"
+                        }
+                      },
+                      {
+                        "lit": {
+                          "str": "\"data\""
+                        }
+                      }
+                    ]
+                  }
+                },
+                "index": 0
+              }
+            }
+          }
+        ]
+      }
     }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
     assert_eq!(json, actual);
-
-    let expected_meta_items = vec![
-        MetaNameValue {
-            ident: ident("doc"),
-            eq_token: Default::default(),
-            lit: Lit::Str(LitStr::new(
-                " See the std::result module documentation for details.",
-                Span::call_site(),
-            )),
-        }
-        .into(),
-        Meta::Word(ident("must_use")),
-    ];
-
-    let actual_meta_items: Vec<_> = actual
-        .attrs
-        .into_iter()
-        .map(|attr| attr.interpret_meta().unwrap())
-        .collect();
-
-    assert_eq!(expected_meta_items, actual_meta_items);
 }
 
 #[test]
@@ -696,7 +652,7 @@ fn test_attr_with_path() {
         struct Dummy;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("Dummy"),
         vis: Visibility::Inherited,
         attrs: vec![Attribute {
@@ -739,105 +695,101 @@ fn test_attr_with_path() {
             semi_token: Some(Default::default()),
             struct_token: Default::default(),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "attrs": [
     {
-      "style": "outer",
-      "path": {
-        "leading_colon": true,
-        "segments": [
+      "struct": {
+        "attrs": [
           {
-            "ident": "attr_args"
-          },
-          {
-            "ident": "identity"
-          }
-        ]
-      },
-      "tts": [
-        {
-          "ident": "fn"
-        },
-        {
-          "ident": "main"
-        },
-        {
-          "group": {
-            "delimiter": "parenthesis",
-            "stream": []
-          }
-        },
-        {
-          "group": {
-            "delimiter": "brace",
-            "stream": [
+            "style": "outer",
+            "path": {
+              "leading_colon": true,
+              "segments": [
+                {
+                  "ident": "attr_args"
+                },
+                {
+                  "ident": "identity"
+                }
+              ]
+            },
+            "tts": [
               {
-                "ident": "assert_eq"
+                "ident": "fn"
               },
               {
-                "punct": {
-                  "op": "!",
-                  "spacing": "alone"
-                }
+                "ident": "main"
               },
               {
                 "group": {
                   "delimiter": "parenthesis",
+                  "stream": []
+                }
+              },
+              {
+                "group": {
+                  "delimiter": "brace",
                   "stream": [
                     {
-                      "ident": "foo"
-                    },
-                    {
-                      "group": {
-                        "delimiter": "parenthesis",
-                        "stream": []
-                      }
+                      "ident": "assert_eq"
                     },
                     {
                       "punct": {
-                        "op": ",",
+                        "op": "!",
                         "spacing": "alone"
                       }
                     },
                     {
-                      "lit": "\"Hello, world!\""
+                      "group": {
+                        "delimiter": "parenthesis",
+                        "stream": [
+                          {
+                            "ident": "foo"
+                          },
+                          {
+                            "group": {
+                              "delimiter": "parenthesis",
+                              "stream": []
+                            }
+                          },
+                          {
+                            "punct": {
+                              "op": ",",
+                              "spacing": "alone"
+                            }
+                          },
+                          {
+                            "lit": "\"Hello, world!\""
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "punct": {
+                        "op": ";",
+                        "spacing": "alone"
+                      }
                     }
                   ]
-                }
-              },
-              {
-                "punct": {
-                  "op": ";",
-                  "spacing": "alone"
                 }
               }
             ]
           }
-        }
-      ]
+        ],
+        "ident": "Dummy",
+        "fields": "unit"
+      }
     }
-  ],
-  "ident": "Dummy",
-  "data": {
-    "struct": {
-      "fields": "unit"
-    }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
     assert_eq!(json, actual);
-
-    assert!(actual.attrs[0].interpret_meta().is_none());
 }
 
 #[test]
@@ -847,7 +799,7 @@ fn test_attr_with_non_mod_style_path() {
         struct S;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Inherited,
         attrs: vec![Attribute {
@@ -866,57 +818,53 @@ fn test_attr_with_non_mod_style_path() {
             semi_token: Some(Default::default()),
             struct_token: Default::default(),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "attrs": [
     {
-      "style": "outer",
-      "path": {
-        "segments": [
+      "struct": {
+        "attrs": [
           {
-            "ident": "inert"
+            "style": "outer",
+            "path": {
+              "segments": [
+                {
+                  "ident": "inert"
+                }
+              ]
+            },
+            "tts": [
+              {
+                "punct": {
+                  "op": "<",
+                  "spacing": "alone"
+                }
+              },
+              {
+                "ident": "T"
+              },
+              {
+                "punct": {
+                  "op": ">",
+                  "spacing": "alone"
+                }
+              }
+            ]
           }
-        ]
-      },
-      "tts": [
-        {
-          "punct": {
-            "op": "<",
-            "spacing": "alone"
-          }
-        },
-        {
-          "ident": "T"
-        },
-        {
-          "punct": {
-            "op": ">",
-            "spacing": "alone"
-          }
-        }
-      ]
+        ],
+        "ident": "S",
+        "fields": "unit"
+      }
     }
-  ],
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": "unit"
-    }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
     assert_eq!(json, actual);
-
-    assert!(actual.attrs[0].interpret_meta().is_none());
 }
 
 #[test]
@@ -926,7 +874,7 @@ fn test_attr_with_mod_style_path_with_self() {
         struct S;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Inherited,
         attrs: vec![Attribute {
@@ -948,43 +896,39 @@ fn test_attr_with_mod_style_path_with_self() {
             semi_token: Some(Default::default()),
             struct_token: Default::default(),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "attrs": [
     {
-      "style": "outer",
-      "path": {
-        "segments": [
+      "struct": {
+        "attrs": [
           {
-            "ident": "foo"
-          },
-          {
-            "ident": "self"
+            "style": "outer",
+            "path": {
+              "segments": [
+                {
+                  "ident": "foo"
+                },
+                {
+                  "ident": "self"
+                }
+              ]
+            }
           }
-        ]
+        ],
+        "ident": "S",
+        "fields": "unit"
       }
     }
-  ],
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": "unit"
-    }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
     assert_eq!(json, actual);
-
-    assert!(actual.attrs[0].interpret_meta().is_none());
 }
 
 #[test]
@@ -994,7 +938,7 @@ fn test_pub_restricted() {
         pub(in m) struct Z(pub(in m::n) u8);
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("Z"),
         vis: Visibility::Restricted(VisRestricted {
             path: Box::new(ident("m").into()),
@@ -1033,69 +977,65 @@ fn test_pub_restricted() {
             semi_token: Some(Default::default()),
             struct_token: Default::default(),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "vis": {
-    "restricted": {
-      "in_token": true,
-      "path": {
-        "segments": [
-          {
-            "ident": "m"
+    {
+      "struct": {
+        "vis": {
+          "restricted": {
+            "in_token": true,
+            "path": {
+              "segments": [
+                {
+                  "ident": "m"
+                }
+              ]
+            }
           }
-        ]
-      }
-    }
-  },
-  "ident": "Z",
-  "data": {
-    "struct": {
-      "fields": {
-        "unnamed": [
-          {
-            "vis": {
-              "restricted": {
-                "in_token": true,
+        },
+        "ident": "Z",
+        "fields": {
+          "unnamed": [
+            {
+              "vis": {
+                "restricted": {
+                  "in_token": true,
+                  "path": {
+                    "segments": [
+                      {
+                        "ident": "m"
+                      },
+                      {
+                        "ident": "n"
+                      }
+                    ]
+                  }
+                }
+              },
+              "ty": {
                 "path": {
                   "segments": [
                     {
-                      "ident": "m"
-                    },
-                    {
-                      "ident": "n"
+                      "ident": "u8"
                     }
                   ]
                 }
               }
-            },
-            "ty": {
-              "path": {
-                "segments": [
-                  {
-                    "ident": "u8"
-                  }
-                ]
-              }
             }
-          }
-        ]
+          ]
+        }
       }
     }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
     assert_eq!(json, actual);
-
-    assert_eq!(expected, actual);
 }
 
 #[test]
@@ -1104,7 +1044,7 @@ fn test_vis_crate() {
         crate struct S;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Crate(VisCrate {
             crate_token: Default::default(),
@@ -1116,23 +1056,21 @@ fn test_vis_crate() {
             struct_token: Default::default(),
             fields: Fields::Unit,
         }),
-    };
+    });
 
     let json = r#"
-{
-  "vis": "crate",
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": "unit"
+    {
+      "struct": {
+        "vis": "crate",
+        "ident": "S",
+        "fields": "unit"
+      }
     }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
@@ -1145,7 +1083,7 @@ fn test_pub_restricted_crate() {
         pub(crate) struct S;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Restricted(VisRestricted {
             pub_token: Default::default(),
@@ -1160,33 +1098,31 @@ fn test_pub_restricted_crate() {
             struct_token: Default::default(),
             fields: Fields::Unit,
         }),
-    };
+    });
 
     let json = r#"
-{
-  "vis": {
-    "restricted": {
-      "path": {
-        "segments": [
-          {
-            "ident": "crate"
+    {
+      "struct": {
+        "vis": {
+          "restricted": {
+            "path": {
+              "segments": [
+                {
+                  "ident": "crate"
+                }
+              ]
+            }
           }
-        ]
+        },
+        "ident": "S",
+        "fields": "unit"
       }
     }
-  },
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": "unit"
-    }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
@@ -1199,7 +1135,7 @@ fn test_pub_restricted_super() {
         pub(super) struct S;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Restricted(VisRestricted {
             path: Box::new(ident("super").into()),
@@ -1214,33 +1150,31 @@ fn test_pub_restricted_super() {
             struct_token: Default::default(),
             fields: Fields::Unit,
         }),
-    };
+    });
 
     let json = r#"
-{
-  "vis": {
-    "restricted": {
-      "path": {
-        "segments": [
-          {
-            "ident": "super"
+    {
+      "struct": {
+        "vis": {
+          "restricted": {
+            "path": {
+              "segments": [
+                {
+                  "ident": "super"
+                }
+              ]
+            }
           }
-        ]
+        },
+        "ident": "S",
+        "fields": "unit"
       }
     }
-  },
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": "unit"
-    }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
@@ -1253,7 +1187,7 @@ fn test_pub_restricted_in_super() {
         pub(in super) struct S;
     "#;
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Restricted(VisRestricted {
             path: Box::new(ident("super").into()),
@@ -1268,34 +1202,32 @@ fn test_pub_restricted_in_super() {
             struct_token: Default::default(),
             fields: Fields::Unit,
         }),
-    };
+    });
 
     let json = r#"
-{
-  "vis": {
-    "restricted": {
-      "in_token": true,
-      "path": {
-        "segments": [
-          {
-            "ident": "super"
+    {
+      "struct": {
+        "vis": {
+          "restricted": {
+            "in_token": true,
+            "path": {
+              "segments": [
+                {
+                  "ident": "super"
+                }
+              ]
+            }
           }
-        ]
+        },
+        "ident": "S",
+        "fields": "unit"
       }
     }
-  },
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": "unit"
-    }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
@@ -1385,7 +1317,7 @@ fn test_ambiguous_crate() {
     // The field type is `(crate::X)` not `crate (::X)`.
     let raw = "struct S(crate::X);";
 
-    let expected = DeriveInput {
+    let expected = Item::from(DeriveInput {
         ident: ident("S"),
         vis: Visibility::Inherited,
         attrs: vec![],
@@ -1410,39 +1342,37 @@ fn test_ambiguous_crate() {
             }),
             semi_token: Some(Default::default()),
         }),
-    };
+    });
 
     let json = r#"
-{
-  "ident": "S",
-  "data": {
-    "struct": {
-      "fields": {
-        "unnamed": [
-          {
-            "ty": {
-              "path": {
-                "segments": [
-                  {
-                    "ident": "crate"
-                  },
-                  {
-                    "ident": "X"
-                  }
-                ]
+    {
+      "struct": {
+        "ident": "S",
+        "fields": {
+          "unnamed": [
+            {
+              "ty": {
+                "path": {
+                  "segments": [
+                    {
+                      "ident": "crate"
+                    },
+                    {
+                      "ident": "X"
+                    }
+                  ]
+                }
               }
             }
-          }
-        ]
+          ]
+        }
       }
     }
-  }
-}
-"#;
+    "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::DeriveInput = serde_json::from_str(json).unwrap();
-    let json = DeriveInput::from(&json);
+    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
 
     assert_eq!(expected, actual);
     assert_eq!(expected, json);
