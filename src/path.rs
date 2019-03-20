@@ -4,8 +4,8 @@ ast_struct! {
     /// A path at which a named item is exported: `std::collections::HashMap`.
     pub struct Path {
         #[serde(default, skip_serializing_if = "not")]
-        pub leading_colon: bool,
-        pub segments: Punctuated<PathSegment>,
+        leading_colon: bool,
+        segments: Punctuated<PathSegment>,
     }
 }
 
@@ -26,9 +26,9 @@ where
 ast_struct! {
     /// A segment of a path together with any path arguments on that segment.
     pub struct PathSegment {
-        pub ident: Ident,
+        ident: Ident,
         #[serde(default, skip_serializing_if = "PathArguments::is_none")]
-        pub arguments: PathArguments,
+        arguments: PathArguments,
     }
 }
 
@@ -111,24 +111,24 @@ ast_struct! {
     /// V>`.
     pub struct AngleBracketedGenericArguments {
         #[serde(default, skip_serializing_if = "not")]
-        pub colon2_token: bool,
-        pub args: Punctuated<GenericArgument>,
+        colon2_token: bool,
+        args: Punctuated<GenericArgument>,
     }
 }
 
 ast_struct! {
     /// A binding (equality constraint) on an associated type: `Item = u8`.
     pub struct Binding {
-        pub ident: Ident,
-        pub ty: Type,
+        ident: Ident,
+        ty: Type,
     }
 }
 
 ast_struct! {
     /// An associated type bound: `Iterator<Item: Display>`.
     pub struct Constraint {
-        pub ident: Ident,
-        pub bounds: Punctuated<TypeParamBound>,
+        ident: Ident,
+        bounds: Punctuated<TypeParamBound>,
     }
 }
 
@@ -137,9 +137,9 @@ ast_struct! {
     /// C`.
     pub struct ParenthesizedGenericArguments {
         /// `(A, B)`
-        pub inputs: Punctuated<Type>,
+        inputs: Punctuated<Type>,
         /// `C`
-        pub output: ReturnType,
+        output: ReturnType,
     }
 }
 
@@ -161,10 +161,10 @@ ast_struct! {
     ///  ty       position = 0
     /// ```
     pub struct QSelf {
-        pub ty: Box<Type>,
-        pub position: usize,
+        ty: Box<Type>,
+        position: usize,
         #[serde(default, skip_serializing_if = "not")]
-        pub as_token: bool,
+        as_token: bool,
     }
 }
 

@@ -49,13 +49,13 @@ ast_enum_of_structs! {
 
         /// A boolean literal: `true` or `false`.
         pub Bool(LitBool #transparent {
-            pub value: bool,
+            value: bool,
         }),
 
         /// A raw token literal not interpreted by Syn, possibly because it
         /// represents an integer larger than 64 bits.
         pub Verbatim(LitVerbatim #transparent {
-            pub token: Literal,
+            token: Literal,
         }),
     }
 }

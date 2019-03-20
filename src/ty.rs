@@ -11,49 +11,49 @@ ast_enum_of_structs! {
     pub enum Type #manual_from_impl {
         /// A dynamically sized slice type: `[T]`.
         pub Slice(TypeSlice {
-            pub elem: Box<Type>,
+            elem: Box<Type>,
         }),
 
         /// A fixed size array type: `[T; n]`.
         pub Array(TypeArray {
-            pub elem: Box<Type>,
-            pub len: Expr,
+            elem: Box<Type>,
+            len: Expr,
         }),
 
         /// A raw pointer type: `*const T` or `*mut T`.
         pub Ptr(TypePtr {
             #[serde(rename = "const")]
             #[serde(default, skip_serializing_if = "not")]
-            pub const_token: bool,
+            const_token: bool,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub elem: Box<Type>,
+            mutability: bool,
+            elem: Box<Type>,
         }),
 
         /// A reference type: `&'a T` or `&'a mut T`.
         pub Reference(TypeReference {
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub lifetime: Option<Lifetime>,
+            lifetime: Option<Lifetime>,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub elem: Box<Type>,
+            mutability: bool,
+            elem: Box<Type>,
         }),
 
         /// A bare function type: `fn(usize) -> bool`.
         pub BareFn(TypeBareFn {
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub lifetimes: Option<BoundLifetimes>,
+            lifetimes: Option<BoundLifetimes>,
             #[serde(rename = "unsafe")]
             #[serde(default, skip_serializing_if = "not")]
-            pub unsafety: bool,
+            unsafety: bool,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub abi: Option<Abi>,
-            pub inputs: Punctuated<BareFnArg>,
+            abi: Option<Abi>,
+            inputs: Punctuated<BareFnArg>,
             #[serde(default, skip_serializing_if = "not")]
-            pub variadic: bool,
-            pub output: ReturnType,
+            variadic: bool,
+            output: ReturnType,
         }),
 
         /// The never type: `!`.
@@ -62,7 +62,7 @@ ast_enum_of_structs! {
 
         /// A tuple type: `(A, B, C, String)`.
         pub Tuple(TypeTuple {
-            pub elems: Punctuated<Type>,
+            elems: Punctuated<Type>,
         }),
 
         /// A path like `std::slice::Iter`, optionally qualified with a
@@ -71,31 +71,31 @@ ast_enum_of_structs! {
         /// Type arguments are stored in the Path itself.
         pub Path(TypePath {
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub qself: Option<QSelf>,
+            qself: Option<QSelf>,
             #[serde(flatten)]
-            pub path: Path,
+            path: Path,
         }),
 
         /// A trait object type `Bound1 + Bound2 + Bound3` where `Bound` is a
         /// trait or a lifetime.
         pub TraitObject(TypeTraitObject {
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
         }),
 
         /// An `impl Bound1 + Bound2 + Bound3` type where `Bound` is a trait or
         /// a lifetime.
         pub ImplTrait(TypeImplTrait {
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
         }),
 
         /// A parenthesized type equivalent to the inner type.
         pub Paren(TypeParen {
-            pub elem: Box<Type>,
+            elem: Box<Type>,
         }),
 
         /// A type contained within invisible delimiters.
         pub Group(TypeGroup {
-            pub elem: Box<Type>,
+            elem: Box<Type>,
         }),
 
         /// Indication that a type should be inferred by the compiler: `_`.
@@ -105,12 +105,12 @@ ast_enum_of_structs! {
         /// A macro in the type position.
         pub Macro(TypeMacro {
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
         }),
 
         /// Tokens in type position not interpreted by Syn.
         pub Verbatim(TypeVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
     }
 }
@@ -119,7 +119,7 @@ ast_struct! {
     /// The binary interface of a function: `extern "C"`.
     pub struct Abi {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub name: Option<LitStr>,
+        name: Option<LitStr>,
     }
 }
 
@@ -127,8 +127,8 @@ ast_struct! {
     /// An argument in a function type: the `usize` in `fn(usize) -> bool`.
     pub struct BareFnArg {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub name: Option<BareFnArgName>,
-        pub ty: Type,
+        name: Option<BareFnArgName>,
+        ty: Type,
     }
 }
 
@@ -148,7 +148,7 @@ ast_struct! {
     #[derive(Default)]
     #[serde(transparent)]
     pub struct ReturnType {
-        pub ty: Option<Box<Type>>,
+        ty: Option<Box<Type>>,
     }
 }
 

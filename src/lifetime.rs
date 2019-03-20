@@ -15,7 +15,7 @@ use std::fmt::{self, Display};
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(transparent)]
 pub struct Lifetime {
-    pub ident: Ident,
+    ident: Ident,
 }
 
 impl Lifetime {

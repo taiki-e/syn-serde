@@ -3,9 +3,9 @@ use super::*;
 ast_struct! {
     /// A macro invocation: `println!("{}", mac)`.
     pub struct Macro {
-        pub path: Path,
-        pub delimiter: MacroDelimiter,
-        pub tts: TokenStream,
+        path: Path,
+        delimiter: MacroDelimiter,
+        tts: TokenStream,
     }
 }
 

@@ -6,17 +6,17 @@ ast_struct! {
     pub struct Variant {
         /// Attributes tagged on the variant.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
+        attrs: Vec<Attribute>,
 
         /// Name of the variant.
-        pub ident: Ident,
+        ident: Ident,
 
         /// Content stored in the variant.
-        pub fields: Fields,
+        fields: Fields,
 
         /// Explicit discriminant: `Variant = 1`
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub discriminant: Option<Expr>,
+        discriminant: Option<Expr>,
     }
 }
 
@@ -32,12 +32,12 @@ ast_enum_of_structs! {
         /// Named fields of a struct or struct variant such as `Point { x: f64,
         /// y: f64 }`.
         pub Named(FieldsNamed #transparent {
-            pub named: Punctuated<Field>,
+            named: Punctuated<Field>,
         }),
 
         /// Unnamed fields of a tuple struct or tuple variant such as `Some(T)`.
         pub Unnamed(FieldsUnnamed #transparent {
-            pub unnamed: Punctuated<Field>,
+            unnamed: Punctuated<Field>,
         }),
 
         /// Unit struct or unit variant such as `None`.
@@ -120,23 +120,23 @@ ast_struct! {
     pub struct Field {
         /// Attributes tagged on the field.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
+        attrs: Vec<Attribute>,
 
         /// Visibility of the field.
         #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-        pub vis: Visibility,
+        vis: Visibility,
 
         /// Name of the field, if any.
         ///
         /// Fields of tuple structs have no names.
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub ident: Option<Ident>,
+        ident: Option<Ident>,
 
         #[serde(default, skip_serializing_if = "not")]
-        pub colon_token: bool,
+        colon_token: bool,
 
         /// Type of the field.
-        pub ty: Type,
+        ty: Type,
     }
 }
 
@@ -161,8 +161,8 @@ ast_enum_of_structs! {
         /// `pub(super)` or `pub(crate)` or `pub(in some::module)`.
         pub Restricted(VisRestricted {
             #[serde(default, skip_serializing_if = "not")]
-            pub in_token: bool,
-            pub path: Box<Path>,
+            in_token: bool,
+            path: Box<Path>,
         }),
 
         /// An inherited visibility, which usually means private.

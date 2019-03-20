@@ -6,13 +6,13 @@ ast_struct! {
     #[derive(Default)]
     pub struct Generics {
         // #[serde(default, skip_serializing_if = "not")]
-        // pub lt_token: bool,
+        // lt_token: bool,
         #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-        pub params: Punctuated<GenericParam>,
+        params: Punctuated<GenericParam>,
         // #[serde(default, skip_serializing_if = "not")]
-        // pub gt_token: bool,
+        // gt_token: bool,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub where_clause: Option<WhereClause>,
+        where_clause: Option<WhereClause>,
     }
 }
 
@@ -35,39 +35,39 @@ ast_enum_of_structs! {
         /// A generic type parameter: `T: Into<String>`.
         pub Type(TypeParam {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub ident: Ident,
+            attrs: Vec<Attribute>,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "not")]
-            pub colon_token: bool,
+            colon_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
             #[serde(default, skip_serializing_if = "not")]
-            pub eq_token: bool,
+            eq_token: bool,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub default: Option<Type>,
+            default: Option<Type>,
         }),
 
         /// A lifetime definition: `'a: 'b + 'c + 'd`.
         pub Lifetime(LifetimeDef {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub lifetime: Lifetime,
+            attrs: Vec<Attribute>,
+            lifetime: Lifetime,
             #[serde(default, skip_serializing_if = "not")]
-            pub colon_token: bool,
+            colon_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub bounds: Punctuated<Lifetime>,
+            bounds: Punctuated<Lifetime>,
         }),
 
         /// A const generic parameter: `const LENGTH: usize`.
         pub Const(ConstParam {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub ident: Ident,
-            pub ty: Type,
+            attrs: Vec<Attribute>,
+            ident: Ident,
+            ty: Type,
             #[serde(default, skip_serializing_if = "not")]
-            pub eq_token: bool,
+            eq_token: bool,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub default: Option<Expr>,
+            default: Option<Expr>,
         }),
     }
 }
@@ -75,7 +75,7 @@ ast_enum_of_structs! {
 ast_struct! {
     /// A set of bound lifetimes: `for<'a, 'b, 'c>`.
     pub struct BoundLifetimes {
-        pub lifetimes: Punctuated<LifetimeDef>,
+        lifetimes: Punctuated<LifetimeDef>,
     }
 }
 
@@ -115,14 +115,14 @@ ast_struct! {
     /// A trait used as a bound on a type parameter.
     pub struct TraitBound {
         #[serde(default, skip_serializing_if = "not")]
-        pub paren_token: bool,
+        paren_token: bool,
         #[serde(default, skip_serializing_if = "TraitBoundModifier::is_none")]
-        pub modifier: TraitBoundModifier,
+        modifier: TraitBoundModifier,
         /// The `for<'a>` in `for<'a> Foo<&'a T>`
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub lifetimes: Option<BoundLifetimes>,
+        lifetimes: Option<BoundLifetimes>,
         /// The `Foo<&'a T>` in `for<'a> Foo<&'a T>`
-        pub path: Path,
+        path: Path,
     }
 }
 
@@ -154,7 +154,7 @@ ast_struct! {
     /// A `where` clause in a definition: `where T: Deserialize<'de>, D:
     /// 'static`.
     pub struct WhereClause {
-        pub predicates: Punctuated<WherePredicate>,
+        predicates: Punctuated<WherePredicate>,
     }
 }
 
@@ -171,23 +171,23 @@ ast_enum_of_structs! {
         pub Type(PredicateType {
             /// Any lifetimes from a `for` binding
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub lifetimes: Option<BoundLifetimes>,
+            lifetimes: Option<BoundLifetimes>,
             /// The type being bounded
-            pub bounded_ty: Type,
+            bounded_ty: Type,
             /// Trait and lifetime bounds (`Clone+Send+'static`)
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
         }),
 
         /// A lifetime predicate in a `where` clause: `'a: 'b + 'c`.
         pub Lifetime(PredicateLifetime {
-            pub lifetime: Lifetime,
-            pub bounds: Punctuated<Lifetime>,
+            lifetime: Lifetime,
+            bounds: Punctuated<Lifetime>,
         }),
 
         /// An equality predicate in a `where` clause (unsupported).
         pub Eq(PredicateEq {
-            pub lhs_ty: Type,
-            pub rhs_ty: Type,
+            lhs_ty: Type,
+            rhs_ty: Type,
         }),
     }
 }
