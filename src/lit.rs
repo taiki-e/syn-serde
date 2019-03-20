@@ -134,7 +134,7 @@ impl LitInt {
     }
 
     pub fn suffix(&self) -> IntSuffix {
-        let value = self.token.to_string();
+        let value = &self.token.text;
         for (s, suffix) in vec![
             ("i8", IntSuffix::I8),
             ("i16", IntSuffix::I16),
@@ -173,7 +173,7 @@ impl LitFloat {
     }
 
     pub fn suffix(&self) -> FloatSuffix {
-        let value = self.token.to_string();
+        let value = &self.token.text;
         for (s, suffix) in vec![("f32", FloatSuffix::F32), ("f64", FloatSuffix::F64)] {
             if value.ends_with(s) {
                 return suffix;
