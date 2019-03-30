@@ -649,8 +649,8 @@ ast_struct! {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         guard: Option<Box<Expr>>,
         body: Box<Expr>,
-        #[serde(default, skip_serializing_if = "not")]
-        comma: bool,
+        // #[serde(default, skip_serializing_if = "not")]
+        // comma: bool,
     }
 }
 
@@ -1082,9 +1082,31 @@ mod convert {
             Self {
                 attrs: other.attrs.map_into(),
                 expr: other.expr.map_into(),
-                arms: other.arms.map_into(),
+                arms: from_syn_arms(&other.arms),
             }
         }
+    }
+
+    fn from_syn_arms(other: &[syn::Arm]) -> Vec<Arm> {
+        let last = other.len().saturating_sub(1);
+        other
+            .iter()
+            .enumerate()
+            .map(|(i, other)| {
+                let body = other.body.map_into();
+                if i < last && requires_terminator(&*body) {
+                    assert!(other.comma.is_some(), "expected `,`");
+                }
+
+                Arm {
+                    attrs: other.attrs.map_into(),
+                    leading_vert: other.leading_vert.is_some(),
+                    pats: other.pats.map_into(),
+                    guard: other.guard.ref_map(|(_, x)| x.map_into()),
+                    body,
+                }
+            })
+            .collect()
     }
 
     impl From<&ExprMatch> for syn::ExprMatch {
@@ -2077,14 +2099,17 @@ mod convert {
 
     impl From<&syn::Arm> for Arm {
         fn from(other: &syn::Arm) -> Self {
+            let body = other.body.map_into();
+            if requires_terminator(&*body) {
+                assert!(other.comma.is_some(), "expected `,`");
+            }
+
             Self {
                 attrs: other.attrs.map_into(),
                 leading_vert: other.leading_vert.is_some(),
                 pats: other.pats.map_into(),
                 guard: other.guard.ref_map(|(_, x)| x.map_into()),
-                body: other.body.map_into(),
-                // WIP
-                comma: other.comma.is_some(),
+                body,
             }
         }
     }
