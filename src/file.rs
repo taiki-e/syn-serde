@@ -4,10 +4,10 @@ ast_struct! {
     /// A complete file of Rust source code.
     pub struct File {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub shebang: Option<String>,
+        shebang: Option<String>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
-        pub items: Vec<Item>,
+        attrs: Vec<Attribute>,
+        items: Vec<Item>,
     }
 }
 

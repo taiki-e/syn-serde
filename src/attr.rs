@@ -32,10 +32,10 @@ ast_struct! {
     ///    path  tts                   path         tts
     /// ```
     pub struct Attribute {
-        pub style: AttrStyle,
-        pub path: Path,
+        style: AttrStyle,
+        path: Path,
         #[serde(default, skip_serializing_if = "TokenStream::is_empty")]
-        pub tts: TokenStream,
+        tts: TokenStream,
     }
 }
 
@@ -54,7 +54,6 @@ ast_enum! {
     /// - `#![feature(proc_macro)]`
     /// - `//! # Example`
     /// - `/*! Please file an issue */`
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum AttrStyle #manual_from_impl {
         Outer,
         Inner,
@@ -86,13 +85,13 @@ ast_enum_of_structs! {
         pub Word(Ident),
         /// A structured list within an attribute, like `derive(Copy, Clone)`.
         pub List(MetaList {
-            pub ident: Ident,
-            pub nested: Punctuated<NestedMeta>,
+            ident: Ident,
+            nested: Punctuated<NestedMeta>,
         }),
         /// A name-value pair within an attribute, like `feature = "nightly"`.
         pub NameValue(MetaNameValue {
-            pub ident: Ident,
-            pub lit: Lit,
+            ident: Ident,
+            lit: Lit,
         }),
     }
 }

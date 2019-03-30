@@ -14,98 +14,98 @@ ast_enum_of_structs! {
         /// A box expression: `box f`.
         pub Box(ExprBox {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
         }),
 
         /// A placement expression: `place <- value`.
         pub InPlace(ExprInPlace {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub place: Box<Expr>,
-            pub value: Box<Expr>,
+            attrs: Vec<Attribute>,
+            place: Box<Expr>,
+            value: Box<Expr>,
         }),
 
         /// A slice literal expression: `[a, b, c, d]`.
         pub Array(ExprArray {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub elems: Punctuated<Expr>,
+            attrs: Vec<Attribute>,
+            elems: Punctuated<Expr>,
         }),
 
         /// A function call expression: `invoke(a, b)`.
         pub Call(ExprCall {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub func: Box<Expr>,
-            pub args: Punctuated<Expr>,
+            attrs: Vec<Attribute>,
+            func: Box<Expr>,
+            args: Punctuated<Expr>,
         }),
 
         /// A method call expression: `x.foo::<T>(a, b)`.
         pub MethodCall(ExprMethodCall {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub receiver: Box<Expr>,
-            pub method: Ident,
+            attrs: Vec<Attribute>,
+            receiver: Box<Expr>,
+            method: Ident,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub turbofish: Option<MethodTurbofish>,
-            pub args: Punctuated<Expr>,
+            turbofish: Option<MethodTurbofish>,
+            args: Punctuated<Expr>,
         }),
 
         /// A tuple expression: `(a, b, c, d)`.
         pub Tuple(ExprTuple {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub elems: Punctuated<Expr>,
+            attrs: Vec<Attribute>,
+            elems: Punctuated<Expr>,
         }),
 
         /// A binary operation: `a + b`, `a * b`.
         pub Binary(ExprBinary {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub left: Box<Expr>,
-            pub op: BinOp,
-            pub right: Box<Expr>,
+            attrs: Vec<Attribute>,
+            left: Box<Expr>,
+            op: BinOp,
+            right: Box<Expr>,
         }),
 
         /// A unary operation: `!x`, `*x`.
         pub Unary(ExprUnary {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub op: UnOp,
-            pub expr: Box<Expr>,
+            attrs: Vec<Attribute>,
+            op: UnOp,
+            expr: Box<Expr>,
         }),
 
         /// A literal in place of an expression: `1`, `"foo"`.
         pub Lit(ExprLit {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub lit: Lit,
+            lit: Lit,
         }),
 
         /// A cast expression: `foo as f64`.
         pub Cast(ExprCast {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
-            pub ty: Box<Type>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
+            ty: Box<Type>,
         }),
 
         /// A type ascription expression: `foo: f64`.
         pub Type(ExprType {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
-            pub ty: Box<Type>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
+            ty: Box<Type>,
         }),
 
         /// A `let` guard: `let Some(x) = opt`.
         pub Let(ExprLet {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub pats: Punctuated<Pat>,
-            pub expr: Box<Expr>,
+            attrs: Vec<Attribute>,
+            pats: Punctuated<Pat>,
+            expr: Box<Expr>,
         }),
 
         /// An `if` expression with an optional `else` block: `if expr { ... }
@@ -115,131 +115,131 @@ ast_enum_of_structs! {
         /// expression, not any of the other types of expression.
         pub If(ExprIf {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub cond: Box<Expr>,
-            pub then_branch: Block,
+            attrs: Vec<Attribute>,
+            cond: Box<Expr>,
+            then_branch: Block,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub else_branch: Option<Box<Expr>>,
+            else_branch: Option<Box<Expr>>,
         }),
 
         /// A while loop: `while expr { ... }`.
         pub While(ExprWhile {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub label: Option<Label>,
-            pub cond: Box<Expr>,
-            pub body: Block,
+            label: Option<Label>,
+            cond: Box<Expr>,
+            body: Block,
         }),
 
         /// A for loop: `for pat in expr { ... }`.
         pub ForLoop(ExprForLoop {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub label: Option<Label>,
-            pub pat: Box<Pat>,
-            pub expr: Box<Expr>,
-            pub body: Block,
+            label: Option<Label>,
+            pat: Box<Pat>,
+            expr: Box<Expr>,
+            body: Block,
         }),
 
         /// Conditionless loop: `loop { ... }`.
         pub Loop(ExprLoop {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub label: Option<Label>,
-            pub body: Block,
+            label: Option<Label>,
+            body: Block,
         }),
 
         /// A `match` expression: `match n { Some(n) => {}, None => {} }`.
         pub Match(ExprMatch {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
-            pub arms: Vec<Arm>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
+            arms: Vec<Arm>,
         }),
 
         /// A closure expression: `|a, b| a + b`.
         pub Closure(ExprClosure {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(rename = "async")]
             #[serde(default, skip_serializing_if = "not")]
-            pub asyncness: bool,
+            asyncness: bool,
             #[serde(default, skip_serializing_if = "not")]
-            pub movability: bool,
+            movability: bool,
             #[serde(rename = "move")]
             #[serde(default, skip_serializing_if = "not")]
-            pub capture: bool,
-            pub inputs: Punctuated<FnArg>,
+            capture: bool,
+            inputs: Punctuated<FnArg>,
             #[serde(default, skip_serializing_if = "ReturnType::is_none")]
-            pub output: ReturnType,
-            pub body: Box<Expr>,
+            output: ReturnType,
+            body: Box<Expr>,
         }),
 
         /// An unsafe block: `unsafe { ... }`.
         pub Unsafe(ExprUnsafe {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub block: Block,
+            block: Block,
         }),
 
         /// A blocked scope: `{ ... }`.
         pub Block(ExprBlock {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub label: Option<Label>,
+            label: Option<Label>,
             #[serde(flatten)]
-            pub block: Block,
+            block: Block,
         }),
 
         /// An assignment expression: `a = compute()`.
         pub Assign(ExprAssign {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub left: Box<Expr>,
-            pub right: Box<Expr>,
+            attrs: Vec<Attribute>,
+            left: Box<Expr>,
+            right: Box<Expr>,
         }),
 
         /// A compound assignment expression: `counter += 1`.
         pub AssignOp(ExprAssignOp {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub left: Box<Expr>,
-            pub op: BinOp,
-            pub right: Box<Expr>,
+            attrs: Vec<Attribute>,
+            left: Box<Expr>,
+            op: BinOp,
+            right: Box<Expr>,
         }),
 
         /// Access of a named struct field (`obj.k`) or unnamed tuple struct
         /// field (`obj.0`).
         pub Field(ExprField {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub base: Box<Expr>,
+            attrs: Vec<Attribute>,
+            base: Box<Expr>,
             #[serde(flatten)]
-            pub member: Member,
+            member: Member,
         }),
 
         /// A square bracketed indexing expression: `vector[2]`.
         pub Index(ExprIndex {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
-            pub index: Box<Expr>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
+            index: Box<Expr>,
         }),
 
         /// A range expression: `1..2`, `1..`, `..2`, `1..=2`, `..=2`.
         pub Range(ExprRange {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub from: Option<Box<Expr>>,
-            pub limits: RangeLimits,
+            from: Option<Box<Expr>>,
+            limits: RangeLimits,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub to: Option<Box<Expr>>,
+            to: Option<Box<Expr>>,
         }),
 
         /// A path like `std::mem::replace` possibly containing generic
@@ -248,56 +248,56 @@ ast_enum_of_structs! {
         /// A plain identifier like `x` is a path of length 1.
         pub Path(ExprPath {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub qself: Option<QSelf>,
+            qself: Option<QSelf>,
             #[serde(flatten)]
-            pub path: Path,
+            path: Path,
         }),
 
         /// A referencing operation: `&a` or `&mut a`.
         pub Reference(ExprReference {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub expr: Box<Expr>,
+            mutability: bool,
+            expr: Box<Expr>,
         }),
 
         /// A `break`, with an optional label to break and an optional
         /// expression.
         pub Break(ExprBreak {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub label: Option<Lifetime>,
+            label: Option<Lifetime>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub expr: Option<Box<Expr>>,
+            expr: Option<Box<Expr>>,
         }),
 
         /// A `continue`, with an optional label.
         pub Continue(ExprContinue {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub label: Option<Lifetime>,
+            label: Option<Lifetime>,
         }),
 
         /// A `return`, with an optional value to be returned.
         pub Return(ExprReturn {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub expr: Option<Box<Expr>>,
+            expr: Option<Box<Expr>>,
         }),
 
         /// A macro invocation expression: `format!("{}", q)`.
         pub Macro(ExprMacro {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
         }),
 
         /// A struct literal expression: `Point { x: 1, y: 1 }`.
@@ -306,28 +306,28 @@ ast_enum_of_structs! {
         /// 1, b: 1, ..rest }`.
         pub Struct(ExprStruct {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub path: Path,
-            pub fields: Punctuated<FieldValue>,
+            attrs: Vec<Attribute>,
+            path: Path,
+            fields: Punctuated<FieldValue>,
             #[serde(default, skip_serializing_if = "not")]
-            pub dot2_token: bool,
+            dot2_token: bool,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub rest: Option<Box<Expr>>,
+            rest: Option<Box<Expr>>,
         }),
 
         /// An array literal constructed from one repeated element: `[0u8; N]`.
         pub Repeat(ExprRepeat {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
-            pub len: Box<Expr>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
+            len: Box<Expr>,
         }),
 
         /// A parenthesized expression: `(a + b)`.
         pub Paren(ExprParen {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
         }),
 
         /// An expression contained within invisible delimiters.
@@ -337,45 +337,45 @@ ast_enum_of_structs! {
         /// `TokenStream`.
         pub Group(ExprGroup {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
         }),
 
         /// A try-expression: `expr?`.
         pub Try(ExprTry {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub expr: Box<Expr>,
+            attrs: Vec<Attribute>,
+            expr: Box<Expr>,
         }),
 
         /// An async block: `async { ... }`.
         pub Async(ExprAsync {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(rename = "move")]
             #[serde(default, skip_serializing_if = "not")]
-            pub capture: bool,
-            pub block: Block,
+            capture: bool,
+            block: Block,
         }),
 
         /// A try block: `try { ... }`.
         pub TryBlock(ExprTryBlock {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub block: Block,
+            attrs: Vec<Attribute>,
+            block: Block,
         }),
 
         /// A yield expression: `yield expr`.
         pub Yield(ExprYield {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub expr: Option<Box<Expr>>,
+            expr: Option<Box<Expr>>,
         }),
 
         /// Tokens in expression position not interpreted by Syn.
         pub Verbatim(ExprVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
     }
 }
@@ -395,10 +395,9 @@ ast_enum! {
 
 ast_struct! {
     /// The index of an unnamed tuple struct field.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     #[serde(transparent)]
     pub struct Index {
-        pub index: u32,
+        index: u32,
     }
 }
 
@@ -415,7 +414,7 @@ ast_struct! {
     /// The `::<>` explicit type parameters passed to a method call:
     /// `parse::<u64>()`.
     pub struct MethodTurbofish {
-        pub args: Punctuated<GenericMethodArgument>,
+        args: Punctuated<GenericMethodArgument>,
     }
 }
 
@@ -437,19 +436,19 @@ ast_struct! {
     pub struct FieldValue {
         /// Attributes tagged on the field.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
+        attrs: Vec<Attribute>,
 
         /// Name or index of the field.
         #[serde(flatten)]
-        pub member: Member,
+        member: Member,
 
         /// The colon in `Struct { x: x }`. If written in shorthand like
         /// `Struct { x }`, there is no colon.
         #[serde(default, skip_serializing_if = "not")]
-        pub colon_token: bool,
+        colon_token: bool,
 
         /// Value of the field.
-        pub expr: Expr,
+        expr: Expr,
     }
 }
 
@@ -457,7 +456,7 @@ ast_struct! {
     /// A lifetime labeling a `for`, `while`, or `loop`.
     #[serde(transparent)]
     pub struct Label {
-        pub name: Lifetime,
+        name: Lifetime,
     }
 }
 
@@ -465,7 +464,7 @@ ast_struct! {
     /// A braced block containing Rust statements.
     pub struct Block {
         /// Statements in a block
-        pub stmts: Vec<Stmt>,
+        stmts: Vec<Stmt>,
     }
 }
 
@@ -491,12 +490,12 @@ ast_struct! {
     /// A local `let` binding: `let x: u64 = s.parse()?`.
     pub struct Local {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
-        pub pats: Punctuated<Pat>,
+        attrs: Vec<Attribute>,
+        pats: Punctuated<Pat>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub ty: Option<Box<Type>>,
+        ty: Option<Box<Type>>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub init: Option<Box<Expr>>,
+        init: Option<Box<Expr>>,
     }
 }
 
@@ -518,28 +517,28 @@ ast_enum_of_structs! {
         pub Ident(PatIdent {
             #[serde(rename = "ref")]
             #[serde(default, skip_serializing_if = "not")]
-            pub by_ref: bool,
+            by_ref: bool,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub ident: Ident,
+            mutability: bool,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub subpat: Option<Box<Pat>>,
+            subpat: Option<Box<Pat>>,
         }),
 
         /// A struct or struct variant pattern: `Variant { x, y, .. }`.
         pub Struct(PatStruct {
-            pub path: Path,
-            pub fields: Punctuated<FieldPat>,
+            path: Path,
+            fields: Punctuated<FieldPat>,
             #[serde(default, skip_serializing_if = "not")]
-            pub dot2_token: bool,
+            dot2_token: bool,
         }),
 
         /// A tuple struct or tuple variant pattern: `Variant(x, y, .., z)`.
         pub TupleStruct(PatTupleStruct {
-            pub path: Path,
+            path: Path,
             #[serde(flatten)]
-            pub pat: PatTuple,
+            pat: PatTuple,
         }),
 
         /// A path pattern like `Color::Red`, optionally qualified with a
@@ -551,34 +550,34 @@ ast_enum_of_structs! {
         /// associated constants.
         pub Path(PatPath {
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub qself: Option<QSelf>,
+            qself: Option<QSelf>,
             #[serde(flatten)]
-            pub path: Path,
+            path: Path,
         }),
 
         /// A tuple pattern: `(a, b)`.
         pub Tuple(PatTuple {
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub front: Punctuated<Pat>,
+            front: Punctuated<Pat>,
             #[serde(default, skip_serializing_if = "not")]
-            pub dot2_token: bool,
+            dot2_token: bool,
             #[serde(default, skip_serializing_if = "not")]
-            pub comma_token: bool,
+            comma_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub back: Punctuated<Pat>,
+            back: Punctuated<Pat>,
         }),
 
         /// A box pattern: `box v`.
         pub Box(PatBox {
-            pub pat: Box<Pat>,
+            pat: Box<Pat>,
         }),
 
         /// A reference pattern: `&mut (first, second)`.
         pub Ref(PatRef {
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub pat: Box<Pat>,
+            mutability: bool,
+            pat: Box<Pat>,
         }),
 
         /// A literal pattern: `0`.
@@ -586,39 +585,39 @@ ast_enum_of_structs! {
         /// This holds an `Expr` rather than a `Lit` because negative numbers
         /// are represented as an `Expr::Unary`.
         pub Lit(PatLit {
-            pub expr: Box<Expr>,
+            expr: Box<Expr>,
         }),
 
         /// A range pattern: `1..=2`.
         pub Range(PatRange {
-            pub lo: Box<Expr>,
-            pub limits: RangeLimits,
-            pub hi: Box<Expr>,
+            lo: Box<Expr>,
+            limits: RangeLimits,
+            hi: Box<Expr>,
         }),
 
         /// A dynamically sized slice pattern: `[a, b, i.., y, z]`.
         pub Slice(PatSlice {
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub front: Punctuated<Pat>,
+            front: Punctuated<Pat>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub middle: Option<Box<Pat>>,
+            middle: Option<Box<Pat>>,
             #[serde(default, skip_serializing_if = "not")]
-            pub dot2_token: bool,
+            dot2_token: bool,
             #[serde(default, skip_serializing_if = "not")]
-            pub comma_token: bool,
+            comma_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub back: Punctuated<Pat>,
+            back: Punctuated<Pat>,
         }),
 
         /// A macro in expression position.
         pub Macro(PatMacro {
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
         }),
 
         /// Tokens in pattern position not interpreted by Syn.
         pub Verbatim(PatVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
     }
 }
@@ -643,21 +642,20 @@ ast_struct! {
     /// ```
     pub struct Arm {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
+        attrs: Vec<Attribute>,
         #[serde(default, skip_serializing_if = "not")]
-        pub leading_vert: bool,
-        pub pats: Punctuated<Pat>,
+        leading_vert: bool,
+        pats: Punctuated<Pat>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub guard: Option<Box<Expr>>,
-        pub body: Box<Expr>,
-        #[serde(default, skip_serializing_if = "not")]
-        pub comma: bool,
+        guard: Option<Box<Expr>>,
+        body: Box<Expr>,
+        // #[serde(default, skip_serializing_if = "not")]
+        // comma: bool,
     }
 }
 
 ast_enum! {
     /// Limit types of a range, inclusive or exclusive.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum RangeLimits #manual_from_impl {
         /// Inclusive at the beginning, exclusive at the end.
         #[serde(rename = "..")]
@@ -675,12 +673,12 @@ ast_struct! {
     /// the same as `x: x, y: ref y, z: ref mut z` but there is no colon token.
     pub struct FieldPat {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub attrs: Vec<Attribute>,
+        attrs: Vec<Attribute>,
         #[serde(flatten)]
-        pub member: Member,
+        member: Member,
         #[serde(default, skip_serializing_if = "not")]
-        pub colon_token: bool,
-        pub pat: Box<Pat>,
+        colon_token: bool,
+        pat: Box<Pat>,
     }
 }
 
@@ -1084,9 +1082,31 @@ mod convert {
             Self {
                 attrs: other.attrs.map_into(),
                 expr: other.expr.map_into(),
-                arms: other.arms.map_into(),
+                arms: from_syn_arms(&other.arms),
             }
         }
+    }
+
+    fn from_syn_arms(other: &[syn::Arm]) -> Vec<Arm> {
+        let last = other.len().saturating_sub(1);
+        other
+            .iter()
+            .enumerate()
+            .map(|(i, other)| {
+                let body = other.body.map_into();
+                if i < last && requires_terminator(&*body) {
+                    assert!(other.comma.is_some(), "expected `,`");
+                }
+
+                Arm {
+                    attrs: other.attrs.map_into(),
+                    leading_vert: other.leading_vert.is_some(),
+                    pats: other.pats.map_into(),
+                    guard: other.guard.ref_map(|(_, x)| x.map_into()),
+                    body,
+                }
+            })
+            .collect()
     }
 
     impl From<&ExprMatch> for syn::ExprMatch {
@@ -2079,14 +2099,17 @@ mod convert {
 
     impl From<&syn::Arm> for Arm {
         fn from(other: &syn::Arm) -> Self {
+            let body = other.body.map_into();
+            if requires_terminator(&*body) {
+                assert!(other.comma.is_some(), "expected `,`");
+            }
+
             Self {
                 attrs: other.attrs.map_into(),
                 leading_vert: other.leading_vert.is_some(),
                 pats: other.pats.map_into(),
                 guard: other.guard.ref_map(|(_, x)| x.map_into()),
-                body: other.body.map_into(),
-                // WIP
-                comma: other.comma.is_some(),
+                body,
             }
         }
     }

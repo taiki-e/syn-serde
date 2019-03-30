@@ -74,9 +74,6 @@
 //!
 //! - **`json`** — Provides functions for JSON <-> Rust serializing and
 //!   deserializing.
-//! - **`clone-impls`** — Clone impls for all syntax tree types.
-//! - **`extra-traits`** — Debug, Eq, PartialEq, Hash impls for all syntax tree
-//!   types.
 //!
 //! [Syn]: https://github.com/dtolnay/syn
 //! [`rust2json`]: https://github.com/taiki-e/serde-syn/tree/master/examples/rust2json
@@ -86,8 +83,6 @@
 #![doc(html_root_url = "https://docs.rs/serde_syn/0.0.1")]
 #![deny(unsafe_code)]
 #![deny(rust_2018_idioms, unreachable_pub)]
-#![cfg_attr(feature = "clone-impls", deny(missing_copy_implementations))]
-#![cfg_attr(feature = "extra-traits", deny(missing_debug_implementations))]
 #![deny(clippy::all, clippy::pedantic)]
 // Ignored clippy::all lints.
 #![allow(clippy::large_enum_variant)]
@@ -162,9 +157,6 @@ pub use self::lit::{
 
 mod mac;
 pub use self::mac::{Macro, MacroDelimiter};
-
-mod derive;
-pub use self::derive::{Data, DataEnum, DataStruct, DataUnion, DeriveInput};
 
 mod op;
 pub use self::op::{BinOp, UnOp};

@@ -3,15 +3,14 @@ use super::*;
 ast_struct! {
     /// A macro invocation: `println!("{}", mac)`.
     pub struct Macro {
-        pub path: Path,
-        pub delimiter: MacroDelimiter,
-        pub tts: TokenStream,
+        path: Path,
+        delimiter: MacroDelimiter,
+        tts: TokenStream,
     }
 }
 
 ast_enum! {
     /// A grouping token that surrounds a macro body: `m!(...)` or `m!{...}` or `m![...]`.
-    #[cfg_attr(feature = "clone-impls", derive(Copy))]
     pub enum MacroDelimiter #manual_from_impl {
         Paren,
         Brace,

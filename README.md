@@ -98,9 +98,6 @@ print out a Rust syntax tree.
 
 - **`json`** — Provides functions for JSON <-> Rust serializing and
   deserializing.
-- **`clone-impls`** — Clone impls for all syntax tree types.
-- **`extra-traits`** — Debug, Eq, PartialEq, Hash impls for all syntax tree
-  types.
 
 ## Relationship to Syn
 

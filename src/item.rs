@@ -12,272 +12,243 @@ ast_enum_of_structs! {
         /// An `extern crate` item: `extern crate serde`.
         pub ExternCrate(ItemExternCrate {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub rename: Option<Ident>,
+            rename: Option<Ident>,
         }),
 
         /// A use declaration: `use std::collections::HashMap`.
         pub Use(ItemUse {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(default, skip_serializing_if = "not")]
-            pub leading_colon: bool,
-            pub tree: UseTree,
+            leading_colon: bool,
+            tree: UseTree,
         }),
 
         /// A static item: `static BIKE: Shed = Shed(42)`.
         pub Static(ItemStatic {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub ident: Ident,
-            pub ty: Box<Type>,
-            pub expr: Box<Expr>,
+            mutability: bool,
+            ident: Ident,
+            ty: Box<Type>,
+            expr: Box<Expr>,
         }),
 
         /// A constant item: `const MAX: u16 = 65535`.
         pub Const(ItemConst {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
-            pub ty: Box<Type>,
-            pub expr: Box<Expr>,
+            vis: Visibility,
+            ident: Ident,
+            ty: Box<Type>,
+            expr: Box<Expr>,
         }),
 
         /// A free-standing function: `fn process(n: usize) -> Result<()> { ...
         /// }`.
         pub Fn(ItemFn {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "const")]
             #[serde(default, skip_serializing_if = "not")]
-            pub constness: bool,
+            constness: bool,
             #[serde(rename = "unsafe")]
             #[serde(default, skip_serializing_if = "not")]
-            pub unsafety: bool,
+            unsafety: bool,
             #[serde(rename = "async")]
             #[serde(default, skip_serializing_if = "not")]
-            pub asyncness: bool,
+            asyncness: bool,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub abi: Option<Abi>,
-            pub ident: Ident,
+            abi: Option<Abi>,
+            ident: Ident,
             #[serde(flatten)]
-            pub decl: Box<FnDecl>,
+            decl: Box<FnDecl>,
             #[serde(flatten)]
-            pub block: Box<Block>,
+            block: Box<Block>,
         }),
 
         /// A module or module declaration: `mod m` or `mod m { ... }`.
         pub Mod(ItemMod {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub content: Option<Vec<Item>>,
+            content: Option<Vec<Item>>,
             #[serde(default, skip_serializing_if = "not")]
-            pub semi: bool,
+            semi: bool,
         }),
 
         /// A block of foreign items: `extern "C" { ... }`.
         pub ForeignMod(ItemForeignMod {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub abi: Abi,
-            pub items: Vec<ForeignItem>,
+            attrs: Vec<Attribute>,
+            abi: Abi,
+            items: Vec<ForeignItem>,
         }),
 
         /// A type alias: `type Result<T> = std::result::Result<T, MyError>`.
         pub Type(ItemType {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
-            pub ty: Box<Type>,
+            generics: Generics,
+            ty: Box<Type>,
         }),
 
         /// An existential type: `existential type Iter: Iterator<Item = u8>`.
         pub Existential(ItemExistential {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
+            generics: Generics,
             #[serde(default, skip_serializing_if = "not")]
-            pub colon_token: bool,
+            colon_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
         }),
 
         /// A struct definition: `struct Foo<A> { x: A }`.
         pub Struct(ItemStruct {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
-            pub fields: Fields,
+            generics: Generics,
+            fields: Fields,
             // #[serde(default, skip_serializing_if = "not")]
-            // pub semi_token: bool,
+            // semi_token: bool,
         }),
 
         /// An enum definition: `enum Foo<A, B> { C<A>, D<B> }`.
         pub Enum(ItemEnum {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
-            pub variants: Punctuated<Variant>,
+            generics: Generics,
+            variants: Punctuated<Variant>,
         }),
 
         /// A union definition: `union Foo<A, B> { x: A, y: B }`.
         pub Union(ItemUnion {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
-            pub fields: FieldsNamed,
+            generics: Generics,
+            fields: FieldsNamed,
         }),
 
         /// A trait definition: `pub trait Iterator { ... }`.
         pub Trait(ItemTrait {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "unsafe")]
             #[serde(default, skip_serializing_if = "not")]
-            pub unsafety: bool,
+            unsafety: bool,
             #[serde(rename = "auto")]
             #[serde(default, skip_serializing_if = "not")]
-            pub auto_token: bool,
-            pub ident: Ident,
+            auto_token: bool,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
+            generics: Generics,
             #[serde(default, skip_serializing_if = "not")]
-            pub colon_token: bool,
+            colon_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub supertraits: Punctuated<TypeParamBound>,
-            pub items: Vec<TraitItem>,
+            supertraits: Punctuated<TypeParamBound>,
+            items: Vec<TraitItem>,
         }),
 
         /// A trait alias: `pub trait SharableIterator = Iterator + Sync`.
         pub TraitAlias(ItemTraitAlias {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
-            pub bounds: Punctuated<TypeParamBound>,
+            generics: Generics,
+            bounds: Punctuated<TypeParamBound>,
         }),
 
         /// An impl block providing trait or associated items: `impl<A> Trait
         /// for Data<A> { ... }`.
         pub Impl(ItemImpl {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "not")]
-            pub defaultness: bool,
+            defaultness: bool,
             #[serde(default, skip_serializing_if = "not")]
-            pub unsafety: bool,
+            unsafety: bool,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
+            generics: Generics,
             /// Trait this impl implements.
             #[serde(rename = "trait")]
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub trait_: Option<(bool, Path)>,
+            trait_: Option<(bool, Path)>,
             /// The Self type of the impl.
-            pub self_ty: Box<Type>,
-            pub items: Vec<ImplItem>,
+            self_ty: Box<Type>,
+            items: Vec<ImplItem>,
         }),
 
         /// A macro invocation, which includes `macro_rules!` definitions.
         pub Macro(ItemMacro {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             /// The `example` in `macro_rules! example { ... }`.
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub ident: Option<Ident>,
+            ident: Option<Ident>,
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
             #[serde(default, skip_serializing_if = "not")]
-            pub semi_token: bool,
+            semi_token: bool,
         }),
 
         /// A 2.0-style declarative macro introduced by the `macro` keyword.
         pub Macro2(ItemMacro2 {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
-            pub args: TokenStream,
-            pub body: TokenStream,
+            vis: Visibility,
+            ident: Ident,
+            args: TokenStream,
+            body: TokenStream,
         }),
 
         /// Tokens forming an item not interpreted by Syn.
         pub Verbatim(ItemVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
-    }
-}
-
-impl From<DeriveInput> for Item {
-    fn from(input: DeriveInput) -> Self {
-        match input.data {
-            Data::Struct(data) => Item::Struct(ItemStruct {
-                attrs: input.attrs,
-                vis: input.vis,
-                ident: input.ident,
-                generics: input.generics,
-                fields: data.fields,
-                // semi_token: data.semi_token,
-            }),
-            Data::Enum(data) => Item::Enum(ItemEnum {
-                attrs: input.attrs,
-                vis: input.vis,
-                ident: input.ident,
-                generics: input.generics,
-                variants: data.variants,
-            }),
-            Data::Union(data) => Item::Union(ItemUnion {
-                attrs: input.attrs,
-                vis: input.vis,
-                ident: input.ident,
-                generics: input.generics,
-                fields: data.fields,
-            }),
-        }
     }
 }
 
@@ -292,19 +263,19 @@ ast_enum_of_structs! {
     pub enum UseTree #manual_from_impl {
         /// A path prefix of imports in a `use` item: `std::...`.
         pub Path(UsePath {
-            pub ident: Ident,
-            pub tree: Box<UseTree>,
+            ident: Ident,
+            tree: Box<UseTree>,
         }),
 
         /// An identifier imported by a `use` item: `HashMap`.
         pub Name(UseName {
-            pub ident: Ident,
+            ident: Ident,
         }),
 
         /// An renamed identifier imported by a `use` item: `HashMap as Map`.
         pub Rename(UseRename {
-            pub ident: Ident,
-            pub rename: Ident,
+            ident: Ident,
+            rename: Ident,
         }),
 
         /// A glob import in a `use` item: `*`.
@@ -313,7 +284,7 @@ ast_enum_of_structs! {
 
         /// A braced group of imports in a `use` item: `{A, B, C}`.
         pub Group(UseGroup #transparent {
-            pub items: Punctuated<UseTree>,
+            items: Punctuated<UseTree>,
         }),
     }
 }
@@ -330,49 +301,49 @@ ast_enum_of_structs! {
         /// A foreign function in an `extern` block.
         pub Fn(ForeignItemFn {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
             #[serde(flatten)]
-            pub decl: Box<FnDecl>,
+            decl: Box<FnDecl>,
         }),
 
         /// A foreign static item in an `extern` block: `static ext: u8`.
         pub Static(ForeignItemStatic {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
-            pub ident: Ident,
-            pub ty: Box<Type>,
+            mutability: bool,
+            ident: Ident,
+            ty: Box<Type>,
         }),
 
         /// A foreign type in an `extern` block: `type void`.
         pub Type(ForeignItemType {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
-            pub ident: Ident,
+            vis: Visibility,
+            ident: Ident,
         }),
 
         /// A macro invocation within an extern block.
         pub Macro(ForeignItemMacro {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
             #[serde(default, skip_serializing_if = "not")]
-            pub semi_token: bool,
+            semi_token: bool,
         }),
 
         /// Tokens in an `extern` block not interpreted by Syn.
         pub Verbatim(ForeignItemVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
     }
 }
@@ -389,53 +360,53 @@ ast_enum_of_structs! {
         /// An associated constant within the definition of a trait.
         pub Const(TraitItemConst {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub ident: Ident,
-            pub ty: Type,
+            attrs: Vec<Attribute>,
+            ident: Ident,
+            ty: Type,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub default: Option<Expr>,
+            default: Option<Expr>,
         }),
 
         /// A trait method within the definition of a trait.
         pub Method(TraitItemMethod {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub sig: MethodSig,
+            sig: MethodSig,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub default: Option<Block>,
+            default: Option<Block>,
             // #[serde(default, skip_serializing_if = "not")]
-            // pub semi_token: bool,
+            // semi_token: bool,
         }),
 
         /// An associated type within the definition of a trait.
         pub Type(TraitItemType {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub ident: Ident,
+            attrs: Vec<Attribute>,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
+            generics: Generics,
             #[serde(default, skip_serializing_if = "not")]
-            pub colon_token: bool,
+            colon_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub default: Option<Type>,
+            default: Option<Type>,
         }),
 
         /// A macro invocation within the definition of a trait.
         pub Macro(TraitItemMacro {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
             #[serde(default, skip_serializing_if = "not")]
-            pub semi_token: bool,
+            semi_token: bool,
         }),
 
         /// Tokens within the definition of a trait not interpreted by Syn.
         pub Verbatim(TraitItemVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
     }
 }
@@ -452,73 +423,73 @@ ast_enum_of_structs! {
         /// An associated constant within an impl block.
         pub Const(ImplItemConst {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "default")]
             #[serde(default, skip_serializing_if = "not")]
-            pub defaultness: bool,
-            pub ident: Ident,
-            pub ty: Type,
-            pub expr: Expr,
+            defaultness: bool,
+            ident: Ident,
+            ty: Type,
+            expr: Expr,
         }),
 
         /// A method within an impl block.
         pub Method(ImplItemMethod {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "default")]
             #[serde(default, skip_serializing_if = "not")]
-            pub defaultness: bool,
+            defaultness: bool,
             #[serde(flatten)]
-            pub sig: MethodSig,
+            sig: MethodSig,
             #[serde(flatten)]
-            pub block: Block,
+            block: Block,
         }),
 
         /// An associated type within an impl block.
         pub Type(ImplItemType {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-            pub vis: Visibility,
+            vis: Visibility,
             #[serde(rename = "default")]
             #[serde(default, skip_serializing_if = "not")]
-            pub defaultness: bool,
-            pub ident: Ident,
+            defaultness: bool,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
-            pub ty: Type,
+            generics: Generics,
+            ty: Type,
         }),
 
         /// An existential type within an impl block.
         pub Existential(ImplItemExistential {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
-            pub ident: Ident,
+            attrs: Vec<Attribute>,
+            ident: Ident,
             #[serde(default, skip_serializing_if = "Generics::is_none")]
-            pub generics: Generics,
+            generics: Generics,
             #[serde(default, skip_serializing_if = "not")]
-            pub colon_token: bool,
+            colon_token: bool,
             #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            pub bounds: Punctuated<TypeParamBound>,
+            bounds: Punctuated<TypeParamBound>,
         }),
 
         /// A macro invocation within an impl block.
         pub Macro(ImplItemMacro {
             #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            pub attrs: Vec<Attribute>,
+            attrs: Vec<Attribute>,
             #[serde(flatten)]
-            pub mac: Macro,
+            mac: Macro,
             #[serde(default, skip_serializing_if = "not")]
-            pub semi_token: bool,
+            semi_token: bool,
         }),
 
         /// Tokens within an impl block not interpreted by Syn.
         pub Verbatim(ImplItemVerbatim {
-            pub tts: TokenStream,
+            tts: TokenStream,
         }),
     }
 }
@@ -529,18 +500,18 @@ ast_struct! {
     pub struct MethodSig {
         #[serde(rename = "const")]
         #[serde(default, skip_serializing_if = "not")]
-        pub constness: bool,
+        constness: bool,
         #[serde(rename = "unsafe")]
         #[serde(default, skip_serializing_if = "not")]
-        pub unsafety: bool,
+        unsafety: bool,
         #[serde(rename = "async")]
         #[serde(default, skip_serializing_if = "not")]
-        pub asyncness: bool,
+        asyncness: bool,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub abi: Option<Abi>,
-        pub ident: Ident,
+        abi: Option<Abi>,
+        ident: Ident,
         #[serde(flatten)]
-        pub decl: FnDecl,
+        decl: FnDecl,
     }
 }
 
@@ -548,11 +519,11 @@ ast_struct! {
     /// Header of a function declaration, without including the body.
     pub struct FnDecl {
         #[serde(default, skip_serializing_if = "Generics::is_none")]
-        pub generics: Generics,
-        pub inputs: Punctuated<FnArg>,
+        generics: Generics,
+        inputs: Punctuated<FnArg>,
         #[serde(default, skip_serializing_if = "not")]
-        pub variadic: bool,
-        pub output: ReturnType,
+        variadic: bool,
+        output: ReturnType,
     }
 }
 
@@ -569,10 +540,10 @@ ast_enum_of_structs! {
         /// self`.
         pub SelfRef(ArgSelfRef {
             #[serde(default, skip_serializing_if = "Option::is_none")]
-            pub lifetime: Option<Lifetime>,
+            lifetime: Option<Lifetime>,
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
+            mutability: bool,
         }),
 
         /// Self captured by value in a function signature: `self` or `mut
@@ -580,13 +551,13 @@ ast_enum_of_structs! {
         pub SelfValue(ArgSelf {
             #[serde(rename = "mut")]
             #[serde(default, skip_serializing_if = "not")]
-            pub mutability: bool,
+            mutability: bool,
         }),
 
         /// An explicitly typed pattern captured by a function signature.
         pub Captured(ArgCaptured {
-            pub pat: Pat,
-            pub ty: Type,
+            pat: Pat,
+            ty: Type,
         }),
 
         /// A pattern whose type is inferred captured by a function signature.
@@ -595,9 +566,6 @@ ast_enum_of_structs! {
         pub Ignored(Type),
     }
 }
-
-#[cfg(feature = "clone-impls")]
-impl Copy for ArgSelf {}
 
 mod convert {
     use super::*;

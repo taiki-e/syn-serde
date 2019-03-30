@@ -49,13 +49,13 @@ ast_enum_of_structs! {
 
         /// A boolean literal: `true` or `false`.
         pub Bool(LitBool #transparent {
-            pub value: bool,
+            value: bool,
         }),
 
         /// A raw token literal not interpreted by Syn, possibly because it
         /// represents an integer larger than 64 bits.
         pub Verbatim(LitVerbatim #transparent {
-            pub token: Literal,
+            token: Literal,
         }),
     }
 }
@@ -134,7 +134,7 @@ impl LitInt {
     }
 
     pub fn suffix(&self) -> IntSuffix {
-        let value = self.token.to_string();
+        let value = &self.token.text;
         for (s, suffix) in vec![
             ("i8", IntSuffix::I8),
             ("i16", IntSuffix::I16),
@@ -173,7 +173,7 @@ impl LitFloat {
     }
 
     pub fn suffix(&self) -> FloatSuffix {
-        let value = self.token.to_string();
+        let value = &self.token.text;
         for (s, suffix) in vec![("f32", FloatSuffix::F32), ("f64", FloatSuffix::F64)] {
             if value.ends_with(s) {
                 return suffix;
@@ -182,9 +182,6 @@ impl LitFloat {
         FloatSuffix::None
     }
 }
-
-#[cfg(feature = "clone-impls")]
-impl Copy for LitBool {}
 
 mod convert {
     use super::*;
