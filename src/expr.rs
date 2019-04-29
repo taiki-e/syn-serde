@@ -167,6 +167,7 @@ ast_enum_of_structs! {
             #[serde(rename = "async")]
             #[serde(default, skip_serializing_if = "not")]
             asyncness: bool,
+            #[serde(rename = "static")]
             #[serde(default, skip_serializing_if = "not")]
             movability: bool,
             #[serde(rename = "move")]
