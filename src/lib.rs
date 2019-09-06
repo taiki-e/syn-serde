@@ -10,7 +10,7 @@
 //!
 //! ```rust
 //! # #[cfg(feature = "json")]
-//! # fn foo() -> serde_json::Result<()> {
+//! # fn dox() -> Result<(), Box<dyn std::error::Error>> {
 //! use serde_syn::json;
 //!
 //! let syn_file: syn::File = syn::parse_quote! {
@@ -177,13 +177,58 @@ mod private {
     pub trait Sealed {}
 }
 
+/// A trait for the data structures of [Syn] and [proc-macro2].
+///
+/// [Syn]: https://github.com/dtolnay/syn
+/// [proc-macro2]: https://github.com/alexcrichton/proc-macro2
 #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
 pub trait Syn: Sized + private::Sealed {
     type Adapter: Serialize + for<'de> Deserialize<'de>;
 
-    #[doc(hidden)]
+    /// Converts a `Syn` type into an adapter.
+    ///
+    /// ## Examples
+    ///
+    /// ```rust
+    /// # #[cfg(feature = "json")]
+    /// # fn dox() -> Result<(), Box<dyn std::error::Error>> {
+    /// use serde_syn::Syn;
+    ///
+    /// let syn_file: syn::File = syn::parse_quote! {
+    ///     fn main() {
+    ///         println!("Hello, world!");
+    ///     }
+    /// };
+    ///
+    /// let serializable_file = syn_file.to_adapter();
+    /// println!("{}", serde_json::to_string_pretty(&serializable_file)?);
+    /// # Ok(())
+    /// # }
+    /// ```
     fn to_adapter(&self) -> Self::Adapter;
-    #[doc(hidden)]
+
+    /// Converts an adapter into a `Syn` type.
+    ///
+    /// ## Examples
+    ///
+    /// ```rust
+    /// # #[cfg(feature = "json")]
+    /// # fn dox() -> Result<(), Box<dyn std::error::Error>> {
+    /// use serde_syn::Syn;
+    ///
+    /// // `struct Unit;`
+    /// let json = r#"{
+    ///   "struct": {
+    ///     "ident": "Unit",
+    ///     "fields": "unit"
+    ///   }
+    /// }"#;
+    ///
+    /// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_str(json)?;
+    /// let _syn_file = syn::File::from_adapter(&serializable_file);
+    /// # Ok(())
+    /// # }
+    /// ```
     fn from_adapter(adapter: &Self::Adapter) -> Self;
 }
 
