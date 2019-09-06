@@ -23,19 +23,19 @@ ast_struct! {
     ///
     /// The `path` field gives the possibly colon-delimited path against which
     /// the attribute is resolved. It is equal to `"doc"` for desugared doc
-    /// comments. The `tts` field contains the rest of the attribute body as
+    /// comments. The `tokens` field contains the rest of the attribute body as
     /// tokens.
     ///
     /// ```text
     /// #[derive(Copy)]      #[crate::precondition x < 5]
     ///   ^^^^^^~~~~~~         ^^^^^^^^^^^^^^^^^^^ ~~~~~
-    ///    path  tts                   path         tts
+    ///    path  tokens                   path         tokens
     /// ```
     pub struct Attribute {
-        style: AttrStyle,
-        path: Path,
+        pub(crate) style: AttrStyle,
+        pub(crate) path: Path,
         #[serde(default, skip_serializing_if = "TokenStream::is_empty")]
-        tts: TokenStream,
+        pub(crate) tokens: TokenStream,
     }
 }
 
@@ -54,18 +54,18 @@ ast_enum! {
     /// - `#![feature(proc_macro)]`
     /// - `//! # Example`
     /// - `/*! Please file an issue */`
-    pub enum AttrStyle #manual_from_impl {
+    pub enum AttrStyle {
         Outer,
         Inner,
     }
 }
 
-ast_enum_of_structs! {
+ast_enum! {
     /// Content of a compile-time structured attribute.
     ///
-    /// ## Word
+    /// ## Path
     ///
-    /// A meta word is like the `test` in `#[test]`.
+    /// A meta path is like the `test` in `#[test]`.
     ///
     /// ## List
     ///
@@ -75,142 +75,41 @@ ast_enum_of_structs! {
     ///
     /// A name-value meta is like the `path = "..."` in `#[path =
     /// "sys/windows.rs"]`.
-    ///
-    /// # Syntax tree enum
-    ///
-    /// This type is a [syntax tree enum].
-    ///
-    /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
     pub enum Meta {
-        pub Word(Ident),
+        Path(Path),
+
         /// A structured list within an attribute, like `derive(Copy, Clone)`.
-        pub List(MetaList {
-            ident: Ident,
-            nested: Punctuated<NestedMeta>,
-        }),
+        List(MetaList),
+
         /// A name-value pair within an attribute, like `feature = "nightly"`.
-        pub NameValue(MetaNameValue {
-            ident: Ident,
-            lit: Lit,
-        }),
+        NameValue(MetaNameValue),
     }
 }
 
-impl Meta {
-    /// Returns the identifier that begins this structured meta item.
-    ///
-    /// For example this would return the `test` in `#[test]`, the `derive` in
-    /// `#[derive(Copy)]`, and the `path` in `#[path = "sys/windows.rs"]`.
-    pub fn name(&self) -> Ident {
-        match *self {
-            Meta::Word(ref meta) => meta.clone(),
-            Meta::List(ref meta) => meta.ident.clone(),
-            Meta::NameValue(ref meta) => meta.ident.clone(),
-        }
+ast_struct! {
+    /// A structured list within an attribute, like `derive(Copy, Clone)`.
+    pub struct MetaList {
+        pub(crate) path: Path,
+        pub(crate) nested: Punctuated<NestedMeta>,
     }
 }
 
-ast_enum_of_structs! {
+ast_struct! {
+    /// A name-value pair within an attribute, like `feature = "nightly"`.
+    pub struct MetaNameValue {
+        pub(crate) path: Path,
+        pub(crate) lit: Lit,
+    }
+}
+
+ast_enum! {
     /// Element of a compile-time attribute list.
     pub enum NestedMeta {
         /// A structured meta item, like the `Copy` in `#[derive(Copy)]` which
         /// would be a nested `Meta::Word`.
-        pub Meta(Meta),
+        Meta(Meta),
 
         /// A Rust literal, like the `"new_name"` in `#[rename("new_name")]`.
-        pub Literal(Lit),
-    }
-}
-
-mod convert {
-    use super::*;
-
-    // Attribute
-
-    impl From<&syn::Attribute> for Attribute {
-        fn from(other: &syn::Attribute) -> Self {
-            Self {
-                style: other.style.ref_into(),
-                path: other.path.ref_into(),
-                tts: other.tts.ref_into(),
-            }
-        }
-    }
-
-    impl From<&Attribute> for syn::Attribute {
-        fn from(other: &Attribute) -> Self {
-            Self {
-                pound_token: default(),
-                style: other.style.ref_into(),
-                bracket_token: default(),
-                path: other.path.ref_into(),
-                tts: other.tts.ref_into(),
-            }
-        }
-    }
-
-    // AttrStyle
-
-    impl From<&syn::AttrStyle> for AttrStyle {
-        fn from(other: &syn::AttrStyle) -> Self {
-            use super::AttrStyle::*;
-            use syn::AttrStyle;
-            match other {
-                AttrStyle::Outer => Outer,
-                AttrStyle::Inner(_) => Inner,
-            }
-        }
-    }
-
-    impl From<&AttrStyle> for syn::AttrStyle {
-        fn from(other: &AttrStyle) -> Self {
-            use syn::AttrStyle::*;
-            match other {
-                AttrStyle::Outer => Outer,
-                AttrStyle::Inner => Inner(default()),
-            }
-        }
-    }
-
-    // MetaList
-
-    impl From<&syn::MetaList> for MetaList {
-        fn from(other: &syn::MetaList) -> Self {
-            Self {
-                ident: other.ident.ref_into(),
-                nested: other.nested.map_into(),
-            }
-        }
-    }
-
-    impl From<&MetaList> for syn::MetaList {
-        fn from(other: &MetaList) -> Self {
-            Self {
-                ident: other.ident.ref_into(),
-                paren_token: default(),
-                nested: other.nested.map_into(),
-            }
-        }
-    }
-
-    // MetaNameValue
-
-    impl From<&syn::MetaNameValue> for MetaNameValue {
-        fn from(other: &syn::MetaNameValue) -> Self {
-            Self {
-                ident: other.ident.ref_into(),
-                lit: other.lit.ref_into(),
-            }
-        }
-    }
-
-    impl From<&MetaNameValue> for syn::MetaNameValue {
-        fn from(other: &MetaNameValue) -> Self {
-            Self {
-                ident: other.ident.ref_into(),
-                eq_token: default(),
-                lit: other.lit.ref_into(),
-            }
-        }
+        Lit(Lit),
     }
 }

@@ -1,6 +1,6 @@
 ast_enum! {
     /// A binary operator: `+`, `+=`, `&`.
-    pub enum BinOp #manual_from_impl {
+    pub enum BinOp {
         /// The `+` operator (addition)
         #[serde(rename = "+")]
         Add,
@@ -90,7 +90,7 @@ ast_enum! {
 
 ast_enum! {
     /// A unary operator: `*`, `!`, `-`.
-    pub enum UnOp #manual_from_impl {
+    pub enum UnOp {
         /// The `*` operator for dereferencing
         #[serde(rename = "*")]
         Deref,
@@ -100,110 +100,5 @@ ast_enum! {
         /// The `-` operator for negation
         #[serde(rename = "-")]
         Neg,
-    }
-}
-
-mod convert {
-    use super::super::*;
-    use super::*;
-
-    // BinOp
-
-    impl From<&syn::BinOp> for BinOp {
-        fn from(other: &syn::BinOp) -> Self {
-            use super::BinOp::*;
-            use syn::BinOp;
-            match other {
-                BinOp::Add(_) => Add,
-                BinOp::Sub(_) => Sub,
-                BinOp::Mul(_) => Mul,
-                BinOp::Div(_) => Div,
-                BinOp::Rem(_) => Rem,
-                BinOp::And(_) => And,
-                BinOp::Or(_) => Or,
-                BinOp::BitXor(_) => BitXor,
-                BinOp::BitAnd(_) => BitAnd,
-                BinOp::BitOr(_) => BitOr,
-                BinOp::Shl(_) => Shl,
-                BinOp::Shr(_) => Shr,
-                BinOp::Eq(_) => Eq,
-                BinOp::Lt(_) => Lt,
-                BinOp::Le(_) => Le,
-                BinOp::Ne(_) => Ne,
-                BinOp::Ge(_) => Ge,
-                BinOp::Gt(_) => Gt,
-                BinOp::AddEq(_) => AddEq,
-                BinOp::SubEq(_) => SubEq,
-                BinOp::MulEq(_) => MulEq,
-                BinOp::DivEq(_) => DivEq,
-                BinOp::RemEq(_) => RemEq,
-                BinOp::BitXorEq(_) => BitXorEq,
-                BinOp::BitAndEq(_) => BitAndEq,
-                BinOp::BitOrEq(_) => BitOrEq,
-                BinOp::ShlEq(_) => ShlEq,
-                BinOp::ShrEq(_) => ShrEq,
-            }
-        }
-    }
-
-    impl From<&BinOp> for syn::BinOp {
-        fn from(other: &BinOp) -> Self {
-            use syn::BinOp::*;
-            match other {
-                BinOp::Add => Add(default()),
-                BinOp::Sub => Sub(default()),
-                BinOp::Mul => Mul(default()),
-                BinOp::Div => Div(default()),
-                BinOp::Rem => Rem(default()),
-                BinOp::And => And(default()),
-                BinOp::Or => Or(default()),
-                BinOp::BitXor => BitXor(default()),
-                BinOp::BitAnd => BitAnd(default()),
-                BinOp::BitOr => BitOr(default()),
-                BinOp::Shl => Shl(default()),
-                BinOp::Shr => Shr(default()),
-                BinOp::Eq => Eq(default()),
-                BinOp::Lt => Lt(default()),
-                BinOp::Le => Le(default()),
-                BinOp::Ne => Ne(default()),
-                BinOp::Ge => Ge(default()),
-                BinOp::Gt => Gt(default()),
-                BinOp::AddEq => AddEq(default()),
-                BinOp::SubEq => SubEq(default()),
-                BinOp::MulEq => MulEq(default()),
-                BinOp::DivEq => DivEq(default()),
-                BinOp::RemEq => RemEq(default()),
-                BinOp::BitXorEq => BitXorEq(default()),
-                BinOp::BitAndEq => BitAndEq(default()),
-                BinOp::BitOrEq => BitOrEq(default()),
-                BinOp::ShlEq => ShlEq(default()),
-                BinOp::ShrEq => ShrEq(default()),
-            }
-        }
-    }
-
-    // UnOp
-
-    impl From<&syn::UnOp> for UnOp {
-        fn from(other: &syn::UnOp) -> Self {
-            use super::UnOp::*;
-            use syn::UnOp;
-            match other {
-                UnOp::Deref(_) => Deref,
-                UnOp::Not(_) => Not,
-                UnOp::Neg(_) => Neg,
-            }
-        }
-    }
-
-    impl From<&UnOp> for syn::UnOp {
-        fn from(other: &UnOp) -> Self {
-            use syn::UnOp::*;
-            match other {
-                UnOp::Deref => Deref(default()),
-                UnOp::Not => Not(default()),
-                UnOp::Neg => Neg(default()),
-            }
-        }
     }
 }

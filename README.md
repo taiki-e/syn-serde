@@ -1,16 +1,25 @@
 # Serde Syn
 
-[![Build Status](https://travis-ci.com/taiki-e/serde-syn.svg?branch=master)](https://travis-ci.com/taiki-e/serde-syn)
-[![version](https://img.shields.io/crates/v/serde_syn.svg)](https://crates.io/crates/serde_syn/)
-[![documentation](https://docs.rs/serde_syn/badge.svg)](https://docs.rs/serde_syn/)
-[![license](https://img.shields.io/crates/l/serde_syn.svg)](https://crates.io/crates/serde_syn/)
-[![Rustc Version](https://img.shields.io/badge/rustc-1.31+-lightgray.svg)](https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html)
+[![Build Status][azure-badge]][azure-url]
+[![Crates.io][crates-version-badge]][crates-url]
+[![Docs.rs][docs-badge]][docs-url]
+[![License][crates-license-badge]][crates-url]
+[![Minimum supported Rust version][rustc-badge]][rustc-url]
+
+[azure-badge]: https://dev.azure.com/taiki-e/taiki-e/_apis/build/status/taiki-e.serde-syn?branchName=master
+[azure-url]: https://dev.azure.com/taiki-e/taiki-e/_build/latest?definitionId=15&branchName=master
+[crates-version-badge]: https://img.shields.io/crates/v/serde-syn.svg
+[crates-license-badge]: https://img.shields.io/crates/l/serde-syn.svg
+[crates-badge]: https://img.shields.io/crates/v/serde-syn.svg
+[crates-url]: https://crates.io/crates/serde-syn/
+[docs-badge]: https://docs.rs/serde-syn/badge.svg
+[docs-url]: https://docs.rs/serde-syn/
+[rustc-badge]: https://img.shields.io/badge/rustc-1.31+-lightgray.svg
+[rustc-url]: https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html
 
 Library to serialize and deserialize [Syn] syntax trees.
 
-The API of version 0.0.* is experimental and compatibility between patch versions is not guaranteed.
-
-[**Documentation**](https://docs.rs/serde_syn/)
+[**Documentation**][docs-url]
 
 ## Usage
 
@@ -18,17 +27,17 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-serde_syn = "0.0.1"
+serde-syn = "0.1.0-alpha.1"
 ```
 
-The current version of serde_syn requires Rust 1.31 or later.
+The current serde-syn requires Rust 1.31 or later.
 
 ## Examples
 
 ```toml
 [dependencies]
-serde_syn = { version = "0.0.1", features = ["json"] }
-syn = { version = "0.15", features = ["full"] }
+serde-syn = { version = "0.1.0-alpha.1", features = ["json"] }
+syn = { version = "1", features = ["full"] }
 ```
 
 ```rust
@@ -65,7 +74,7 @@ This prints the following JSON:
                   ]
                 },
                 "delimiter": "paren",
-                "tts": [
+                "tokens": [
                   {
                     "lit": "\"Hello, world!\""
                   }
@@ -96,7 +105,7 @@ print out a Rust syntax tree.
 
 ## Optional features
 
-- **`json`** — Provides functions for JSON <-> Rust serializing and
+* **`json`** — Provides functions for JSON <-> Rust serializing and
   deserializing.
 
 ## Relationship to Syn
@@ -105,7 +114,7 @@ Serde Syn is a fork of [Syn], and Serde Syn provides a set of data structures
 similar but not identical to [Syn]. All data structures provided by Serde Syn
 can be converted to the data structures of [Syn] and [proc-macro2].
 
-The data structures of Serde Syn 0.1 is compatible with the data structures of [Syn] 0.15.
+The data structures of Serde Syn 0.1 is compatible with the data structures of [Syn] 1.0.
 
 [Syn]: https://github.com/dtolnay/syn
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2
@@ -114,13 +123,11 @@ The data structures of Serde Syn 0.1 is compatible with the data structures of [
 
 Licensed under either of
 
- * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
 ### Contribution
 
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in this crate by you, as defined in the Apache-2.0 license, shall
-be dual licensed as above, without any additional terms or conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.

@@ -1,124 +1,57 @@
 macro_rules! ast_struct {
     (
-        $(#[$attr:meta])*
-        pub struct $name:ident #transparent $($rest:tt)*
+        [$($attrs_pub:tt)*]
+        struct $name:ident $($rest:tt)*
     ) => {
-        $(#[$attr])*
         #[derive(crate::Serialize, crate::Deserialize)]
-        #[serde(transparent)]
-        pub struct $name $($rest)*
+        $($attrs_pub)* struct $name $($rest)*
     };
 
-    (
-        $(#[$attr:meta])*
-        pub struct $name:ident $($rest:tt)*
-    ) => {
-        $(#[$attr])*
-        #[derive(crate::Serialize, crate::Deserialize)]
-        pub struct $name $($rest)*
+    ($($t:tt)*) => {
+        strip_attrs_pub!(ast_struct!($($t)*));
     };
 }
 
 macro_rules! ast_enum {
     (
-        $(#[$enum_attr:meta])*
-        pub enum $name:ident #manual_from_impl { $($variants:tt)* }
+        [$($attrs_pub:tt)*]
+        enum $name:ident $($rest:tt)*
     ) => (
-        $(#[$enum_attr])*
         #[derive(crate::Serialize, crate::Deserialize)]
         #[serde(rename_all = "snake_case")]
-        pub enum $name {
-            $($variants)*
-        }
+        $($attrs_pub)* enum $name $($rest)*
     );
 
-    (
-        $(#[$enum_attr:meta])*
-        pub enum $name:ident $(# $tags:ident)* {
-            $(
-                $(#[$variant_attr:meta])*
-                $variant:ident $( ($member:ident $($rest:tt)*) )*,
-            )*
-        }
-    ) => (
-        $(#[$enum_attr])*
-        #[derive(crate::Serialize, crate::Deserialize)]
-        #[serde(rename_all = "snake_case")]
-        pub enum $name {
-            $(
-                $(#[$variant_attr])*
-                $variant $( ($member $($rest)*) )*,
-            )*
-        }
-
-        impl From<&syn::$name> for $name {
-            fn from(other: &syn::$name) -> Self {
-                match other {
-                    $(
-                        syn::$name::$variant(x) => $name::$variant(x.into()),
-                    )*
-                }
-            }
-        }
-
-        impl From<&$name> for syn::$name {
-            fn from(other: &$name) -> Self {
-                match other {
-                    $(
-                        $name::$variant(x) => syn::$name::$variant(x.into()),
-                    )*
-                }
-            }
-        }
-    );
+    ($($t:tt)*) => {
+        strip_attrs_pub!(ast_enum!($($t)*));
+    };
 }
 
-macro_rules! ast_enum_of_structs {
-    (
-        $(#[$enum_attr:meta])*
-        pub enum $name:ident $(# $tags:ident)* {
-            $(
-                $(#[$variant_attr:meta])*
-                pub $variant:ident $( ($member:ident $($rest:tt)*) )*,
-            )*
-        }
-    ) => (
-        ast_enum! {
-            $(#[$enum_attr])*
-            pub enum $name $(# $tags)* {
-                $(
-                    $(#[$variant_attr])*
-                    $variant $( ($member) )*,
-                )*
-            }
-        }
+macro_rules! strip_attrs_pub {
+    ($mac:ident!($(#[$m:meta])* $pub:ident $($t:tt)*)) => {
+        check_keyword_matches!(pub $pub);
 
-        $(
-            maybe_ast_struct! {
-                $(#[$variant_attr])*
-                $(
-                    pub struct $member $($rest)*
-                )*
-            }
-
-            $(
-                impl From<$member> for $name {
-                    fn from(e: $member) -> Self {
-                        $name::$variant(e)
-                    }
-                }
-            )*
-        )*
-    )
+        $mac!([$(#[$m])* $pub] $($t)*);
+    };
 }
 
-macro_rules! maybe_ast_struct {
-    (
-        $(#[$attr:meta])*
-        $(
-            pub struct $name:ident
-        )*
-    ) => ();
+macro_rules! check_keyword_matches {
+    (struct struct) => {};
+    (enum enum) => {};
+    (pub pub) => {};
+}
 
-    ($($rest:tt)*) => (ast_struct! { $($rest)* });
+macro_rules! syn_trait_impl {
+    ($path:ident :: $ty:ident) => {
+        impl crate::private::Sealed for $path::$ty {}
+        impl crate::Syn for $path::$ty {
+            type Adapter = $ty;
+            fn to_adapter(&self) -> Self::Adapter {
+                Self::Adapter::from(self)
+            }
+            fn from_adapter(adapter: &Self::Adapter) -> Self {
+                Self::from(adapter)
+            }
+        }
+    };
 }

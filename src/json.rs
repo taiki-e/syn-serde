@@ -27,12 +27,13 @@ use std::io;
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
 #[inline]
-pub fn to_writer<W>(writer: W, syn_file: &syn::File) -> Result<()>
+pub fn to_writer<S, W>(writer: W, syn: &S) -> Result<()>
 where
+    S: Syn,
     W: io::Write,
 {
-    let syntax = File::from(syn_file);
-    serde_json::to_writer(writer, &syntax)
+    let adapter = syn.to_adapter();
+    serde_json::to_writer(writer, &adapter)
 }
 
 /// Serialize the given [`syn::File`] as pretty-printed JSON into the IO
@@ -55,12 +56,13 @@ where
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
 #[inline]
-pub fn to_writer_pretty<W>(writer: W, syn_file: &syn::File) -> Result<()>
+pub fn to_writer_pretty<S, W>(writer: W, syn: &S) -> Result<()>
 where
+    S: Syn,
     W: io::Write,
 {
-    let syntax = File::from(syn_file);
-    serde_json::to_writer_pretty(writer, &syntax)
+    let adapter = syn.to_adapter();
+    serde_json::to_writer_pretty(writer, &adapter)
 }
 
 /// Serialize the given [`syn::File`] as a JSON byte vector.
@@ -78,9 +80,12 @@ where
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
 #[inline]
-pub fn to_vec(syn_file: &syn::File) -> Result<Vec<u8>> {
-    let syntax = File::from(syn_file);
-    serde_json::to_vec(&syntax)
+pub fn to_vec<S>(syn: &S) -> Result<Vec<u8>>
+where
+    S: Syn,
+{
+    let adapter = syn.to_adapter();
+    serde_json::to_vec(&adapter)
 }
 
 /// Serialize the given [`syn::File`] as a pretty-printed JSON byte vector.
@@ -98,9 +103,12 @@ pub fn to_vec(syn_file: &syn::File) -> Result<Vec<u8>> {
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
 #[inline]
-pub fn to_vec_pretty(syn_file: &syn::File) -> Result<Vec<u8>> {
-    let syntax = File::from(syn_file);
-    serde_json::to_vec_pretty(&syntax)
+pub fn to_vec_pretty<S>(syn: &S) -> Result<Vec<u8>>
+where
+    S: Syn,
+{
+    let adapter = syn.to_adapter();
+    serde_json::to_vec_pretty(&adapter)
 }
 
 /// Serialize the given [`syn::File`] as a String of JSON.
@@ -118,9 +126,12 @@ pub fn to_vec_pretty(syn_file: &syn::File) -> Result<Vec<u8>> {
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
 #[inline]
-pub fn to_string(syn_file: &syn::File) -> Result<String> {
-    let syntax = File::from(syn_file);
-    serde_json::to_string(&syntax)
+pub fn to_string<S>(syn: &S) -> Result<String>
+where
+    S: Syn,
+{
+    let adapter = syn.to_adapter();
+    serde_json::to_string(&adapter)
 }
 
 /// Serialize the given [`syn::File`] as a pretty-printed String of JSON.
@@ -138,9 +149,12 @@ pub fn to_string(syn_file: &syn::File) -> Result<String> {
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
 #[inline]
-pub fn to_string_pretty(syn_file: &syn::File) -> Result<String> {
-    let syntax = File::from(syn_file);
-    serde_json::to_string_pretty(&syntax)
+pub fn to_string_pretty<S>(syn: &S) -> Result<String>
+where
+    S: Syn,
+{
+    let adapter = syn.to_adapter();
+    serde_json::to_string_pretty(&adapter)
 }
 
 // Deserialize JSON data to `syn::File`.
@@ -164,12 +178,13 @@ pub fn to_string_pretty(syn_file: &syn::File) -> Result<String> {
 /// ```
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
-pub fn from_reader<R>(rdr: R) -> Result<syn::File>
+pub fn from_reader<S, R>(rdr: R) -> Result<S>
 where
+    S: Syn,
     R: io::Read,
 {
-    let syntax: File = serde_json::from_reader(rdr)?;
-    Ok(syntax.ref_into())
+    let adapter: S::Adapter = serde_json::from_reader(rdr)?;
+    Ok(S::from_adapter(&adapter))
 }
 
 /// Deserialize an instance of [`syn::File`] from bytes of JSON text.
@@ -187,9 +202,12 @@ where
 /// ```
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
-pub fn from_slice(v: &[u8]) -> Result<syn::File> {
-    let syntax: File = serde_json::from_slice(v)?;
-    Ok(syntax.ref_into())
+pub fn from_slice<S>(v: &[u8]) -> Result<S>
+where
+    S: Syn,
+{
+    let adapter: S::Adapter = serde_json::from_slice(v)?;
+    Ok(S::from_adapter(&adapter))
 }
 
 /// Deserialize an instance of [`syn::File`] from a string of JSON text.
@@ -207,7 +225,10 @@ pub fn from_slice(v: &[u8]) -> Result<syn::File> {
 /// ```
 ///
 /// [`syn::File`]: https://docs.rs/syn/0.15/syn/struct.File.html
-pub fn from_str(s: &str) -> Result<syn::File> {
-    let syntax: File = serde_json::from_str(s)?;
-    Ok(syntax.ref_into())
+pub fn from_str<S>(s: &str) -> Result<S>
+where
+    S: Syn,
+{
+    let adapter: S::Adapter = serde_json::from_str(s)?;
+    Ok(S::from_adapter(&adapter))
 }

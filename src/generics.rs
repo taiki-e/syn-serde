@@ -6,13 +6,13 @@ ast_struct! {
     #[derive(Default)]
     pub struct Generics {
         // #[serde(default, skip_serializing_if = "not")]
-        // lt_token: bool,
+        // pub(crate) lt_token: bool,
         #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-        params: Punctuated<GenericParam>,
+        pub(crate) params: Punctuated<GenericParam>,
         // #[serde(default, skip_serializing_if = "not")]
-        // gt_token: bool,
+        // pub(crate) gt_token: bool,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        where_clause: Option<WhereClause>,
+        pub(crate) where_clause: Option<WhereClause>,
     }
 }
 
@@ -22,92 +22,79 @@ impl Generics {
     }
 }
 
-ast_enum_of_structs! {
+ast_enum! {
     /// A generic type parameter, lifetime, or const generic: `T: Into<String>`,
     /// `'a: 'b`, `const LEN: usize`.
-    ///
-    /// # Syntax tree enum
-    ///
-    /// This type is a [syntax tree enum].
-    ///
-    /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
     pub enum GenericParam {
         /// A generic type parameter: `T: Into<String>`.
-        pub Type(TypeParam {
-            #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            attrs: Vec<Attribute>,
-            ident: Ident,
-            #[serde(default, skip_serializing_if = "not")]
-            colon_token: bool,
-            #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            bounds: Punctuated<TypeParamBound>,
-            #[serde(default, skip_serializing_if = "not")]
-            eq_token: bool,
-            #[serde(default, skip_serializing_if = "Option::is_none")]
-            default: Option<Type>,
-        }),
+        Type(TypeParam),
 
         /// A lifetime definition: `'a: 'b + 'c + 'd`.
-        pub Lifetime(LifetimeDef {
-            #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            attrs: Vec<Attribute>,
-            lifetime: Lifetime,
-            #[serde(default, skip_serializing_if = "not")]
-            colon_token: bool,
-            #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-            bounds: Punctuated<Lifetime>,
-        }),
+        Lifetime(LifetimeDef),
 
         /// A const generic parameter: `const LENGTH: usize`.
-        pub Const(ConstParam {
-            #[serde(default, skip_serializing_if = "Vec::is_empty")]
-            attrs: Vec<Attribute>,
-            ident: Ident,
-            ty: Type,
-            #[serde(default, skip_serializing_if = "not")]
-            eq_token: bool,
-            #[serde(default, skip_serializing_if = "Option::is_none")]
-            default: Option<Expr>,
-        }),
+        Const(ConstParam),
+    }
+}
+
+ast_struct! {
+    /// A generic type parameter: `T: Into<String>`.
+    pub struct TypeParam {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pub(crate) attrs: Vec<Attribute>,
+        pub(crate) ident: Ident,
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) colon_token: bool,
+        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+        pub(crate) bounds: Punctuated<TypeParamBound>,
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) eq_token: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub(crate) default: Option<Type>,
+    }
+}
+
+ast_struct! {
+    /// A lifetime definition: `'a: 'b + 'c + 'd`.
+    pub struct LifetimeDef {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pub(crate) attrs: Vec<Attribute>,
+        pub(crate) lifetime: Lifetime,
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) colon_token: bool,
+        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+        pub(crate) bounds: Punctuated<Lifetime>,
+    }
+}
+
+ast_struct! {
+    /// A const generic parameter: `const LENGTH: usize`.
+    pub struct ConstParam {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pub(crate) attrs: Vec<Attribute>,
+        pub(crate) ident: Ident,
+        pub(crate) ty: Type,
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) eq_token: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub(crate) default: Option<Expr>,
     }
 }
 
 ast_struct! {
     /// A set of bound lifetimes: `for<'a, 'b, 'c>`.
+    #[derive(Default)]
+    #[serde(transparent)]
     pub struct BoundLifetimes {
-        lifetimes: Punctuated<LifetimeDef>,
+        pub(crate) lifetimes: Punctuated<LifetimeDef>,
     }
 }
 
-impl From<Lifetime> for LifetimeDef {
-    fn from(lifetime: Lifetime) -> Self {
-        Self {
-            attrs: Vec::new(),
-            lifetime,
-            colon_token: false,
-            bounds: Punctuated::new(),
-        }
-    }
-}
-
-impl From<Ident> for TypeParam {
-    fn from(ident: Ident) -> Self {
-        Self {
-            attrs: vec![],
-            ident,
-            colon_token: false,
-            bounds: Punctuated::new(),
-            eq_token: false,
-            default: None,
-        }
-    }
-}
-
-ast_enum_of_structs! {
+ast_enum! {
     /// A trait or lifetime used as a bound on a type parameter.
     pub enum TypeParamBound {
-        pub Trait(TraitBound),
-        pub Lifetime(Lifetime),
+        Trait(TraitBound),
+        Lifetime(Lifetime),
     }
 }
 
@@ -115,21 +102,21 @@ ast_struct! {
     /// A trait used as a bound on a type parameter.
     pub struct TraitBound {
         #[serde(default, skip_serializing_if = "not")]
-        paren_token: bool,
+        pub(crate) paren_token: bool,
         #[serde(default, skip_serializing_if = "TraitBoundModifier::is_none")]
-        modifier: TraitBoundModifier,
+        pub(crate) modifier: TraitBoundModifier,
         /// The `for<'a>` in `for<'a> Foo<&'a T>`
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        lifetimes: Option<BoundLifetimes>,
+        pub(crate) lifetimes: Option<BoundLifetimes>,
         /// The `Foo<&'a T>` in `for<'a> Foo<&'a T>`
-        path: Path,
+        pub(crate) path: Path,
     }
 }
 
 ast_enum! {
     /// A modifier on a trait bound, currently only used for the `?` in
     /// `?Sized`.
-    pub enum TraitBoundModifier #manual_from_impl {
+    pub enum TraitBoundModifier {
         None,
         Maybe,
     }
@@ -153,42 +140,52 @@ impl Default for TraitBoundModifier {
 ast_struct! {
     /// A `where` clause in a definition: `where T: Deserialize<'de>, D:
     /// 'static`.
+    #[serde(transparent)]
     pub struct WhereClause {
-        predicates: Punctuated<WherePredicate>,
+        pub(crate) predicates: Punctuated<WherePredicate>,
     }
 }
 
-ast_enum_of_structs! {
+ast_enum! {
     /// A single predicate in a `where` clause: `T: Deserialize<'de>`.
-    ///
-    /// # Syntax tree enum
-    ///
-    /// This type is a [syntax tree enum].
-    ///
-    /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
     pub enum WherePredicate {
         /// A type predicate in a `where` clause: `for<'c> Foo<'c>: Trait<'c>`.
-        pub Type(PredicateType {
-            /// Any lifetimes from a `for` binding
-            #[serde(default, skip_serializing_if = "Option::is_none")]
-            lifetimes: Option<BoundLifetimes>,
-            /// The type being bounded
-            bounded_ty: Type,
-            /// Trait and lifetime bounds (`Clone+Send+'static`)
-            bounds: Punctuated<TypeParamBound>,
-        }),
+        Type(PredicateType),
 
         /// A lifetime predicate in a `where` clause: `'a: 'b + 'c`.
-        pub Lifetime(PredicateLifetime {
-            lifetime: Lifetime,
-            bounds: Punctuated<Lifetime>,
-        }),
+        Lifetime(PredicateLifetime),
 
         /// An equality predicate in a `where` clause (unsupported).
-        pub Eq(PredicateEq {
-            lhs_ty: Type,
-            rhs_ty: Type,
-        }),
+        Eq(PredicateEq),
+    }
+}
+
+ast_struct! {
+    /// A type predicate in a `where` clause: `for<'c> Foo<'c>: Trait<'c>`.
+    pub struct PredicateType {
+        /// Any lifetimes from a `for` binding
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub(crate) lifetimes: Option<BoundLifetimes>,
+        /// The type being bounded
+        pub(crate) bounded_ty: Type,
+        /// Trait and lifetime bounds (`Clone+Send+'static`)
+        pub(crate) bounds: Punctuated<TypeParamBound>,
+    }
+}
+
+ast_struct! {
+    /// A lifetime predicate in a `where` clause: `'a: 'b + 'c`.
+    pub struct PredicateLifetime {
+        pub(crate) lifetime: Lifetime,
+        pub(crate) bounds: Punctuated<Lifetime>,
+    }
+}
+
+ast_struct! {
+    /// An equality predicate in a `where` clause (unsupported).
+    pub struct PredicateEq {
+        pub(crate) lhs_ty: Type,
+        pub(crate) rhs_ty: Type,
     }
 }
 
@@ -196,11 +193,7 @@ mod convert {
     use super::*;
 
     // Generics
-
-    /* TODO: document
-    /// # Panics
-    ///
-     */
+    syn_trait_impl!(syn::Generics);
     impl From<&syn::Generics> for Generics {
         fn from(other: &syn::Generics) -> Self {
             // `ident ..>` or `ident <..`
@@ -217,7 +210,6 @@ mod convert {
             }
         }
     }
-
     impl From<&Generics> for syn::Generics {
         fn from(other: &Generics) -> Self {
             Self {
@@ -225,238 +217,6 @@ mod convert {
                 params: other.params.map_into(),
                 gt_token: default_or_none(!other.params.is_empty()),
                 where_clause: other.where_clause.map_into(),
-            }
-        }
-    }
-
-    // TypeParam
-
-    impl From<&syn::TypeParam> for TypeParam {
-        fn from(other: &syn::TypeParam) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                ident: other.ident.ref_into(),
-                colon_token: other.colon_token.is_some(),
-                bounds: other.bounds.map_into(),
-                eq_token: other.eq_token.is_some(),
-                default: other.default.map_into(),
-            }
-        }
-    }
-
-    impl From<&TypeParam> for syn::TypeParam {
-        fn from(other: &TypeParam) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                ident: other.ident.ref_into(),
-                colon_token: default_or_none(other.colon_token),
-                bounds: other.bounds.map_into(),
-                eq_token: default_or_none(other.eq_token),
-                default: other.default.map_into(),
-            }
-        }
-    }
-
-    // LifetimeDef
-
-    impl From<&syn::LifetimeDef> for LifetimeDef {
-        fn from(other: &syn::LifetimeDef) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                lifetime: other.lifetime.ref_into(),
-                colon_token: other.colon_token.is_some(),
-                bounds: other.bounds.map_into(),
-            }
-        }
-    }
-
-    impl From<&LifetimeDef> for syn::LifetimeDef {
-        fn from(other: &LifetimeDef) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                lifetime: other.lifetime.ref_into(),
-                colon_token: default_or_none(other.colon_token),
-                bounds: other.bounds.map_into(),
-            }
-        }
-    }
-
-    // ConstParam
-
-    impl From<&syn::ConstParam> for ConstParam {
-        fn from(other: &syn::ConstParam) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                ident: other.ident.ref_into(),
-                ty: other.ty.ref_into(),
-                eq_token: other.eq_token.is_some(),
-                default: other.default.map_into(),
-            }
-        }
-    }
-
-    impl From<&ConstParam> for syn::ConstParam {
-        fn from(other: &ConstParam) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                const_token: default(),
-                ident: other.ident.ref_into(),
-                colon_token: default(),
-                ty: other.ty.ref_into(),
-                eq_token: default_or_none(other.eq_token),
-                default: other.default.map_into(),
-            }
-        }
-    }
-
-    // BoundLifetimes
-
-    impl From<&syn::BoundLifetimes> for BoundLifetimes {
-        fn from(other: &syn::BoundLifetimes) -> Self {
-            Self {
-                lifetimes: other.lifetimes.map_into(),
-            }
-        }
-    }
-
-    impl From<&BoundLifetimes> for syn::BoundLifetimes {
-        fn from(other: &BoundLifetimes) -> Self {
-            Self {
-                for_token: default(),
-                lt_token: default(),
-                lifetimes: other.lifetimes.map_into(),
-                gt_token: default(),
-            }
-        }
-    }
-
-    // TraitBound
-
-    impl From<&syn::TraitBound> for TraitBound {
-        fn from(other: &syn::TraitBound) -> Self {
-            Self {
-                paren_token: other.paren_token.is_some(),
-                modifier: other.modifier.ref_into(),
-                lifetimes: other.lifetimes.map_into(),
-                path: other.path.ref_into(),
-            }
-        }
-    }
-
-    impl From<&TraitBound> for syn::TraitBound {
-        fn from(other: &TraitBound) -> Self {
-            Self {
-                paren_token: default_or_none(other.paren_token),
-                modifier: other.modifier.ref_into(),
-                lifetimes: other.lifetimes.map_into(),
-                path: other.path.ref_into(),
-            }
-        }
-    }
-
-    // TraitBoundModifier
-
-    impl From<&syn::TraitBoundModifier> for TraitBoundModifier {
-        fn from(other: &syn::TraitBoundModifier) -> Self {
-            use super::TraitBoundModifier::*;
-            use syn::TraitBoundModifier;
-            match other {
-                TraitBoundModifier::None => None,
-                TraitBoundModifier::Maybe(_) => Maybe,
-            }
-        }
-    }
-
-    impl From<&TraitBoundModifier> for syn::TraitBoundModifier {
-        fn from(other: &TraitBoundModifier) -> Self {
-            use syn::TraitBoundModifier::*;
-            match other {
-                TraitBoundModifier::None => None,
-                TraitBoundModifier::Maybe => Maybe(default()),
-            }
-        }
-    }
-
-    // WhereClause
-
-    impl From<&syn::WhereClause> for WhereClause {
-        fn from(other: &syn::WhereClause) -> Self {
-            Self {
-                predicates: other.predicates.map_into(),
-            }
-        }
-    }
-
-    impl From<&WhereClause> for syn::WhereClause {
-        fn from(other: &WhereClause) -> Self {
-            Self {
-                where_token: default(),
-                predicates: other.predicates.map_into(),
-            }
-        }
-    }
-
-    // PredicateType
-
-    impl From<&syn::PredicateType> for PredicateType {
-        fn from(other: &syn::PredicateType) -> Self {
-            Self {
-                lifetimes: other.lifetimes.map_into(),
-                bounded_ty: other.bounded_ty.ref_into(),
-                bounds: other.bounds.map_into(),
-            }
-        }
-    }
-
-    impl From<&PredicateType> for syn::PredicateType {
-        fn from(other: &PredicateType) -> Self {
-            Self {
-                lifetimes: other.lifetimes.map_into(),
-                bounded_ty: other.bounded_ty.ref_into(),
-                colon_token: default(),
-                bounds: other.bounds.map_into(),
-            }
-        }
-    }
-
-    // PredicateLifetime
-
-    impl From<&syn::PredicateLifetime> for PredicateLifetime {
-        fn from(other: &syn::PredicateLifetime) -> Self {
-            Self {
-                lifetime: other.lifetime.ref_into(),
-                bounds: other.bounds.map_into(),
-            }
-        }
-    }
-
-    impl From<&PredicateLifetime> for syn::PredicateLifetime {
-        fn from(other: &PredicateLifetime) -> Self {
-            Self {
-                lifetime: other.lifetime.ref_into(),
-                colon_token: default(),
-                bounds: other.bounds.map_into(),
-            }
-        }
-    }
-
-    // PredicateEq
-
-    impl From<&syn::PredicateEq> for PredicateEq {
-        fn from(other: &syn::PredicateEq) -> Self {
-            Self {
-                lhs_ty: other.lhs_ty.ref_into(),
-                rhs_ty: other.rhs_ty.ref_into(),
-            }
-        }
-    }
-
-    impl From<&PredicateEq> for syn::PredicateEq {
-        fn from(other: &PredicateEq) -> Self {
-            Self {
-                lhs_ty: other.lhs_ty.ref_into(),
-                eq_token: default(),
-                rhs_ty: other.rhs_ty.ref_into(),
             }
         }
     }
