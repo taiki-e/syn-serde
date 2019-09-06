@@ -112,11 +112,7 @@ mod value {
     /// past the end of the input buffer.
     pub(crate) fn byte<S: AsRef<[u8]> + ?Sized>(s: &S, idx: usize) -> u8 {
         let s = s.as_ref();
-        if idx < s.len() {
-            s[idx]
-        } else {
-            0
-        }
+        if idx < s.len() { s[idx] } else { 0 }
     }
 
     fn next_chr(s: &str) -> char {
