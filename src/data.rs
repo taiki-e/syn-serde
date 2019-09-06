@@ -1,77 +1,57 @@
 use super::*;
-use std::slice::{Iter, IterMut};
 
 ast_struct! {
     /// An enum variant.
     pub struct Variant {
         /// Attributes tagged on the variant.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        attrs: Vec<Attribute>,
+        pub(crate) attrs: Vec<Attribute>,
 
         /// Name of the variant.
-        ident: Ident,
+        pub(crate) ident: Ident,
 
         /// Content stored in the variant.
-        fields: Fields,
+        pub(crate) fields: Fields,
 
         /// Explicit discriminant: `Variant = 1`
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        discriminant: Option<Expr>,
+        pub(crate) discriminant: Option<Expr>,
     }
 }
 
-ast_enum_of_structs! {
+ast_enum! {
     /// Data stored within an enum variant or struct.
-    ///
-    /// # Syntax tree enum
-    ///
-    /// This type is a [syntax tree enum].
-    ///
-    /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
-    pub enum Fields #manual_from_impl {
+    pub enum Fields {
         /// Named fields of a struct or struct variant such as `Point { x: f64,
         /// y: f64 }`.
-        pub Named(FieldsNamed #transparent {
-            named: Punctuated<Field>,
-        }),
+        Named(FieldsNamed),
 
         /// Unnamed fields of a tuple struct or tuple variant such as `Some(T)`.
-        pub Unnamed(FieldsUnnamed #transparent {
-            unnamed: Punctuated<Field>,
-        }),
+        Unnamed(FieldsUnnamed),
 
         /// Unit struct or unit variant such as `None`.
-        pub Unit,
+        Unit,
+    }
+}
+
+ast_struct! {
+    /// Named fields of a struct or struct variant such as `Point { x: f64,
+    /// y: f64 }`.
+    #[serde(transparent)]
+    pub struct FieldsNamed {
+        pub(crate) named: Punctuated<Field>,
+    }
+}
+
+ast_struct! {
+    /// Unnamed fields of a tuple struct or tuple variant such as `Some(T)`.
+    #[serde(transparent)]
+    pub struct FieldsUnnamed {
+        pub(crate) unnamed: Punctuated<Field>,
     }
 }
 
 impl Fields {
-    /// Get an iterator over the borrowed [`Field`] items in this object. This
-    /// iterator can be used to iterate over a named or unnamed struct or
-    /// variant's fields uniformly.
-    ///
-    /// [`Field`]: struct.Field.html
-    pub fn iter(&self) -> Iter<'_, Field> {
-        match *self {
-            Fields::Unit => [].iter(),
-            Fields::Named(ref f) => f.named.iter(),
-            Fields::Unnamed(ref f) => f.unnamed.iter(),
-        }
-    }
-
-    /// Get an iterator over the mutably borrowed [`Field`] items in this
-    /// object. This iterator can be used to iterate over a named or unnamed
-    /// struct or variant's fields uniformly.
-    ///
-    /// [`Field`]: struct.Field.html
-    pub fn iter_mut(&mut self) -> IterMut<'_, Field> {
-        match *self {
-            Fields::Unit => [].iter_mut(),
-            Fields::Named(ref mut f) => f.named.iter_mut(),
-            Fields::Unnamed(ref mut f) => f.unnamed.iter_mut(),
-        }
-    }
-
     pub(crate) fn is_named(&self) -> bool {
         match self {
             Fields::Named(_) => true,
@@ -80,6 +60,9 @@ impl Fields {
     }
 }
 
+// assertions
+// `syn::perse*` functions will detect these, but there is a possibility to
+// generate incorrect code by subsequent operations.
 pub(crate) fn assert_struct_semi(fields: &Fields, semi_token: bool) {
     match fields {
         // struct foo {};
@@ -97,76 +80,48 @@ pub(crate) fn assert_struct_semi(fields: &Fields, semi_token: bool) {
     }
 }
 
-impl<'a> IntoIterator for &'a Fields {
-    type Item = &'a Field;
-    type IntoIter = Iter<'a, Field>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter()
-    }
-}
-
-impl<'a> IntoIterator for &'a mut Fields {
-    type Item = &'a mut Field;
-    type IntoIter = IterMut<'a, Field>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter_mut()
-    }
-}
-
 ast_struct! {
     /// A field of a struct or enum variant.
     pub struct Field {
         /// Attributes tagged on the field.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        attrs: Vec<Attribute>,
+        pub(crate) attrs: Vec<Attribute>,
 
         /// Visibility of the field.
         #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-        vis: Visibility,
+        pub(crate) vis: Visibility,
 
         /// Name of the field, if any.
         ///
         /// Fields of tuple structs have no names.
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        ident: Option<Ident>,
+        pub(crate) ident: Option<Ident>,
 
         #[serde(default, skip_serializing_if = "not")]
-        colon_token: bool,
+        pub(crate) colon_token: bool,
 
         /// Type of the field.
-        ty: Type,
+        pub(crate) ty: Type,
     }
 }
 
-ast_enum_of_structs! {
+ast_enum! {
     /// The visibility level of an item: inherited or `pub` or
     /// `pub(restricted)`.
-    ///
-    /// # Syntax tree enum
-    ///
-    /// This type is a [syntax tree enum].
-    ///
-    /// [syntax tree enum]: enum.Expr.html#syntax-tree-enums
-    pub enum Visibility #manual_from_impl {
+    pub enum Visibility {
         /// A public visibility level: `pub`.
         #[serde(rename = "pub")]
-        pub Public,
+        Public,
 
         /// A crate-level visibility: `crate`.
-        pub Crate,
+        Crate,
 
         /// A visibility level restricted to some path: `pub(self)` or
         /// `pub(super)` or `pub(crate)` or `pub(in some::module)`.
-        pub Restricted(VisRestricted {
-            #[serde(default, skip_serializing_if = "not")]
-            in_token: bool,
-            path: Box<Path>,
-        }),
+        Restricted(VisRestricted),
 
         /// An inherited visibility, which usually means private.
-        pub Inherited,
+        Inherited,
     }
 }
 
@@ -185,124 +140,21 @@ impl Default for Visibility {
     }
 }
 
+ast_struct! {
+    /// A visibility level restricted to some path: `pub(self)` or
+    /// `pub(super)` or `pub(crate)` or `pub(in some::module)`.
+    pub struct VisRestricted {
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) in_token: bool,
+        pub(crate) path: Box<Path>,
+    }
+}
+
 mod convert {
     use super::*;
 
-    // Variant
-
-    impl From<&syn::Variant> for Variant {
-        fn from(other: &syn::Variant) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                ident: other.ident.ref_into(),
-                fields: other.fields.ref_into(),
-                discriminant: other.discriminant.ref_map(|(_, x)| x.ref_into()),
-            }
-        }
-    }
-
-    impl From<&Variant> for syn::Variant {
-        fn from(other: &Variant) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                ident: other.ident.ref_into(),
-                fields: other.fields.ref_into(),
-                discriminant: other.discriminant.ref_map(|x| (default(), x.ref_into())),
-            }
-        }
-    }
-
-    // Fields
-
-    impl From<&syn::Fields> for Fields {
-        fn from(other: &syn::Fields) -> Self {
-            use super::Fields::*;
-            use syn::Fields;
-            match other {
-                Fields::Named(x) => Named(x.ref_into()),
-                Fields::Unnamed(x) => Unnamed(x.ref_into()),
-                Fields::Unit => Unit,
-            }
-        }
-    }
-
-    impl From<&Fields> for syn::Fields {
-        fn from(other: &Fields) -> Self {
-            use syn::Fields::*;
-            match other {
-                Fields::Named(x) => Named(x.ref_into()),
-                Fields::Unnamed(x) => Unnamed(x.ref_into()),
-                Fields::Unit => Unit,
-            }
-        }
-    }
-
-    // FieldsNamed
-
-    impl From<&syn::FieldsNamed> for FieldsNamed {
-        fn from(other: &syn::FieldsNamed) -> Self {
-            Self {
-                named: other.named.map_into(),
-            }
-        }
-    }
-
-    impl From<&FieldsNamed> for syn::FieldsNamed {
-        fn from(other: &FieldsNamed) -> Self {
-            Self {
-                brace_token: default(),
-                named: other.named.map_into(),
-            }
-        }
-    }
-
-    // FieldsUnnamed
-
-    impl From<&syn::FieldsUnnamed> for FieldsUnnamed {
-        fn from(other: &syn::FieldsUnnamed) -> Self {
-            Self {
-                unnamed: other.unnamed.map_into(),
-            }
-        }
-    }
-
-    impl From<&FieldsUnnamed> for syn::FieldsUnnamed {
-        fn from(other: &FieldsUnnamed) -> Self {
-            Self {
-                paren_token: default(),
-                unnamed: other.unnamed.map_into(),
-            }
-        }
-    }
-
-    // Field
-
-    impl From<&syn::Field> for Field {
-        fn from(other: &syn::Field) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                vis: other.vis.ref_into(),
-                ident: other.ident.map_into(),
-                colon_token: other.colon_token.is_some(),
-                ty: other.ty.ref_into(),
-            }
-        }
-    }
-
-    impl From<&Field> for syn::Field {
-        fn from(other: &Field) -> Self {
-            Self {
-                attrs: other.attrs.map_into(),
-                vis: other.vis.ref_into(),
-                ident: other.ident.map_into(),
-                colon_token: default_or_none(other.colon_token),
-                ty: other.ty.ref_into(),
-            }
-        }
-    }
-
     // Visibility
-
+    syn_trait_impl!(syn::Visibility);
     impl From<&syn::Visibility> for Visibility {
         fn from(other: &syn::Visibility) -> Self {
             use super::Visibility::*;
@@ -315,7 +167,6 @@ mod convert {
             }
         }
     }
-
     impl From<&Visibility> for syn::Visibility {
         fn from(other: &Visibility) -> Self {
             use syn::Visibility::*;
@@ -328,28 +179,6 @@ mod convert {
                 }),
                 Visibility::Restricted(x) => Restricted(x.into()),
                 Visibility::Inherited => Inherited,
-            }
-        }
-    }
-
-    // VisRestricted
-
-    impl From<&syn::VisRestricted> for VisRestricted {
-        fn from(other: &syn::VisRestricted) -> Self {
-            Self {
-                in_token: other.in_token.is_some(),
-                path: other.path.map_into(),
-            }
-        }
-    }
-
-    impl From<&VisRestricted> for syn::VisRestricted {
-        fn from(other: &VisRestricted) -> Self {
-            Self {
-                pub_token: default(),
-                paren_token: default(),
-                in_token: default_or_none(other.in_token),
-                path: other.path.map_into(),
             }
         }
     }

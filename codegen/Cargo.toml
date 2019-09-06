@@ -1,0 +1,23 @@
+[package]
+name = "serde-syn-internal-codegen"
+version = "0.0.0"
+authors = ["David Tolnay <dtolnay@gmail.com>", "Nika Layzell <nika@thelayzells.com>", "Taiki Endo <te316e89@gmail.com>"]
+edition = "2018"
+
+publish = false # this is an internal crate which should never be published
+
+[dependencies]
+indexmap = { version = "1.1", features = ["serde-1"] }
+proc-macro2 = "1.0"
+quote = "1.0"
+rustfmt = { package = "rustfmt-nightly", git = "https://github.com/rust-lang-nursery/rustfmt" }
+semver = { version = "0.9", features = ["serde"] }
+serde = { version = "1.0.99", features = ["derive"] }
+serde_json = "1.0"
+syn-codegen = { version = "0.1", git = "https://github.com/dtolnay/syn" }
+syn = { version = "1.0", git = "https://github.com/dtolnay/syn", features = ["full", "extra-traits"] }
+toml = "0.5"
+
+[workspace]
+# Prefer that `cargo clean` in syn's directory does not require a rebuild of
+# rustfmt in the codegen directory.

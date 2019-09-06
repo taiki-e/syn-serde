@@ -4,8 +4,8 @@
 //!
 //! ```toml
 //! [dependencies]
-//! serde_syn = { version = "0.0.1", features = ["json"] }
-//! syn = { version = "0.15", features = ["full"] }
+//! serde-syn = { version = "0.1.0-alpha.1", features = ["json"] }
+//! syn = { version = "1", features = ["full"] }
 //! ```
 //!
 //! ```rust
@@ -45,7 +45,7 @@
 //!                   ]
 //!                 },
 //!                 "delimiter": "paren",
-//!                 "tts": [
+//!                 "tokens": [
 //!                   {
 //!                     "lit": "\"Hello, world!\""
 //!                   }
@@ -79,125 +79,132 @@
 //! [`rust2json`]: https://github.com/taiki-e/serde-syn/tree/master/examples/rust2json
 //! [`json2rust`]: https://github.com/taiki-e/serde-syn/tree/master/examples/json2rust
 
-// Serde Syn types in rustdoc of other crates get linked to here.
-#![doc(html_root_url = "https://docs.rs/serde_syn/0.0.1")]
-#![deny(unsafe_code)]
-#![deny(rust_2018_idioms, unreachable_pub)]
-#![deny(clippy::all, clippy::pedantic)]
-// Ignored clippy::all lints.
-#![allow(clippy::large_enum_variant)]
-// Ignored clippy::pedantic lints.
+#![doc(html_root_url = "https://docs.rs/serde-syn/0.1.0")]
+#![doc(test(
+    no_crate_inject,
+    attr(
+        deny(warnings, rust_2018_idioms, single_use_lifetimes),
+        allow(dead_code)
+    )
+))]
+#![warn(unsafe_code)]
+#![warn(rust_2018_idioms, unreachable_pub)]
+// It cannot be included in the published code because these lints have false positives in the minimum required version.
+#![cfg_attr(test, warn(single_use_lifetimes))]
+#![warn(clippy::all, clippy::pedantic)]
 #![allow(
-    clippy::cast_possible_truncation,
-    clippy::cast_possible_wrap,
-    clippy::doc_markdown,
-    clippy::if_not_else,
+    clippy::large_enum_variant,
     clippy::module_name_repetitions,
     clippy::shadow_unrelated,
-    clippy::similar_names,
-    clippy::single_match_else
+    clippy::use_self,
+    clippy::used_underscore_binding
 )]
 
 #[macro_use]
 mod macros;
 
+mod gen;
+
 mod attr;
-pub use self::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue, NestedMeta};
+#[doc(hidden)]
+pub use crate::attr::*;
 
 mod data;
-pub use self::data::{
-    Field, Fields, FieldsNamed, FieldsUnnamed, Variant, VisRestricted, Visibility,
-};
+#[doc(hidden)]
+pub use crate::data::*;
 
 mod expr;
-pub use self::expr::{
-    Expr, ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprBinary, ExprBlock, ExprBox,
-    ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop, ExprGroup,
-    ExprIf, ExprInPlace, ExprIndex, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch,
-    ExprMethodCall, ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn,
-    ExprStruct, ExprTry, ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprVerbatim,
-    ExprWhile, ExprYield, Index, Member,
-};
-
-pub use self::expr::{
-    Arm, Block, FieldPat, FieldValue, GenericMethodArgument, Label, Local, MethodTurbofish, Pat,
-    PatBox, PatIdent, PatLit, PatMacro, PatPath, PatRange, PatRef, PatSlice, PatStruct, PatTuple,
-    PatTupleStruct, PatVerbatim, RangeLimits, Stmt,
-};
+#[doc(hidden)]
+pub use crate::expr::*;
 
 mod generics;
-pub use self::generics::{
-    BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeDef, PredicateEq,
-    PredicateLifetime, PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound,
-    WhereClause, WherePredicate,
-};
+#[doc(hidden)]
+pub use crate::generics::*;
 
 mod item;
-pub use self::item::{
-    ArgCaptured, ArgSelf, ArgSelfRef, FnArg, FnDecl, ForeignItem, ForeignItemFn, ForeignItemMacro,
-    ForeignItemStatic, ForeignItemType, ForeignItemVerbatim, ImplItem, ImplItemConst,
-    ImplItemExistential, ImplItemMacro, ImplItemMethod, ImplItemType, ImplItemVerbatim, Item,
-    ItemConst, ItemEnum, ItemExistential, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl,
-    ItemMacro, ItemMacro2, ItemMod, ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType,
-    ItemUnion, ItemUse, ItemVerbatim, MethodSig, TraitItem, TraitItemConst, TraitItemMacro,
-    TraitItemMethod, TraitItemType, TraitItemVerbatim, UseGroup, UseName, UsePath, UseRename,
-    UseTree,
-};
+#[doc(hidden)]
+pub use crate::item::*;
 
 mod file;
-pub use self::file::File;
+#[doc(hidden)]
+pub use crate::file::File;
 
 mod lifetime;
-pub use self::lifetime::Lifetime;
+#[doc(hidden)]
+pub use crate::lifetime::Lifetime;
 
 mod lit;
-pub use self::lit::{
-    Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr, LitVerbatim,
-};
+#[doc(hidden)]
+pub use crate::lit::*;
 
 mod mac;
-pub use self::mac::{Macro, MacroDelimiter};
+#[doc(hidden)]
+pub use crate::mac::{Macro, MacroDelimiter};
 
 mod op;
-pub use self::op::{BinOp, UnOp};
+#[doc(hidden)]
+pub use crate::op::{BinOp, UnOp};
 
 mod ty;
-pub use self::ty::{
-    Abi, BareFnArg, BareFnArgName, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
-    TypeImplTrait, TypeMacro, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
-    TypeTraitObject, TypeTuple, TypeVerbatim,
-};
+#[doc(hidden)]
+pub use crate::ty::*;
+
+mod pat;
+#[doc(hidden)]
+pub use crate::pat::*;
 
 mod path;
-pub use self::path::{
-    AngleBracketedGenericArguments, Binding, Constraint, GenericArgument,
-    ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
-};
+#[doc(hidden)]
+pub use crate::path::*;
+
+mod stmt;
+#[doc(hidden)]
+pub use crate::stmt::{Block, Local, Stmt};
 
 mod token_stream;
-pub use self::token_stream::{
+#[doc(hidden)]
+pub use crate::token_stream::{
     Delimiter, Group, Ident, Literal, Punct, Spacing, TokenStream, TokenTree,
 };
 
 #[cfg(feature = "json")]
 pub mod json;
 
-////////////////////////////////////////////////////////////////////////////////
+// =============================================================================
+// Syn trait
 
-use serde_derive::{Deserialize, Serialize};
+mod private {
+    pub trait Sealed {}
+}
 
-// assertions
-// `syn::perse*` functions will detect these, but there is a possibility to
-// generate incorrect code by subsequent operations.
-use self::data::assert_struct_semi;
+#[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
+pub trait Syn: Sized + private::Sealed {
+    type Adapter: Serialize + for<'de> Deserialize<'de>;
+
+    #[doc(hidden)]
+    fn to_adapter(&self) -> Self::Adapter;
+    #[doc(hidden)]
+    fn from_adapter(adapter: &Self::Adapter) -> Self;
+}
+
+// =============================================================================
+
+use proc_macro2::Span;
+use serde::{Deserialize, Serialize};
 
 type Punctuated<T> = Vec<T>;
 
-fn default<T: Default>() -> T {
+fn default<T>() -> T
+where
+    T: Default,
+{
     T::default()
 }
 
-fn default_or_none<T: Default>(x: bool) -> Option<T> {
+fn default_or_none<T>(x: bool) -> Option<T>
+where
+    T: Default,
+{
     if x {
         Some(T::default())
     } else {
@@ -205,7 +212,10 @@ fn default_or_none<T: Default>(x: bool) -> Option<T> {
     }
 }
 
-fn not<T: std::ops::Not>(x: T) -> T::Output {
+fn not<T>(x: T) -> T::Output
+where
+    T: std::ops::Not,
+{
     !x
 }
 
@@ -222,7 +232,8 @@ trait RefInto<U>: Sized {
 impl<T, U> RefInto<U> for T {}
 
 trait MapInto<U, M> {
-    type T: ?Sized;
+    type T;
+
     fn ref_map<'a, F>(&'a self, f: F) -> M
     where
         Self::T: 'a,
@@ -239,6 +250,7 @@ trait MapInto<U, M> {
 
 impl<T, U> MapInto<U, Vec<U>> for Vec<T> {
     type T = T;
+
     fn ref_map<'a, F>(&'a self, f: F) -> Vec<U>
     where
         F: FnMut(&'a Self::T) -> U,
@@ -247,8 +259,12 @@ impl<T, U> MapInto<U, Vec<U>> for Vec<T> {
     }
 }
 
-impl<T, U, P: Default> MapInto<U, syn::punctuated::Punctuated<U, P>> for Vec<T> {
+impl<T, U, P> MapInto<U, syn::punctuated::Punctuated<U, P>> for Vec<T>
+where
+    P: Default,
+{
     type T = T;
+
     fn ref_map<'a, F>(&'a self, f: F) -> syn::punctuated::Punctuated<U, P>
     where
         F: FnMut(&'a Self::T) -> U,
@@ -257,8 +273,12 @@ impl<T, U, P: Default> MapInto<U, syn::punctuated::Punctuated<U, P>> for Vec<T> 
     }
 }
 
-impl<T, U, P: Default> MapInto<U, Vec<U>> for syn::punctuated::Punctuated<T, P> {
+impl<T, U, P> MapInto<U, Vec<U>> for syn::punctuated::Punctuated<T, P>
+where
+    P: Default,
+{
     type T = T;
+
     fn ref_map<'a, F>(&'a self, f: F) -> Vec<U>
     where
         F: FnMut(&'a Self::T) -> U,
@@ -269,6 +289,7 @@ impl<T, U, P: Default> MapInto<U, Vec<U>> for syn::punctuated::Punctuated<T, P> 
 
 impl<T, U> MapInto<U, Option<U>> for Option<T> {
     type T = T;
+
     fn ref_map<'a, F>(&'a self, f: F) -> Option<U>
     where
         F: FnMut(&'a Self::T) -> U,
@@ -277,11 +298,9 @@ impl<T, U> MapInto<U, Option<U>> for Option<T> {
     }
 }
 
-// Clippy false positive
-// https://github.com/rust-lang/rust-clippy/issues/3410
-#[allow(clippy::use_self)]
 impl<T, U> MapInto<U, Box<U>> for Box<T> {
     type T = T;
+
     fn ref_map<'a, F>(&'a self, mut f: F) -> Box<U>
     where
         F: FnMut(&'a Self::T) -> U,

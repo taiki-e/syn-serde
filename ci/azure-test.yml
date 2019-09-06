@@ -1,0 +1,30 @@
+parameters:
+  vmImage: ubuntu-16.04
+  cmd: test
+
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+    - template: azure-install-rust.yml
+      parameters:
+        toolchain: ${{ parameters.toolchain }}
+
+    - script: |
+        cargo ${{ parameters.cmd }}
+        cargo ${{ parameters.cmd }} --all-features
+      displayName: cargo ${{ parameters.cmd }}
+
+    - ${{ if eq(parameters.toolchain, 'nightly') }}:
+      - script: |
+          cargo check --manifest-path examples/json2rust/Cargo.toml
+          cargo check --manifest-path examples/rust2json/Cargo.toml
+        displayName: cargo check (examples)
+
+      # Refs: https://github.com/rust-lang/cargo/issues/5657
+      - script: |
+          cargo update -Zminimal-versions
+          cargo check --all-features
+        displayName: cargo check -Zminimal-versions

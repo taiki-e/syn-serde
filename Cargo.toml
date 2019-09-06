@@ -1,42 +1,34 @@
 [package]
-name = "serde_syn"
-version = "0.0.1" # don't forget to update html_root_url
+name = "serde-syn"
+version = "0.1.0-alpha.1"
 authors = ["David Tolnay <dtolnay@gmail.com>", "Taiki Endo <te316e89@gmail.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
-description = "Library to serialize and deserialize Syn syntax trees."
 repository = "https://github.com/taiki-e/serde-syn"
-documentation = "https://docs.rs/serde_syn/"
+documentation = "https://docs.rs/serde-syn/"
 keywords = ["serde", "serialization", "syn"]
 categories = ["development-tools::procedural-macro-helpers", "encoding"]
 readme = "README.md"
-include = [
-    "/build.rs",
-    "/Cargo.toml",
-    "/LICENSE-APACHE",
-    "/LICENSE-MIT",
-    "/README.md",
-    "/src/**/*.rs",
-]
-
-[features]
-default = []
-json = ["serde_json"]
-
-[dependencies]
-proc-macro2 = { version = "0.4.21", default-features = false }
-serde = ">=1.0.59, <2"
-serde_derive = ">=1.0.59, <2" # This is necessary to make `-Z minimal-versions` build successful.
-serde_json = { version = "1", optional = true }
-syn = { version = "0.15.29", default-features = false, features = ["full"] }
-
-[dev-dependencies]
-syn = { version = "0.15.29", features = ["full", "extra-traits"] }
-quote = "0.6.8"
-serde_json = "1"
+description = "Library to serialize and deserialize Syn syntax trees."
 
 [package.metadata.docs.rs]
 all-features = true
 
 [package.metadata.playground]
 all-features = true
+
+[features]
+default = []
+json = ["serde_json"]
+
+[dependencies]
+proc-macro2 = { version = "1.0", default-features = false }
+serde = { version = "1.0.99", features = ["derive"] }
+serde_derive = "1.0.99" # This is necessary to make `-Z minimal-versions` build successful.
+serde_json = { version = "1.0", optional = true }
+syn = { version = "1.0.5", default-features = false, features = ["full"] }
+
+[dev-dependencies]
+quote = "1.0"
+serde_json = "1.0"
+syn = { version = "1.0", features = ["full", "extra-traits"] }
