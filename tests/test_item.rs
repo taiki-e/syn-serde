@@ -14,7 +14,7 @@ fn test_unit() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let ser: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let ser: syn_serde::Item = serde_json::from_str(json).unwrap();
     let ser = Item::from(&ser);
     assert_eq!(ser, actual);
 }
@@ -121,7 +121,7 @@ fn test_struct() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -177,7 +177,7 @@ fn test_union() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -327,7 +327,7 @@ fn test_enum() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -427,7 +427,7 @@ fn test_attr_with_path() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -478,7 +478,7 @@ fn test_attr_with_non_mod_style_path() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -515,7 +515,7 @@ fn test_attr_with_mod_style_path_with_self() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -578,7 +578,7 @@ fn test_pub_restricted() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -600,7 +600,7 @@ fn test_vis_crate() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -632,7 +632,7 @@ fn test_pub_restricted_crate() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -664,7 +664,7 @@ fn test_pub_restricted_super() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -697,7 +697,7 @@ fn test_pub_restricted_in_super() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }
@@ -734,7 +734,7 @@ fn test_ambiguous_crate() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: serde_syn::Item = serde_json::from_str(json).unwrap();
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
 }

@@ -1,6 +1,6 @@
 // Based on https://github.com/dtolnay/syn/tree/1.0.5/codegen.
 //
-// This crate generates the Syn trait in Serde Syn programmatically from
+// This crate generates the Syn trait in syn-serde programmatically from
 // the syntax tree description.
 
 #![recursion_limit = "128"]

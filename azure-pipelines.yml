@@ -17,7 +17,7 @@ variables:
   RUST_MIN_STACK: 20000000
 
 jobs:
-# This is the minimum Rust version supported by serde-syn.
+# This is the minimum Rust version supported by syn-serde.
 # When updating this, the reminder to update the minimum supported
 # Rust version in README.md.
 #

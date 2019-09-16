@@ -1,4 +1,4 @@
-# Serde Syn
+# syn-serde
 
 [![Build Status][azure-badge]][azure-url]
 [![Crates.io][crates-version-badge]][crates-url]
@@ -6,14 +6,14 @@
 [![License][crates-license-badge]][crates-url]
 [![Minimum supported Rust version][rustc-badge]][rustc-url]
 
-[azure-badge]: https://dev.azure.com/taiki-e/taiki-e/_apis/build/status/taiki-e.serde-syn?branchName=master
-[azure-url]: https://dev.azure.com/taiki-e/taiki-e/_build/latest?definitionId=15&branchName=master
-[crates-version-badge]: https://img.shields.io/crates/v/serde-syn.svg
-[crates-license-badge]: https://img.shields.io/crates/l/serde-syn.svg
-[crates-badge]: https://img.shields.io/crates/v/serde-syn.svg
-[crates-url]: https://crates.io/crates/serde-syn/
-[docs-badge]: https://docs.rs/serde-syn/badge.svg
-[docs-url]: https://docs.rs/serde-syn/
+[azure-badge]: https://dev.azure.com/taiki-e/taiki-e/_apis/build/status/taiki-e.syn-serde?branchName=master
+[azure-url]: https://dev.azure.com/taiki-e/taiki-e/_build/latest?definitionId=16&branchName=master
+[crates-version-badge]: https://img.shields.io/crates/v/syn-serde.svg
+[crates-license-badge]: https://img.shields.io/crates/l/syn-serde.svg
+[crates-badge]: https://img.shields.io/crates/v/syn-serde.svg
+[crates-url]: https://crates.io/crates/syn-serde/
+[docs-badge]: https://docs.rs/syn-serde/badge.svg
+[docs-url]: https://docs.rs/syn-serde/
 [rustc-badge]: https://img.shields.io/badge/rustc-1.31+-lightgray.svg
 [rustc-url]: https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html
 
@@ -27,21 +27,21 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-serde-syn = "0.1.0-alpha.1"
+syn-serde = "0.1.0-alpha.1"
 ```
 
-The current serde-syn requires Rust 1.31 or later.
+The current syn-serde requires Rust 1.31 or later.
 
 ## Examples
 
 ```toml
 [dependencies]
-serde-syn = { version = "0.1.0-alpha.1", features = ["json"] }
+syn-serde = { version = "0.1.0-alpha.1", features = ["json"] }
 syn = { version = "1", features = ["full"] }
 ```
 
 ```rust
-use serde_syn::json;
+use syn_serde::json;
 
 let syn_file: syn::File = syn::parse_quote! {
     fn main() {
@@ -91,14 +91,14 @@ This prints the following JSON:
 
 ### Rust source file -> JSON representation of the syntax tree
 
-The [`rust2json`] example parse a Rust source file into a `serde_syn::File`
+The [`rust2json`] example parse a Rust source file into a `syn_serde::File`
 and print out a JSON representation of the syntax tree.
 
 [`rust2json`]: examples/rust2json
 
 ### JSON file -> Rust syntax tree
 
-The [`json2rust`] example parse a JSON file into a `serde_syn::File` and
+The [`json2rust`] example parse a JSON file into a `syn_serde::File` and
 print out a Rust syntax tree.
 
 [`json2rust`]: examples/json2rust
@@ -110,11 +110,11 @@ print out a Rust syntax tree.
 
 ## Relationship to Syn
 
-Serde Syn is a fork of [Syn], and Serde Syn provides a set of data structures
-similar but not identical to [Syn]. All data structures provided by Serde Syn
+syn-serde is a fork of [Syn], and syn-serde provides a set of data structures
+similar but not identical to [Syn]. All data structures provided by syn-serde
 can be converted to the data structures of [Syn] and [proc-macro2].
 
-The data structures of Serde Syn 0.1 is compatible with the data structures of [Syn] 1.0.
+The data structures of syn-serde 0.1 is compatible with the data structures of [Syn] 1.0.
 
 [Syn]: https://github.com/dtolnay/syn
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2

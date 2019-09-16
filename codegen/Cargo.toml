@@ -1,5 +1,5 @@
 [package]
-name = "serde-syn-internal-codegen"
+name = "syn-serde-internal-codegen"
 version = "0.0.0"
 authors = ["David Tolnay <dtolnay@gmail.com>", "Nika Layzell <nika@thelayzells.com>", "Taiki Endo <te316e89@gmail.com>"]
 edition = "2018"

@@ -4,14 +4,14 @@
 //!
 //! ```toml
 //! [dependencies]
-//! serde-syn = { version = "0.1.0-alpha.1", features = ["json"] }
+//! syn-serde = { version = "0.1.0-alpha.1", features = ["json"] }
 //! syn = { version = "1", features = ["full"] }
 //! ```
 //!
 //! ```rust
 //! # #[cfg(feature = "json")]
 //! # fn dox() -> Result<(), Box<dyn std::error::Error>> {
-//! use serde_syn::json;
+//! use syn_serde::json;
 //!
 //! let syn_file: syn::File = syn::parse_quote! {
 //!     fn main() {
@@ -62,12 +62,12 @@
 //!
 //! ### Rust source file -> JSON representation of the syntax tree
 //!
-//! The [`rust2json`] example parse a Rust source file into a `serde_syn::File`
+//! The [`rust2json`] example parse a Rust source file into a `syn_serde::File`
 //! and print out a JSON representation of the syntax tree.
 //!
 //! ### JSON file -> Rust syntax tree
 //!
-//! The [`json2rust`] example parse a JSON file into a `serde_syn::File` and
+//! The [`json2rust`] example parse a JSON file into a `syn_serde::File` and
 //! print out a Rust syntax tree.
 //!
 //! ## Optional features
@@ -76,10 +76,10 @@
 //!   deserializing.
 //!
 //! [Syn]: https://github.com/dtolnay/syn
-//! [`rust2json`]: https://github.com/taiki-e/serde-syn/tree/master/examples/rust2json
-//! [`json2rust`]: https://github.com/taiki-e/serde-syn/tree/master/examples/json2rust
+//! [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/master/examples/rust2json
+//! [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/master/examples/json2rust
 
-#![doc(html_root_url = "https://docs.rs/serde-syn/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/syn-serde/0.1.0")]
 #![doc(test(
     no_crate_inject,
     attr(
@@ -192,7 +192,7 @@ pub trait Syn: Sized + private::Sealed {
     /// ```rust
     /// # #[cfg(feature = "json")]
     /// # fn dox() -> Result<(), Box<dyn std::error::Error>> {
-    /// use serde_syn::Syn;
+    /// use syn_serde::Syn;
     ///
     /// let syn_file: syn::File = syn::parse_quote! {
     ///     fn main() {
@@ -214,7 +214,7 @@ pub trait Syn: Sized + private::Sealed {
     /// ```rust
     /// # #[cfg(feature = "json")]
     /// # fn dox() -> Result<(), Box<dyn std::error::Error>> {
-    /// use serde_syn::Syn;
+    /// use syn_serde::Syn;
     ///
     /// // `struct Unit;`
     /// let json = r#"{
