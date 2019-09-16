@@ -27,7 +27,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-syn-serde = "0.1.0-alpha.1"
+syn-serde = "0.1"
 ```
 
 The current syn-serde requires Rust 1.31 or later.
@@ -36,7 +36,7 @@ The current syn-serde requires Rust 1.31 or later.
 
 ```toml
 [dependencies]
-syn-serde = { version = "0.1.0-alpha.1", features = ["json"] }
+syn-serde = { version = "0.1", features = ["json"] }
 syn = { version = "1", features = ["full"] }
 ```
 

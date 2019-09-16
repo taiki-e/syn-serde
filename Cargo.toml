@@ -1,6 +1,6 @@
 [package]
 name = "syn-serde"
-version = "0.1.0-alpha.1"
+version = "0.1.0"
 authors = ["David Tolnay <dtolnay@gmail.com>", "Taiki Endo <te316e89@gmail.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"

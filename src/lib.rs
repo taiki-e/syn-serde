@@ -4,7 +4,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! syn-serde = { version = "0.1.0-alpha.1", features = ["json"] }
+//! syn-serde = { version = "0.1", features = ["json"] }
 //! syn = { version = "1", features = ["full"] }
 //! ```
 //!
