@@ -1,16 +1,16 @@
 #![warn(rust_2018_idioms)]
 
 use quote::ToTokens;
-use syn_serde::json;
 use std::{
     env, fs,
     io::{self, BufWriter, Write},
     path::PathBuf,
     process::{Command, Stdio},
 };
+use syn_serde::json;
 use tempfile::Builder;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() {
     if let Err(e) = try_main() {

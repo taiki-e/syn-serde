@@ -40,18 +40,6 @@
       "use": {
         "tree": {
           "path": {
-            "ident": "syn_serde",
-            "tree": {
-              "ident": "json"
-            }
-          }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
             "ident": "std",
             "tree": {
               "group": [
@@ -103,6 +91,18 @@
                   }
                 }
               ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "use": {
+        "tree": {
+          "path": {
+            "ident": "syn_serde",
+            "tree": {
+              "ident": "json"
             }
           }
         }
@@ -183,28 +183,6 @@
                                                       },
                                                       {
                                                         "ident": "Error"
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              },
-                                              {
-                                                "trait": {
-                                                  "path": {
-                                                    "segments": [
-                                                      {
-                                                        "ident": "Send"
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              },
-                                              {
-                                                "trait": {
-                                                  "path": {
-                                                    "segments": [
-                                                      {
-                                                        "ident": "Sync"
                                                       }
                                                     ]
                                                   }
