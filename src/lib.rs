@@ -4,7 +4,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! syn-serde = { version = "0.1", features = ["json"] }
+//! syn-serde = { version = "0.2", features = ["json"] }
 //! syn = { version = "1", features = ["full"] }
 //! ```
 //!
@@ -79,7 +79,7 @@
 //! [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/master/examples/rust2json
 //! [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/master/examples/json2rust
 
-#![doc(html_root_url = "https://docs.rs/syn-serde/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/syn-serde/0.2.0")]
 #![doc(test(
     no_crate_inject,
     attr(

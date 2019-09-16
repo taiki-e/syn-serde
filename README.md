@@ -27,7 +27,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-syn-serde = "0.1"
+syn-serde = "0.2"
 ```
 
 The current syn-serde requires Rust 1.31 or later.
@@ -36,7 +36,7 @@ The current syn-serde requires Rust 1.31 or later.
 
 ```toml
 [dependencies]
-syn-serde = { version = "0.1", features = ["json"] }
+syn-serde = { version = "0.2", features = ["json"] }
 syn = { version = "1", features = ["full"] }
 ```
 
@@ -114,7 +114,7 @@ syn-serde is a fork of [Syn], and syn-serde provides a set of data structures
 similar but not identical to [Syn]. All data structures provided by syn-serde
 can be converted to the data structures of [Syn] and [proc-macro2].
 
-The data structures of syn-serde 0.1 is compatible with the data structures of [Syn] 1.0.
+The data structures of syn-serde 0.2 is compatible with the data structures of [Syn] 1.0.
 
 [Syn]: https://github.com/dtolnay/syn
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2
