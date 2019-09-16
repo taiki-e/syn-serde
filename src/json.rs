@@ -63,20 +63,20 @@ where
 /// This function is equivalent to the following code:
 ///
 /// ```rust
-/// # fn to_vec(syn_file: &syn::File) -> serde_json::Result<Vec<u8>> {
+/// # fn to_vec(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_vec(&serializable_file)
+/// serde_json::to_vec(&serializable_file).unwrap()
 /// # }
 /// ```
 #[inline]
-pub fn to_vec<S>(syn: &S) -> Result<Vec<u8>>
+pub fn to_vec<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
 {
     let adapter = syn.to_adapter();
-    serde_json::to_vec(&adapter)
+    serde_json::to_vec(&adapter).unwrap()
 }
 
 /// Serialize the given [`Syn`] type as a pretty-printed JSON byte vector.
@@ -84,20 +84,20 @@ where
 /// This function is equivalent to the following code:
 ///
 /// ```rust
-/// # fn to_vec_pretty(syn_file: &syn::File) -> serde_json::Result<Vec<u8>> {
+/// # fn to_vec_pretty(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_vec_pretty(&serializable_file)
+/// serde_json::to_vec_pretty(&serializable_file).unwrap()
 /// # }
 /// ```
 #[inline]
-pub fn to_vec_pretty<S>(syn: &S) -> Result<Vec<u8>>
+pub fn to_vec_pretty<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
 {
     let adapter = syn.to_adapter();
-    serde_json::to_vec_pretty(&adapter)
+    serde_json::to_vec_pretty(&adapter).unwrap()
 }
 
 /// Serialize the given [`Syn`] type as a String of JSON.
@@ -105,20 +105,20 @@ where
 /// This function is equivalent to the following code:
 ///
 /// ```rust
-/// # fn to_string(syn_file: &syn::File) -> serde_json::Result<String> {
+/// # fn to_string(syn_file: &syn::File) -> String {
 /// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_string(&serializable_file)
+/// serde_json::to_string(&serializable_file).unwrap()
 /// # }
 /// ```
 #[inline]
-pub fn to_string<S>(syn: &S) -> Result<String>
+pub fn to_string<S>(syn: &S) -> String
 where
     S: Syn,
 {
     let adapter = syn.to_adapter();
-    serde_json::to_string(&adapter)
+    serde_json::to_string(&adapter).unwrap()
 }
 
 /// Serialize the given [`Syn`] type as a pretty-printed String of JSON.
@@ -126,20 +126,20 @@ where
 /// This function is equivalent to the following code:
 ///
 /// ```rust
-/// # fn to_string_pretty(syn_file: &syn::File) -> serde_json::Result<String> {
+/// # fn to_string_pretty(syn_file: &syn::File) -> String {
 /// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_string_pretty(&serializable_file)
+/// serde_json::to_string_pretty(&serializable_file).unwrap()
 /// # }
 /// ```
 #[inline]
-pub fn to_string_pretty<S>(syn: &S) -> Result<String>
+pub fn to_string_pretty<S>(syn: &S) -> String
 where
     S: Syn,
 {
     let adapter = syn.to_adapter();
-    serde_json::to_string_pretty(&adapter)
+    serde_json::to_string_pretty(&adapter).unwrap()
 }
 
 // Deserialize JSON data to [`Syn`] type.

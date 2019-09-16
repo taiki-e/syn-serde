@@ -18,7 +18,7 @@
 //!         println!("Hello, world!");
 //!     }
 //! };
-//! println!("{}", json::to_string_pretty(&syn_file)?);
+//! println!("{}", json::to_string_pretty(&syn_file));
 //! # Ok(())
 //! # }
 //! ```
@@ -191,7 +191,7 @@ pub trait Syn: Sized + private::Sealed {
     ///
     /// ```rust
     /// # #[cfg(feature = "json")]
-    /// # fn dox() -> Result<(), Box<dyn std::error::Error>> {
+    /// # fn dox() {
     /// use syn_serde::Syn;
     ///
     /// let syn_file: syn::File = syn::parse_quote! {
@@ -201,8 +201,7 @@ pub trait Syn: Sized + private::Sealed {
     /// };
     ///
     /// let serializable_file = syn_file.to_adapter();
-    /// println!("{}", serde_json::to_string_pretty(&serializable_file)?);
-    /// # Ok(())
+    /// println!("{}", serde_json::to_string_pretty(&serializable_file).unwrap());
     /// # }
     /// ```
     fn to_adapter(&self) -> Self::Adapter;

@@ -49,7 +49,7 @@ let syn_file: syn::File = syn::parse_quote! {
     }
 };
 
-println!("{}", json::to_string_pretty(&syn_file)?);
+println!("{}", json::to_string_pretty(&syn_file));
 ```
 
 This prints the following JSON:
