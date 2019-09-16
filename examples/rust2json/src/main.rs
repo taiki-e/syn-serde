@@ -1,11 +1,11 @@
 #![warn(rust_2018_idioms)]
 
-use serde_syn::json;
 use std::{
     env, fs,
     io::{self, BufWriter, Write},
     path::PathBuf,
 };
+use syn_serde::json;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 

@@ -1,12 +1,12 @@
-# serde_syn_codegen
+# syn_serde_codegen
 
 This is an internal (not published on crates.io) crate which is used to generate
-the files in the `gen/` directory of `serde-syn`. It is used to ensure that the
+the files in the `gen/` directory of `syn-serde`. It is used to ensure that the
 implementations for `Syn` remain in sync with the
 actual AST.
 
 To run this program, run `cargo run` in this directory, and the `gen/` folder
 will be re-generated.
 
-This program is slow, and is therefore not run when building `serde-syn` as part of
+This program is slow, and is therefore not run when building `syn-serde` as part of
 the build script to save on compile time.

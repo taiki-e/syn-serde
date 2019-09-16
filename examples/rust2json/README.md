@@ -1,4 +1,4 @@
-Parse a Rust source file into a `serde_syn::File` and print out a JSON representation of the syntax tree.
+Parse a Rust source file into a `syn_serde::File` and print out a JSON representation of the syntax tree.
 
 ```text
 cargo run -- src/main.rs

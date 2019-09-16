@@ -1,11 +1,11 @@
 [package]
-name = "serde-syn"
+name = "syn-serde"
 version = "0.1.0-alpha.1"
 authors = ["David Tolnay <dtolnay@gmail.com>", "Taiki Endo <te316e89@gmail.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/taiki-e/serde-syn"
-documentation = "https://docs.rs/serde-syn/"
+repository = "https://github.com/taiki-e/syn-serde"
+documentation = "https://docs.rs/syn-serde/"
 keywords = ["serde", "serialization", "syn"]
 categories = ["development-tools::procedural-macro-helpers", "encoding"]
 readme = "README.md"

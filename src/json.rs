@@ -1,6 +1,6 @@
 //! A module to provide functions for JSON <-> Rust serialize and deserialize.
 //!
-//! *This module is available if Serde Syn is built with the `"json"` feature.*
+//! *This module is available if syn-serde is built with the `"json"` feature.*
 
 use super::*;
 use serde_json::Result;
@@ -18,7 +18,7 @@ use std::io;
 /// # where
 /// #     W: io::Write,
 /// # {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
 /// serde_json::to_writer(writer, &serializable_file)
@@ -42,7 +42,7 @@ where
 /// ```rust
 /// # use std::io;
 /// # fn to_writer_pretty<W: io::Write>(writer: W, syn_file: &syn::File) -> serde_json::Result<()> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
 /// serde_json::to_writer_pretty(writer, &serializable_file)
@@ -64,7 +64,7 @@ where
 ///
 /// ```rust
 /// # fn to_vec(syn_file: &syn::File) -> serde_json::Result<Vec<u8>> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
 /// serde_json::to_vec(&serializable_file)
@@ -85,7 +85,7 @@ where
 ///
 /// ```rust
 /// # fn to_vec_pretty(syn_file: &syn::File) -> serde_json::Result<Vec<u8>> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
 /// serde_json::to_vec_pretty(&serializable_file)
@@ -106,7 +106,7 @@ where
 ///
 /// ```rust
 /// # fn to_string(syn_file: &syn::File) -> serde_json::Result<String> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
 /// serde_json::to_string(&serializable_file)
@@ -127,7 +127,7 @@ where
 ///
 /// ```rust
 /// # fn to_string_pretty(syn_file: &syn::File) -> serde_json::Result<String> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
 /// serde_json::to_string_pretty(&serializable_file)
@@ -151,7 +151,7 @@ where
 /// ```rust
 /// # use std::io;
 /// # fn from_reader<R: io::Read>(rdr: R) -> serde_json::Result<syn::File> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_reader(rdr)?;
 /// let syn_file = syn::File::from_adapter(&serializable_file);
@@ -173,7 +173,7 @@ where
 ///
 /// ```rust
 /// # fn from_reader(v: &[u8]) -> serde_json::Result<syn::File> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_slice(v)?;
 /// let syn_file = syn::File::from_adapter(&serializable_file);
@@ -194,7 +194,7 @@ where
 ///
 /// ```rust
 /// # fn from_str(s: &str) -> serde_json::Result<syn::File> {
-/// use serde_syn::Syn;
+/// use syn_serde::Syn;
 ///
 /// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_str(s)?;
 /// let syn_file = syn::File::from_adapter(&serializable_file);

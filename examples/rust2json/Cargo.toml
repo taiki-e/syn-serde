@@ -6,5 +6,5 @@ edition = "2018"
 publish = false
 
 [dependencies]
-serde-syn = { path = "../..", features = ["json"] }
+syn-serde = { path = "../..", features = ["json"] }
 syn = { version = "1.0", features = ["full"] }
