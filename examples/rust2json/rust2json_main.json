@@ -148,28 +148,6 @@
                                                     ]
                                                   }
                                                 }
-                                              },
-                                              {
-                                                "trait": {
-                                                  "path": {
-                                                    "segments": [
-                                                      {
-                                                        "ident": "Send"
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              },
-                                              {
-                                                "trait": {
-                                                  "path": {
-                                                    "segments": [
-                                                      {
-                                                        "ident": "Sync"
-                                                      }
-                                                    ]
-                                                  }
-                                                }
                                               }
                                             ]
                                           }

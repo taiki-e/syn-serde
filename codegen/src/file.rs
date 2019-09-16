@@ -1,9 +1,6 @@
 use crate::Result;
 use proc_macro2::TokenStream;
-use std::fmt;
-use std::fs;
-use std::io::Write;
-use std::path::Path;
+use std::{fmt, fs, io::Write, path::Path};
 
 pub(crate) fn write<P: AsRef<Path>>(path: P, content: TokenStream) -> Result<()> {
     let mut formatted = Vec::new();
