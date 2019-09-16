@@ -28,18 +28,6 @@
       "use": {
         "tree": {
           "path": {
-            "ident": "syn_serde",
-            "tree": {
-              "ident": "json"
-            }
-          }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
             "ident": "std",
             "tree": {
               "group": [
@@ -76,6 +64,18 @@
                   }
                 }
               ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "use": {
+        "tree": {
+          "path": {
+            "ident": "syn_serde",
+            "tree": {
+              "ident": "json"
             }
           }
         }
