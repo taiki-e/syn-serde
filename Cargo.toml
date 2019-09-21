@@ -9,7 +9,9 @@ documentation = "https://docs.rs/syn-serde/"
 keywords = ["serde", "serialization", "syn"]
 categories = ["development-tools::procedural-macro-helpers", "encoding"]
 readme = "README.md"
-description = "Library to serialize and deserialize Syn syntax trees."
+description = """
+Library to serialize and deserialize Syn syntax trees.
+"""
 
 [package.metadata.docs.rs]
 all-features = true
@@ -21,7 +23,6 @@ all-features = true
 members = ["examples/json2rust", "examples/rust2json"]
 
 [features]
-default = []
 json = ["serde_json"]
 
 [dependencies]
