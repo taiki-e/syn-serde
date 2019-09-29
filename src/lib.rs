@@ -87,7 +87,7 @@
         allow(dead_code)
     )
 ))]
-#![warn(unsafe_code)]
+#![forbid(unsafe_code)]
 #![warn(rust_2018_idioms, unreachable_pub)]
 // It cannot be included in the published code because these lints have false positives in the minimum required version.
 #![cfg_attr(test, warn(single_use_lifetimes))]
