@@ -199,15 +199,9 @@ mod convert {
             // `ident ..>` or `ident <..`
             assert_eq!(other.lt_token.is_some(), other.gt_token.is_some());
             // `ident T`
-            assert!(
-                other.params.is_empty() || other.lt_token.is_some(),
-                "expected `<`"
-            );
+            assert!(other.params.is_empty() || other.lt_token.is_some(), "expected `<`");
 
-            Self {
-                params: other.params.map_into(),
-                where_clause: other.where_clause.map_into(),
-            }
+            Self { params: other.params.map_into(), where_clause: other.where_clause.map_into() }
         }
     }
     impl From<&Generics> for syn::Generics {

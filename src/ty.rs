@@ -247,18 +247,14 @@ mod convert {
                 Type::Ptr(x) => Ptr(x.into()),
                 Type::Reference(x) => Reference(x.into()),
                 Type::BareFn(x) => BareFn(x.into()),
-                Type::Never => Never(syn::TypeNever {
-                    bang_token: default(),
-                }),
+                Type::Never => Never(syn::TypeNever { bang_token: default() }),
                 Type::Tuple(x) => Tuple(x.into()),
                 Type::Path(x) => Path(x.into()),
                 Type::TraitObject(x) => TraitObject(x.into()),
                 Type::ImplTrait(x) => ImplTrait(x.into()),
                 Type::Paren(x) => Paren(x.into()),
                 Type::Group(x) => Group(x.into()),
-                Type::Infer => Infer(syn::TypeInfer {
-                    underscore_token: default(),
-                }),
+                Type::Infer => Infer(syn::TypeInfer { underscore_token: default() }),
                 Type::Macro(x) => Macro(x.into()),
                 Type::Verbatim(x) => Verbatim(x.into()),
                 _ => unreachable!(),
@@ -273,9 +269,7 @@ mod convert {
             use syn::ReturnType;
             match other {
                 ReturnType::Default => Self { ty: None },
-                ReturnType::Type(_, x) => Self {
-                    ty: Some(x.map_into()),
-                },
+                ReturnType::Type(_, x) => Self { ty: Some(x.map_into()) },
             }
         }
     }

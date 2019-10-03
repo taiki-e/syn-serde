@@ -733,9 +733,7 @@ mod convert {
                 UseTree::Path(x) => Path(x.into()),
                 UseTree::Name(x) => Name(x.into()),
                 UseTree::Rename(x) => Rename(x.into()),
-                UseTree::Glob => Glob(syn::UseGlob {
-                    star_token: default(),
-                }),
+                UseTree::Glob => Glob(syn::UseGlob { star_token: default() }),
                 UseTree::Group(x) => Group(x.into()),
             }
         }

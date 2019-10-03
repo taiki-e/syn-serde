@@ -203,9 +203,7 @@ mod value {
             assert_eq!(end, b'#');
         }
 
-        let content = s[pounds + 1..s.len() - pounds - 1]
-            .to_owned()
-            .into_boxed_str();
+        let content = s[pounds + 1..s.len() - pounds - 1].to_owned().into_boxed_str();
         let suffix = Box::<str>::default(); // todo
         (content, suffix)
     }
@@ -432,9 +430,7 @@ mod convert {
     // LitStr
     impl From<&syn::LitStr> for LitStr {
         fn from(other: &syn::LitStr) -> Self {
-            Self {
-                token: Literal::string(&other.value()),
-            }
+            Self { token: Literal::string(&other.value()) }
         }
     }
     impl From<&LitStr> for syn::LitStr {
@@ -447,9 +443,7 @@ mod convert {
     // LitByteStr
     impl From<&syn::LitByteStr> for LitByteStr {
         fn from(other: &syn::LitByteStr) -> Self {
-            Self {
-                token: Literal::byte_string(&other.value()),
-            }
+            Self { token: Literal::byte_string(&other.value()) }
         }
     }
     impl From<&LitByteStr> for syn::LitByteStr {
@@ -462,9 +456,7 @@ mod convert {
     // LitByte
     impl From<&syn::LitByte> for LitByte {
         fn from(other: &syn::LitByte) -> Self {
-            Self {
-                token: Literal::u8_suffixed(other.value()),
-            }
+            Self { token: Literal::u8_suffixed(other.value()) }
         }
     }
     impl From<&LitByte> for syn::LitByte {
@@ -477,9 +469,7 @@ mod convert {
     // LitChar
     impl From<&syn::LitChar> for LitChar {
         fn from(other: &syn::LitChar) -> Self {
-            Self {
-                token: Literal::character(other.value()),
-            }
+            Self { token: Literal::character(other.value()) }
         }
     }
     impl From<&LitChar> for syn::LitChar {
@@ -492,9 +482,7 @@ mod convert {
     // LitInt
     impl From<&syn::LitInt> for LitInt {
         fn from(other: &syn::LitInt) -> Self {
-            Self {
-                token: value::to_literal(&other.to_string()),
-            }
+            Self { token: value::to_literal(&other.to_string()) }
         }
     }
     impl From<&LitInt> for syn::LitInt {
@@ -506,9 +494,7 @@ mod convert {
     // LitFloat
     impl From<&syn::LitFloat> for LitFloat {
         fn from(other: &syn::LitFloat) -> Self {
-            Self {
-                token: value::to_literal(&other.to_string()),
-            }
+            Self { token: value::to_literal(&other.to_string()) }
         }
     }
     impl From<&LitFloat> for syn::LitFloat {

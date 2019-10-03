@@ -1,4 +1,5 @@
 version = "Two"
+use_small_heuristics = "Max"
 
 # Set the default settings again to always apply the proper formatting without being affected by the editor settings.
 # Refs: https://github.com/rust-lang/rls/issues/501#issuecomment-333717736

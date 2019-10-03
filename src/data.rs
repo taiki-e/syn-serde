@@ -68,10 +68,9 @@ pub(crate) fn assert_struct_semi(fields: &Fields, semi_token: bool) {
         // struct foo {};
         Fields::Named(_) => assert!(!semi_token, "unexpected token: `;`"),
         // struct foo ()
-        Fields::Unnamed(_) => assert!(
-            semi_token,
-            "unexpected end of input, expected `where` or `;`"
-        ),
+        Fields::Unnamed(_) => {
+            assert!(semi_token, "unexpected end of input, expected `where` or `;`")
+        }
         // struct foo
         Fields::Unit => assert!(
             semi_token,
@@ -171,12 +170,8 @@ mod convert {
         fn from(other: &Visibility) -> Self {
             use syn::Visibility::*;
             match other {
-                Visibility::Public => Public(syn::VisPublic {
-                    pub_token: default(),
-                }),
-                Visibility::Crate => Crate(syn::VisCrate {
-                    crate_token: default(),
-                }),
+                Visibility::Public => Public(syn::VisPublic { pub_token: default() }),
+                Visibility::Crate => Crate(syn::VisCrate { crate_token: default() }),
                 Visibility::Restricted(x) => Restricted(x.into()),
                 Visibility::Inherited => Inherited,
             }

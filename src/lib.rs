@@ -82,10 +82,7 @@
 #![doc(html_root_url = "https://docs.rs/syn-serde/0.2.0")]
 #![doc(test(
     no_crate_inject,
-    attr(
-        deny(warnings, rust_2018_idioms, single_use_lifetimes),
-        allow(dead_code)
-    )
+    attr(deny(warnings, rust_2018_idioms, single_use_lifetimes), allow(dead_code))
 ))]
 #![forbid(unsafe_code)]
 #![warn(rust_2018_idioms, unreachable_pub)]

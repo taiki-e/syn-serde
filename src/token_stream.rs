@@ -182,22 +182,12 @@ mod convert {
     syn_trait_impl!(proc_macro2::TokenStream);
     impl From<&proc_macro2::TokenStream> for TokenStream {
         fn from(other: &proc_macro2::TokenStream) -> Self {
-            Self::_new(
-                other
-                    .clone()
-                    .into_iter()
-                    .map::<TokenTree, _>(|x| x.ref_into())
-                    .collect(),
-            )
+            Self::_new(other.clone().into_iter().map::<TokenTree, _>(|x| x.ref_into()).collect())
         }
     }
     impl From<&TokenStream> for proc_macro2::TokenStream {
         fn from(other: &TokenStream) -> Self {
-            other
-                .inner
-                .iter()
-                .map::<proc_macro2::TokenTree, _>(Into::into)
-                .collect()
+            other.inner.iter().map::<proc_macro2::TokenTree, _>(Into::into).collect()
         }
     }
 
@@ -231,10 +221,7 @@ mod convert {
     syn_trait_impl!(proc_macro2::Group);
     impl From<&proc_macro2::Group> for Group {
         fn from(other: &proc_macro2::Group) -> Self {
-            Self {
-                delimiter: other.delimiter().ref_into(),
-                stream: other.stream().ref_into(),
-            }
+            Self { delimiter: other.delimiter().ref_into(), stream: other.stream().ref_into() }
         }
     }
     impl From<&Group> for proc_macro2::Group {
@@ -273,9 +260,7 @@ mod convert {
     syn_trait_impl!(proc_macro2::Ident);
     impl From<&proc_macro2::Ident> for Ident {
         fn from(other: &proc_macro2::Ident) -> Self {
-            Self {
-                inner: other.to_string(),
-            }
+            Self { inner: other.to_string() }
         }
     }
     impl From<&Ident> for proc_macro2::Ident {
@@ -288,10 +273,7 @@ mod convert {
     syn_trait_impl!(proc_macro2::Punct);
     impl From<&proc_macro2::Punct> for Punct {
         fn from(other: &proc_macro2::Punct) -> Self {
-            Self {
-                op: other.as_char(),
-                spacing: other.spacing().ref_into(),
-            }
+            Self { op: other.as_char(), spacing: other.spacing().ref_into() }
         }
     }
     impl From<&Punct> for proc_macro2::Punct {
@@ -326,9 +308,7 @@ mod convert {
     syn_trait_impl!(proc_macro2::Literal);
     impl From<&proc_macro2::Literal> for Literal {
         fn from(other: &proc_macro2::Literal) -> Self {
-            Self {
-                text: other.to_string(),
-            }
+            Self { text: other.to_string() }
         }
     }
     impl From<&Literal> for proc_macro2::Literal {

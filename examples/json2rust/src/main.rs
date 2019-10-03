@@ -44,10 +44,7 @@ fn try_main() -> Result<()> {
     fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
 
     // Ignore any errors.
-    let _status = Command::new("rustfmt")
-        .arg(&outfile_path)
-        .stderr(Stdio::null())
-        .status();
+    let _status = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
 
     let writer = io::stdout();
     let mut writer = BufWriter::new(writer.lock());
