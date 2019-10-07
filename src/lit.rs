@@ -105,8 +105,10 @@ ast_enum! {
 mod value {
     use super::*;
     use proc_macro2::{TokenStream, TokenTree};
-    use std::char;
-    use std::ops::{Index, RangeFrom};
+    use std::{
+        char,
+        ops::{Index, RangeFrom},
+    };
 
     /// Get the byte at offset idx, or a default of `b'\0'` if we're looking
     /// past the end of the input buffer.

@@ -17,9 +17,7 @@ pub(crate) fn write<P: AsRef<Path>>(path: P, content: TokenStream) -> Result<()>
     config.set().normalize_doc_attributes(true);
 
     let mut session = rustfmt::Session::new(config, Some(&mut formatted));
-    session
-        .format(rustfmt::Input::Text(content.to_string()))
-        .map_err(RustfmtError)?;
+    session.format(rustfmt::Input::Text(content.to_string())).map_err(RustfmtError)?;
     drop(session);
 
     if path.as_ref().is_file() && fs::read(&path)? == formatted {

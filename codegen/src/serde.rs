@@ -200,11 +200,8 @@ fn node(traits: &mut TokenStream, node: &Node, _defs: &Definitions) {
                 }
             }
 
-            let nonexhaustive = if node.exhaustive {
-                None
-            } else {
-                Some(quote!(_ => unreachable!()))
-            };
+            let nonexhaustive =
+                if node.exhaustive { None } else { Some(quote!(_ => unreachable!())) };
 
             from_impl.extend(quote! {
                 match node {
@@ -252,11 +249,7 @@ fn node(traits: &mut TokenStream, node: &Node, _defs: &Definitions) {
                     }
                 });
             } else {
-                assert!(
-                    EMPTY_STRUCTS.contains(&&*node.ident),
-                    "from_fields.is_empty(): {}",
-                    ty
-                );
+                assert!(EMPTY_STRUCTS.contains(&&*node.ident), "from_fields.is_empty(): {}", ty);
                 return;
             }
         }
