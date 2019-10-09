@@ -92,6 +92,7 @@
 #![allow(
     clippy::large_enum_variant,
     clippy::module_name_repetitions,
+    clippy::needless_doctest_main,
     clippy::shadow_unrelated,
     clippy::use_self,
     clippy::used_underscore_binding
