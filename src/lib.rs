@@ -88,15 +88,8 @@
 #![warn(rust_2018_idioms, unreachable_pub)]
 // It cannot be included in the published code because these lints have false positives in the minimum required version.
 #![cfg_attr(test, warn(single_use_lifetimes))]
-#![warn(clippy::all, clippy::pedantic)]
-#![allow(
-    clippy::large_enum_variant,
-    clippy::module_name_repetitions,
-    clippy::needless_doctest_main,
-    clippy::shadow_unrelated,
-    clippy::use_self,
-    clippy::used_underscore_binding
-)]
+#![warn(clippy::all)]
+#![allow(clippy::large_enum_variant, clippy::needless_doctest_main)]
 
 #[macro_use]
 mod macros;
