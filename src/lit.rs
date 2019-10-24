@@ -437,7 +437,7 @@ mod convert {
     }
     impl From<&LitStr> for syn::LitStr {
         fn from(other: &LitStr) -> Self {
-            let (value, _) = value::parse_lit_str(&other.token.to_string());
+            let (value, _) = value::parse_lit_str(&other.token.text);
             Self::new(&value, Span::call_site())
         }
     }
@@ -450,7 +450,7 @@ mod convert {
     }
     impl From<&LitByteStr> for syn::LitByteStr {
         fn from(other: &LitByteStr) -> Self {
-            let value = value::parse_lit_byte_str(&other.token.to_string());
+            let value = value::parse_lit_byte_str(&other.token.text);
             Self::new(&value, Span::call_site())
         }
     }
@@ -463,7 +463,7 @@ mod convert {
     }
     impl From<&LitByte> for syn::LitByte {
         fn from(other: &LitByte) -> Self {
-            let value = value::parse_lit_byte(&other.token.to_string());
+            let value = value::parse_lit_byte(&other.token.text);
             Self::new(value, Span::call_site())
         }
     }
@@ -476,7 +476,7 @@ mod convert {
     }
     impl From<&LitChar> for syn::LitChar {
         fn from(other: &LitChar) -> Self {
-            let value = value::parse_lit_char(&other.token.to_string());
+            let value = value::parse_lit_char(&other.token.text);
             Self::new(value, Span::call_site())
         }
     }
@@ -489,7 +489,7 @@ mod convert {
     }
     impl From<&LitInt> for syn::LitInt {
         fn from(other: &LitInt) -> Self {
-            Self::new(&other.token.to_string(), Span::call_site())
+            Self::new(&other.token.text, Span::call_site())
         }
     }
 
@@ -501,7 +501,7 @@ mod convert {
     }
     impl From<&LitFloat> for syn::LitFloat {
         fn from(other: &LitFloat) -> Self {
-            Self::new(&other.token.to_string(), Span::call_site())
+            Self::new(&other.token.text, Span::call_site())
         }
     }
 }
