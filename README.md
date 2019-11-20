@@ -6,9 +6,9 @@
 [![rustc-badge]][rustc-url]
 
 [crates-badge]: https://img.shields.io/crates/v/syn-serde.svg
-[crates-url]: https://crates.io/crates/syn-serde/
+[crates-url]: https://crates.io/crates/syn-serde
 [docs-badge]: https://docs.rs/syn-serde/badge.svg
-[docs-url]: https://docs.rs/syn-serde/
+[docs-url]: https://docs.rs/syn-serde
 [license-badge]: https://img.shields.io/crates/l/syn-serde.svg
 [license]: #license
 [rustc-badge]: https://img.shields.io/badge/rustc-1.31+-lightgray.svg
