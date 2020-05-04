@@ -88,7 +88,7 @@
 #![warn(rust_2018_idioms, unreachable_pub)]
 // It cannot be included in the published code because these lints have false positives in the minimum required version.
 #![cfg_attr(test, warn(single_use_lifetimes))]
-#![warn(clippy::all)]
+#![warn(clippy::all, clippy::default_trait_access)]
 // mem::take requires Rust 1.40
 #![allow(clippy::mem_replace_with_default)]
 #![allow(clippy::large_enum_variant, clippy::needless_doctest_main)]

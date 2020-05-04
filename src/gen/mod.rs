@@ -2,11 +2,7 @@
 // It is not intended for manual editing.
 
 #![allow(unreachable_code, unused_variables, unused_parens)]
-#![allow(
-    clippy::double_parens,
-    clippy::identity_conversion,
-    clippy::just_underscores_and_digits
-)]
+#![allow(clippy::double_parens, clippy::identity_conversion, clippy::just_underscores_and_digits)]
 use crate::*;
 syn_trait_impl!(syn::Abi);
 impl From<&syn::Abi> for Abi {
