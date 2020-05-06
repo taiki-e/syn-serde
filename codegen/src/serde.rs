@@ -34,7 +34,6 @@ const IGNORED_TYPES: &[&str] = &[
 ];
 const EMPTY_STRUCTS: &[&str] = &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
 
-#[allow(clippy::cognitive_complexity)]
 fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
     match ty {
         Type::Box(_) | Type::Vec(_) | Type::Punctuated(_) => {
@@ -126,7 +125,6 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
     }
 }
 
-#[allow(clippy::cognitive_complexity)]
 fn node(traits: &mut TokenStream, node: &Node, _defs: &Definitions) {
     if IGNORED_TYPES.contains(&&*node.ident) {
         return;
