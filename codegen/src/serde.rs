@@ -116,10 +116,16 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
             let into = quote!(#name.ref_into());
             (from, into)
         }
-        Type::Std(_) => {
-            let from = Some(quote!(#name.into()));
-            let into = quote!(#name.into());
-            (from, into)
+        Type::Std(t) => {
+            if let "usize" | "u32" | "bool" = &**t {
+                let from = Some(quote!(#name));
+                let into = quote!(#name);
+                (from, into)
+            } else {
+                let from = Some(quote!(#name.into()));
+                let into = quote!(#name.into());
+                (from, into)
+            }
         }
         Type::Tuple(t) => unreachable!("Type::Tuple: {:?}", t),
     }
@@ -274,13 +280,8 @@ pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     file::write(
         SERDE_SRC,
         quote! {
-            // Unreachable code is generated sometimes without the full feature.
-            #![allow(unreachable_code, unused_variables, unused_parens)]
-            #![allow(
-                clippy::double_parens,
-                clippy::identity_conversion,
-                clippy::just_underscores_and_digits,
-            )]
+            #![allow(unused_parens)]
+            #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
 
             use crate::*;
 
