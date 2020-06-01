@@ -48,7 +48,7 @@ fn try_main() -> Result<()> {
 
     let writer = io::stdout();
     let mut writer = BufWriter::new(writer.lock());
-    writer.write_all(fs::read_to_string(&outfile_path)?.as_bytes())?;
+    writer.write_all(&fs::read(&outfile_path)?)?;
     writer.flush()?;
     Ok(())
 }
