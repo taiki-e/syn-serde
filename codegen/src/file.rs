@@ -24,11 +24,11 @@ pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> 
     // Run rustfmt
     // https://github.com/dtolnay/cargo-expand/blob/0.4.9/src/main.rs#L181-L182
     let rustfmt_config_path = outdir.path().join("rustfmt.toml");
-    fs::write(
-        rustfmt_config_path,
-        "normalize_doc_attributes = true\n\
-         format_macro_matchers = true\n",
-    )?;
+    let mut rustfmt_config = fs::read_to_string("../.rustfmt.toml")?;
+    rustfmt_config.push('\n');
+    rustfmt_config.push_str("normalize_doc_attributes = true\n");
+    rustfmt_config.push_str("format_macro_matchers = true\n");
+    fs::write(rustfmt_config_path, rustfmt_config)?;
 
     // Ignore any errors.
     let _status = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
