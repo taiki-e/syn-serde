@@ -96,6 +96,9 @@
 #[macro_use]
 mod macros;
 
+#[path = "gen/ast_enum.rs"]
+mod ast_enum;
+
 #[path = "gen/convert.rs"]
 mod convert;
 

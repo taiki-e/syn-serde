@@ -1,5 +1,8 @@
 use super::*;
 
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::Fields;
+
 ast_struct! {
     /// An enum variant.
     pub struct Variant {
@@ -16,21 +19,6 @@ ast_struct! {
         /// Explicit discriminant: `Variant = 1`
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) discriminant: Option<Expr>,
-    }
-}
-
-ast_enum! {
-    /// Data stored within an enum variant or struct.
-    pub enum Fields {
-        /// Named fields of a struct or struct variant such as `Point { x: f64,
-        /// y: f64 }`.
-        Named(FieldsNamed),
-
-        /// Unnamed fields of a tuple struct or tuple variant such as `Some(T)`.
-        Unnamed(FieldsUnnamed),
-
-        /// Unit struct or unit variant such as `None`.
-        Unit,
     }
 }
 

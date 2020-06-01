@@ -1,35 +1,7 @@
 use super::*;
 
-ast_enum! {
-    /// A Rust literal such as a string or integer or boolean.
-    pub enum Lit {
-        /// A UTF-8 string literal: `"foo"`.
-        Str(LitStr),
-
-        /// A byte string literal: `b"foo"`.
-        ByteStr(LitByteStr),
-
-        /// A byte literal: `b'f'`.
-        Byte(LitByte),
-
-        /// A character literal: `'a'`.
-        Char(LitChar),
-
-        /// An integer literal: `1` or `1u16`.
-        Int(LitInt),
-
-        /// A floating point literal: `1f64` or `1.0e10f64`.
-        ///
-        /// Must be finite. May not be infinte or NaN.
-        Float(LitFloat),
-
-        /// A boolean literal: `true` or `false`.
-        Bool(LitBool),
-
-        /// A raw token literal not interpreted by Syn.
-        Verbatim(Literal),
-    }
-}
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::Lit;
 
 ast_struct! {
     /// A UTF-8 string literal: `"foo"`.

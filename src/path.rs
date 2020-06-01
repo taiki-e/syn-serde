@@ -1,5 +1,8 @@
 use super::*;
 
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::{GenericArgument, PathArguments};
+
 ast_struct! {
     /// A path at which a named item is exported: `std::collections::HashMap`.
     pub struct Path {
@@ -18,25 +21,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// Angle bracketed or parenthesized arguments of a path segment.
-    ///
-    /// ## Angle bracketed
-    ///
-    /// The `<'a, T>` in `std::slice::iter<'a, T>`.
-    ///
-    /// ## Parenthesized
-    ///
-    /// The `(A, B) -> C` in `Fn(A, B) -> C`.
-    pub enum PathArguments {
-        None,
-        /// The `<'a, T>` in `std::slice::iter<'a, T>`.
-        AngleBracketed(AngleBracketedGenericArguments),
-        /// The `(A, B) -> C` in `Fn(A, B) -> C`.
-        Parenthesized(ParenthesizedGenericArguments),
-    }
-}
-
 impl Default for PathArguments {
     fn default() -> Self {
         PathArguments::None
@@ -49,26 +33,6 @@ impl PathArguments {
             PathArguments::None => true,
             PathArguments::AngleBracketed(_) | PathArguments::Parenthesized(_) => false,
         }
-    }
-}
-
-ast_enum! {
-    /// An individual generic argument, like `'a`, `T`, or `Item = T`.
-    pub enum GenericArgument {
-        /// A lifetime argument.
-        Lifetime(Lifetime),
-        /// A type argument.
-        Type(Type),
-        /// A binding (equality constraint) on an associated type: the `Item =
-        /// u8` in `Iterator<Item = u8>`.
-        Binding(Binding),
-        /// An associated type bound: `Iterator<Item: Display>`.
-        Constraint(Constraint),
-        /// A const expression. Must be inside of a block.
-        ///
-        /// NOTE: Identity expressions are represented as Type arguments, as
-        /// they are indistinguishable syntactically.
-        Const(Expr),
     }
 }
 

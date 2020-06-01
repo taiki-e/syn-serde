@@ -8,6 +8,7 @@
 
 const SYN_JSON: &str = "../syn.json";
 
+mod ast_enum;
 mod convert;
 mod file;
 mod gen;
@@ -27,6 +28,7 @@ fn try_main() -> Result<()> {
     let defs = fs::read_to_string(SYN_JSON)?;
     let defs = serde_json::from_str(&defs)?;
 
+    ast_enum::generate(&defs)?;
     convert::generate(&defs)?;
     Ok(())
 }

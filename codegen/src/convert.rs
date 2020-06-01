@@ -1,11 +1,12 @@
-use crate::{file, gen, Result};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
 
+use crate::{file, gen, Result};
+
 const CONVERT_SRC: &str = "../src/gen/convert.rs";
 
-const IGNORED_TYPES: &[&str] = &[
+pub(crate) const IGNORED_TYPES: &[&str] = &[
     /* we don't have them */
     "DeriveInput",
     "Data",
@@ -131,7 +132,7 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
     }
 }
 
-fn node(traits: &mut TokenStream, node: &Node, _defs: &Definitions) {
+fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
     if IGNORED_TYPES.contains(&&*node.ident) {
         return;
     }
@@ -260,7 +261,7 @@ fn node(traits: &mut TokenStream, node: &Node, _defs: &Definitions) {
         Data::Private => unreachable!("Data::Private: {}", ty),
     }
 
-    traits.extend(quote! {
+    impls.extend(quote! {
         syn_trait_impl!(syn::#ty);
         impl From<&syn::#ty> for #ty {
             fn from(node: &syn::#ty) -> Self {
@@ -276,7 +277,7 @@ fn node(traits: &mut TokenStream, node: &Node, _defs: &Definitions) {
 }
 
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
-    let traits = gen::traverse(defs, node);
+    let impls = gen::traverse(defs, node);
     file::write(
         CONVERT_SRC,
         quote! {
@@ -285,7 +286,7 @@ pub(crate) fn generate(defs: &Definitions) -> Result<()> {
 
             use crate::*;
 
-            #traits
+            #impls
         },
     )?;
     Ok(())
