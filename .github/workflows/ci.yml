@@ -57,6 +57,22 @@ jobs:
         run: |
           . ./ci/check-minimal-versions.sh
 
+  codegen:
+    name: codegen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust
+        run: |
+          . ./ci/install-rust.sh nightly-2020-06-01
+      - name: Install rustfmt
+        run: |
+          . ./ci/install-component.sh rustfmt
+      - name: Run codegen
+        run: |
+          cd codegen && cargo run
+      - run: git diff --exit-code
+
   style:
     name: style
     strategy:

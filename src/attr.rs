@@ -1,5 +1,8 @@
 use super::*;
 
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::{AttrStyle, Meta, NestedMeta};
+
 ast_struct! {
     /// An attribute like `#[repr(transparent)]`.
     ///
@@ -39,53 +42,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// Distinguishes between attributes that decorate an item and attributes
-    /// that are contained within an item.
-    ///
-    /// # Outer attributes
-    ///
-    /// - `#[repr(transparent)]`
-    /// - `/// # Example`
-    /// - `/** Please file an issue */`
-    ///
-    /// # Inner attributes
-    ///
-    /// - `#![feature(proc_macro)]`
-    /// - `//! # Example`
-    /// - `/*! Please file an issue */`
-    pub enum AttrStyle {
-        Outer,
-        Inner,
-    }
-}
-
-ast_enum! {
-    /// Content of a compile-time structured attribute.
-    ///
-    /// ## Path
-    ///
-    /// A meta path is like the `test` in `#[test]`.
-    ///
-    /// ## List
-    ///
-    /// A meta list is like the `derive(Copy)` in `#[derive(Copy)]`.
-    ///
-    /// ## NameValue
-    ///
-    /// A name-value meta is like the `path = "..."` in `#[path =
-    /// "sys/windows.rs"]`.
-    pub enum Meta {
-        Path(Path),
-
-        /// A structured list within an attribute, like `derive(Copy, Clone)`.
-        List(MetaList),
-
-        /// A name-value pair within an attribute, like `feature = "nightly"`.
-        NameValue(MetaNameValue),
-    }
-}
-
 ast_struct! {
     /// A structured list within an attribute, like `derive(Copy, Clone)`.
     pub struct MetaList {
@@ -99,17 +55,5 @@ ast_struct! {
     pub struct MetaNameValue {
         pub(crate) path: Path,
         pub(crate) lit: Lit,
-    }
-}
-
-ast_enum! {
-    /// Element of a compile-time attribute list.
-    pub enum NestedMeta {
-        /// A structured meta item, like the `Copy` in `#[derive(Copy)]` which
-        /// would be a nested `Meta::Word`.
-        Meta(Meta),
-
-        /// A Rust literal, like the `"new_name"` in `#[rename("new_name")]`.
-        Lit(Lit),
     }
 }

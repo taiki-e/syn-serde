@@ -1,65 +1,7 @@
 use super::*;
 
-ast_enum! {
-    /// Things that can appear directly inside of a module or scope.
-    pub enum Item {
-        /// A constant item: `const MAX: u16 = 65535`.
-        Const(ItemConst),
-
-        /// An enum definition: `enum Foo<A, B> { A(A), B(B) }`.
-        Enum(ItemEnum),
-
-        /// An `extern crate` item: `extern crate serde`.
-        ExternCrate(ItemExternCrate),
-
-        /// A free-standing function: `fn process(n: usize) -> Result<()> { ...
-        /// }`.
-        Fn(ItemFn),
-
-        /// A block of foreign items: `extern "C" { ... }`.
-        ForeignMod(ItemForeignMod),
-
-        /// An impl block providing trait or associated items: `impl<A> Trait
-        /// for Data<A> { ... }`.
-        Impl(ItemImpl),
-
-        /// A macro invocation, which includes `macro_rules!` definitions.
-        Macro(ItemMacro),
-
-        /// A 2.0-style declarative macro introduced by the `macro` keyword.
-        Macro2(ItemMacro2),
-
-        /// A module or module declaration: `mod m` or `mod m { ... }`.
-        Mod(ItemMod),
-
-        /// A static item: `static BIKE: Shed = Shed(42)`.
-        Static(ItemStatic),
-
-        /// A struct definition: `struct Foo<A> { x: A }`.
-        Struct(ItemStruct),
-
-        /// A trait definition: `pub trait Iterator { ... }`.
-        Trait(ItemTrait),
-
-        /// A trait alias: `pub trait SharableIterator = Iterator + Sync`.
-        TraitAlias(ItemTraitAlias),
-
-        /// A type alias: `type Result<T> = std::result::Result<T, MyError>`.
-        Type(ItemType),
-
-        /// A union definition: `union Foo<A, B> { x: A, y: B }`.
-        Union(ItemUnion),
-
-        /// A use declaration: `use std::collections::HashMap`.
-        Use(ItemUse),
-
-        /// Tokens forming an item not interpreted by Syn.
-        Verbatim(TokenStream),
-
-        #[doc(hidden)]
-        __Nonexhaustive,
-    }
-}
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem};
 
 ast_struct! {
     /// A constant item: `const MAX: u16 = 65535`.
@@ -357,29 +299,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// An item within an `extern` block.
-    pub enum ForeignItem {
-        /// A foreign function in an `extern` block.
-        Fn(ForeignItemFn),
-
-        /// A foreign static item in an `extern` block: `static ext: u8`.
-        Static(ForeignItemStatic),
-
-        /// A foreign type in an `extern` block: `type void`.
-        Type(ForeignItemType),
-
-        /// A macro invocation within an extern block.
-        Macro(ForeignItemMacro),
-
-        /// Tokens in an `extern` block not interpreted by Syn.
-        Verbatim(TokenStream),
-
-        #[doc(hidden)]
-        __Nonexhaustive,
-    }
-}
-
 ast_struct! {
     /// A foreign function in an `extern` block.
     pub struct ForeignItemFn {
@@ -427,29 +346,6 @@ ast_struct! {
         pub(crate) mac: Macro,
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) semi_token: bool,
-    }
-}
-
-ast_enum! {
-    /// An item declaration within the definition of a trait.
-    pub enum TraitItem {
-        /// An associated constant within the definition of a trait.
-        Const(TraitItemConst),
-
-        /// A trait method within the definition of a trait.
-        Method(TraitItemMethod),
-
-        /// An associated type within the definition of a trait.
-        Type(TraitItemType),
-
-        /// A macro invocation within the definition of a trait.
-        Macro(TraitItemMacro),
-
-        /// Tokens within the definition of a trait not interpreted by Syn.
-        Verbatim(TokenStream),
-
-        #[doc(hidden)]
-        __Nonexhaustive,
     }
 }
 
@@ -505,29 +401,6 @@ ast_struct! {
         pub(crate) mac: Macro,
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) semi_token: bool,
-    }
-}
-
-ast_enum! {
-    /// An item within an impl block.
-    pub enum ImplItem {
-        /// An associated constant within an impl block.
-        Const(ImplItemConst),
-
-        /// A method within an impl block.
-        Method(ImplItemMethod),
-
-        /// An associated type within an impl block.
-        Type(ImplItemType),
-
-        /// A macro invocation within an impl block.
-        Macro(ImplItemMacro),
-
-        /// Tokens within an impl block not interpreted by Syn.
-        Verbatim(TokenStream),
-
-        #[doc(hidden)]
-        __Nonexhaustive,
     }
 }
 
@@ -616,18 +489,6 @@ ast_struct! {
         pub(crate) variadic: Option<Variadic>,
         #[serde(default)]
         pub(crate) output: ReturnType,
-    }
-}
-
-ast_enum! {
-    /// An argument in a function signature: the `n: usize` in `fn f(n: usize)`.
-    pub enum FnArg {
-        /// The `self` argument of an associated method, whether taken by value
-        /// or by reference.
-        Receiver(Receiver),
-
-        /// A function argument accepted by pattern and type.
-        Typed(PatType),
     }
 }
 

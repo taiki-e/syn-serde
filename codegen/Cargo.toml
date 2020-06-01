@@ -12,6 +12,6 @@ publish = false # this is an internal crate which should never be published
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
-rustfmt = { package = "rustfmt_lib", git = "https://github.com/rust-lang/rustfmt" }
 serde_json = "1.0"
 syn-codegen = { git = "https://github.com/dtolnay/syn" }
+tempfile = "3.1"

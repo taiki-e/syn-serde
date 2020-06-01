@@ -8,13 +8,13 @@ pub(crate) fn traverse(
     let mut types = defs.types.clone();
     types.sort_by(|a, b| a.ident.cmp(&b.ident));
 
-    let mut traits = TokenStream::new();
+    let mut impls = TokenStream::new();
     for s in types {
         if s.ident == "Reserved" {
             continue;
         }
-        node(&mut traits, &s, defs);
+        node(&mut impls, &s, defs);
     }
 
-    traits
+    impls
 }

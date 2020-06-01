@@ -1,8 +1,15 @@
-use crate::Result;
 use proc_macro2::TokenStream;
-use std::{fmt, fs, io::Write, path::Path};
+use std::{
+    fs,
+    io::Write,
+    path::Path,
+    process::{Command, Stdio},
+};
+use tempfile::Builder;
 
-pub(crate) fn write<P: AsRef<Path>>(path: P, content: TokenStream) -> Result<()> {
+use crate::Result;
+
+pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> {
     let mut formatted = Vec::new();
     writeln!(
         formatted,
@@ -10,15 +17,23 @@ pub(crate) fn write<P: AsRef<Path>>(path: P, content: TokenStream) -> Result<()>
          // It is not intended for manual editing.\n"
     )?;
 
-    let mut config = rustfmt::Config::default();
-    config.set().emit_mode(rustfmt::EmitMode::Stdout);
-    config.set().verbose(rustfmt::Verbosity::Quiet);
-    config.set().format_macro_matchers(true);
-    config.set().normalize_doc_attributes(true);
+    let outdir = Builder::new().prefix("codegen").tempdir()?;
+    let outfile_path = outdir.path().join("expanded");
+    fs::write(&outfile_path, content.to_string())?;
 
-    let mut session = rustfmt::Session::new(config, Some(&mut formatted));
-    session.format(rustfmt::Input::Text(content.to_string())).map_err(RustfmtError)?;
-    drop(session);
+    // Run rustfmt
+    // https://github.com/dtolnay/cargo-expand/blob/0.4.9/src/main.rs#L181-L182
+    let rustfmt_config_path = outdir.path().join("rustfmt.toml");
+    let mut rustfmt_config = fs::read_to_string("../.rustfmt.toml")?;
+    rustfmt_config.push('\n');
+    rustfmt_config.push_str("normalize_doc_attributes = true\n");
+    rustfmt_config.push_str("format_macro_matchers = true\n");
+    fs::write(rustfmt_config_path, rustfmt_config)?;
+
+    // Ignore any errors.
+    let _status = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
+
+    formatted.extend(fs::read(&outfile_path)?);
 
     if path.as_ref().is_file() && fs::read(&path)? == formatted {
         return Ok(());
@@ -27,14 +42,3 @@ pub(crate) fn write<P: AsRef<Path>>(path: P, content: TokenStream) -> Result<()>
     fs::write(path, formatted)?;
     Ok(())
 }
-
-#[derive(Debug)]
-struct RustfmtError(rustfmt::ErrorKind);
-
-impl fmt::Display for RustfmtError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl std::error::Error for RustfmtError {}

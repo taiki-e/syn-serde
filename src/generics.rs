@@ -1,5 +1,8 @@
 use super::*;
 
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::{GenericParam, TraitBoundModifier, TypeParamBound, WherePredicate};
+
 ast_struct! {
     /// Lifetimes and type parameters attached to a declaration of a function,
     /// enum, trait, etc.
@@ -19,21 +22,6 @@ ast_struct! {
 impl Generics {
     pub(crate) fn is_none(&self) -> bool {
         self.params.is_empty() && self.where_clause.is_none() // && !self.lt_token && !self.gt_token
-    }
-}
-
-ast_enum! {
-    /// A generic type parameter, lifetime, or const generic: `T: Into<String>`,
-    /// `'a: 'b`, `const LEN: usize`.
-    pub enum GenericParam {
-        /// A generic type parameter: `T: Into<String>`.
-        Type(TypeParam),
-
-        /// A lifetime definition: `'a: 'b + 'c + 'd`.
-        Lifetime(LifetimeDef),
-
-        /// A const generic parameter: `const LENGTH: usize`.
-        Const(ConstParam),
     }
 }
 
@@ -90,14 +78,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// A trait or lifetime used as a bound on a type parameter.
-    pub enum TypeParamBound {
-        Trait(TraitBound),
-        Lifetime(Lifetime),
-    }
-}
-
 ast_struct! {
     /// A trait used as a bound on a type parameter.
     pub struct TraitBound {
@@ -110,15 +90,6 @@ ast_struct! {
         pub(crate) lifetimes: Option<BoundLifetimes>,
         /// The `Foo<&'a T>` in `for<'a> Foo<&'a T>`
         pub(crate) path: Path,
-    }
-}
-
-ast_enum! {
-    /// A modifier on a trait bound, currently only used for the `?` in
-    /// `?Sized`.
-    pub enum TraitBoundModifier {
-        None,
-        Maybe,
     }
 }
 
@@ -143,20 +114,6 @@ ast_struct! {
     #[serde(transparent)]
     pub struct WhereClause {
         pub(crate) predicates: Punctuated<WherePredicate>,
-    }
-}
-
-ast_enum! {
-    /// A single predicate in a `where` clause: `T: Deserialize<'de>`.
-    pub enum WherePredicate {
-        /// A type predicate in a `where` clause: `for<'c> Foo<'c>: Trait<'c>`.
-        Type(PredicateType),
-
-        /// A lifetime predicate in a `where` clause: `'a: 'b + 'c`.
-        Lifetime(PredicateLifetime),
-
-        /// An equality predicate in a `where` clause (unsupported).
-        Eq(PredicateEq),
     }
 }
 
