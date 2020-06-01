@@ -96,7 +96,8 @@
 #[macro_use]
 mod macros;
 
-mod gen;
+#[path = "gen/convert.rs"]
+mod convert;
 
 mod attr;
 #[doc(hidden)]
