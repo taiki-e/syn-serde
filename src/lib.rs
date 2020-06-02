@@ -104,23 +104,44 @@ mod convert;
 
 mod attr;
 #[doc(hidden)]
-pub use crate::attr::*;
+pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue, NestedMeta};
 
 mod data;
+pub(crate) use crate::data::assert_struct_semi;
 #[doc(hidden)]
-pub use crate::data::*;
+pub use crate::data::{
+    Field, Fields, FieldsNamed, FieldsUnnamed, Variant, VisRestricted, Visibility,
+};
 
 mod expr;
 #[doc(hidden)]
-pub use crate::expr::*;
+pub use crate::expr::{
+    Arm, Expr, ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprAwait, ExprBinary, ExprBlock,
+    ExprBox, ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop,
+    ExprGroup, ExprIf, ExprIndex, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
+    ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
+    ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue,
+    GenericMethodArgument, Index, Label, Member, MethodTurbofish, RangeLimits,
+};
 
 mod generics;
 #[doc(hidden)]
-pub use crate::generics::*;
+pub use crate::generics::{
+    BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeDef, PredicateEq,
+    PredicateLifetime, PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound,
+    WhereClause, WherePredicate,
+};
 
 mod item;
 #[doc(hidden)]
-pub use crate::item::*;
+pub use crate::item::{
+    FnArg, ForeignItem, ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType,
+    ImplItem, ImplItemConst, ImplItemMacro, ImplItemMethod, ImplItemType, Item, ItemConst,
+    ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro, ItemMacro2, ItemMod,
+    ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Receiver,
+    Signature, TraitItem, TraitItemConst, TraitItemMacro, TraitItemMethod, TraitItemType, UseGroup,
+    UseName, UsePath, UseRename, UseTree,
+};
 
 mod file;
 #[doc(hidden)]
@@ -132,7 +153,9 @@ pub use crate::lifetime::Lifetime;
 
 mod lit;
 #[doc(hidden)]
-pub use crate::lit::*;
+pub use crate::lit::{
+    Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr, StrStyle,
+};
 
 mod mac;
 #[doc(hidden)]
@@ -144,15 +167,24 @@ pub use crate::op::{BinOp, UnOp};
 
 mod ty;
 #[doc(hidden)]
-pub use crate::ty::*;
+pub use crate::ty::{
+    Abi, BareFnArg, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro,
+    TypeParen, TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple, Variadic,
+};
 
 mod pat;
 #[doc(hidden)]
-pub use crate::pat::*;
+pub use crate::pat::{
+    FieldPat, Pat, PatBox, PatIdent, PatLit, PatMacro, PatOr, PatPath, PatRange, PatReference,
+    PatRest, PatSlice, PatStruct, PatTuple, PatTupleStruct, PatType, PatWild,
+};
 
 mod path;
 #[doc(hidden)]
-pub use crate::path::*;
+pub use crate::path::{
+    AngleBracketedGenericArguments, Binding, Constraint, GenericArgument,
+    ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
+};
 
 mod stmt;
 #[doc(hidden)]
