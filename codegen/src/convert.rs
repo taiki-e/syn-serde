@@ -278,16 +278,13 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
 
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let impls = gen::traverse(defs, node);
-    file::write(
-        CONVERT_SRC,
-        quote! {
-            #![allow(unused_parens)]
-            #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
+    file::write(CONVERT_SRC, quote! {
+        #![allow(unused_parens)]
+        #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
 
-            use crate::*;
+        use crate::*;
 
-            #impls
-        },
-    )?;
+        #impls
+    })?;
     Ok(())
 }

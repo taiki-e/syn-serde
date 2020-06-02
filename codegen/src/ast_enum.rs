@@ -78,13 +78,10 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
 
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let impls = gen::traverse(defs, node);
-    file::write(
-        AST_ENUM_SRC,
-        quote! {
-            use crate::*;
+    file::write(AST_ENUM_SRC, quote! {
+        use crate::*;
 
-            #impls
-        },
-    )?;
+        #impls
+    })?;
     Ok(())
 }
