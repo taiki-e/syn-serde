@@ -9,14 +9,12 @@
 [crates-url]: https://crates.io/crates/syn-serde
 [docs-badge]: https://docs.rs/syn-serde/badge.svg
 [docs-url]: https://docs.rs/syn-serde
-[license-badge]: https://img.shields.io/crates/l/syn-serde.svg
+[license-badge]: https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg
 [license]: #license
 [rustc-badge]: https://img.shields.io/badge/rustc-1.31+-lightgray.svg
 [rustc-url]: https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html
 
 Library to serialize and deserialize [Syn] syntax trees.
-
-[**Documentation**][docs-url]
 
 ## Usage
 

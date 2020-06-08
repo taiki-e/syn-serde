@@ -1,6 +1,6 @@
 //! Library to serialize and deserialize [Syn] syntax trees.
 //!
-//! ## Examples
+//! # Examples
 //!
 //! ```toml
 //! [dependencies]
@@ -60,17 +60,17 @@
 //! }
 //! ```
 //!
-//! ### Rust source file -> JSON representation of the syntax tree
+//! ## Rust source file -> JSON representation of the syntax tree
 //!
 //! The [`rust2json`] example parse a Rust source file into a `syn_serde::File`
 //! and print out a JSON representation of the syntax tree.
 //!
-//! ### JSON file -> Rust syntax tree
+//! ## JSON file -> Rust syntax tree
 //!
 //! The [`json2rust`] example parse a JSON file into a `syn_serde::File` and
 //! print out a Rust syntax tree.
 //!
-//! ## Optional features
+//! # Optional features
 //!
 //! - **`json`** — Provides functions for JSON <-> Rust serializing and
 //!   deserializing.
@@ -216,7 +216,7 @@ pub trait Syn: Sized + private::Sealed {
 
     /// Converts a `Syn` type into an adapter.
     ///
-    /// ## Examples
+    /// # Examples
     ///
     /// ```rust
     /// # #[cfg(feature = "json")]
@@ -237,7 +237,7 @@ pub trait Syn: Sized + private::Sealed {
 
     /// Converts an adapter into a `Syn` type.
     ///
-    /// ## Examples
+    /// # Examples
     ///
     /// ```rust
     /// # #[cfg(feature = "json")]
