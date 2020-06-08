@@ -3,7 +3,6 @@
 // This crate generates the Syn trait in syn-serde programmatically from
 // the syntax tree description.
 
-#![recursion_limit = "128"]
 #![warn(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
 
 const SYN_JSON: &str = "../syn.json";
