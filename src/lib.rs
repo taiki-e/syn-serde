@@ -95,7 +95,7 @@
     clippy::manual_non_exhaustive,
     clippy::match_like_matches_macro
 )]
-#![allow(clippy::large_enum_variant, clippy::needless_doctest_main)]
+#![allow(clippy::needless_doctest_main)]
 
 #[macro_use]
 mod macros;
