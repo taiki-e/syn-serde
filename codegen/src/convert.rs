@@ -244,12 +244,12 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
             assert!(!fields.is_empty(), "fields.is_empty: {}", ty);
             if !from_fields.is_empty() {
                 from_impl.extend(quote! {
-                    #ty {
+                    Self {
                         #from_fields
                     }
                 });
                 into_impl.extend(quote! {
-                    syn::#ty {
+                    Self {
                         #into_fields
                     }
                 });

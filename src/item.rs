@@ -604,7 +604,7 @@ mod convert {
     syn_trait_impl!(syn::Receiver);
     impl From<&syn::Receiver> for Receiver {
         fn from(node: &syn::Receiver) -> Self {
-            Receiver {
+            Self {
                 attrs: node.attrs.map_into(),
                 reference: node.reference.is_some(),
                 lifetime: node.reference.as_ref().and_then(|(_0, _1)| _1.map_into()),
@@ -614,7 +614,7 @@ mod convert {
     }
     impl From<&Receiver> for syn::Receiver {
         fn from(node: &Receiver) -> Self {
-            syn::Receiver {
+            Self {
                 attrs: node.attrs.map_into(),
                 reference: if node.reference {
                     Some((default(), node.lifetime.map_into()))
