@@ -1,15 +1,15 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
 use std::fs;
-use syn_serde::pickle;
 use structopt::StructOpt;
+use syn_serde::pickle;
 /// Search for a pattern in a file and display the lines that contain it.
 #[derive(StructOpt)]
 struct Cli {
     #[structopt(parse(from_os_str))]
     input: std::path::PathBuf,
     #[structopt(parse(from_os_str))]
-    output: std::path::PathBuf
+    output: std::path::PathBuf,
 }
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
