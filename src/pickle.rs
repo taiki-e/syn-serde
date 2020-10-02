@@ -16,7 +16,7 @@ use std::io;
 /// use syn_serde::Syn;
 ///
 /// let serializable_file = syn_file.to_adapter();
-/// serde_pickle::to_vec(&serializable_file).unwrap()
+/// serde_pickle::to_vec(&serializable_file, true).unwrap()
 /// # }
 /// ```
 #[inline]
