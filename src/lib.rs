@@ -203,9 +203,6 @@ pub use crate::token_stream::{
 #[cfg(feature = "json")]
 pub mod json;
 
-#[cfg(feature = "pickle")]
-pub mod pickle;
-
 // =============================================================================
 // Syn trait
 
