@@ -1,10 +1,9 @@
 //! A module to provide functions for Pickle <-> Rust serialize and deserialize.
 //!
 //! *This module is available if syn-serde is built with the `"pickle"` feature.*
-
-use super::*;
 use serde_pickle::Result;
 use std::io;
+use syn_serde::Syn;
 
 // Serialize [`Syn`] type into Pickle data.
 /// Serialize the given [`Syn`] type as a pickle byte vector.
@@ -44,6 +43,7 @@ where
 /// Ok(syn_file)
 /// # }
 /// ```
+#[allow(dead_code)]
 pub fn from_reader<S, R>(rdr: R) -> Result<S>
 where
     S: Syn,
@@ -66,6 +66,7 @@ where
 /// Ok(syn_file)
 /// # }
 /// ```
+#[allow(dead_code)]
 pub fn from_slice<S>(v: &[u8]) -> Result<S>
 where
     S: Syn,
