@@ -5,9 +5,6 @@ authors = ["Yijun Yu <yijun.yu@gmail.com>"]
 edition = "2018"
 publish = false
 
-#[features]
-#pickle = ["serde-pickle"]
-
 [dependencies]
 syn-serde = { path = "../.." }
 syn = { version = "1.0", features = ["full"] }
