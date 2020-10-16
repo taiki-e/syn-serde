@@ -5,13 +5,9 @@ authors = ["David Tolnay <dtolnay@gmail.com>", "Nika Layzell <nika@thelayzells.c
 edition = "2018"
 publish = false # this is an internal crate which should never be published
 
-[workspace]
-# Prefer that `cargo clean` in syn-serde's directory does not require a rebuild of
-# rustfmt in the codegen directory.
-
 [dependencies]
-proc-macro2 = "1.0"
-quote = "1.0"
-serde_json = "1.0"
+proc-macro2 = "1"
+quote = "1"
+serde_json = "1"
 syn-codegen = { git = "https://github.com/dtolnay/syn" }
 tempfile = "3.1"

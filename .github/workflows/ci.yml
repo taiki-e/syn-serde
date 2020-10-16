@@ -67,7 +67,7 @@ jobs:
         run: ci/install-component.sh rustfmt
       - name: Run codegen
         run: |
-          cd codegen && cargo run
+          cargo run --manifest-path codegen/Cargo.toml
       - run: git diff --exit-code
 
   clippy:
