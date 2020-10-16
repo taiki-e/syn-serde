@@ -10,4 +10,4 @@ proc-macro2 = "1"
 quote = "1"
 serde_json = "1"
 syn-codegen = { git = "https://github.com/dtolnay/syn" }
-tempfile = "3.1"
+tempfile = "3"

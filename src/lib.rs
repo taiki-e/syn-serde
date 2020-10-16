@@ -10,7 +10,7 @@
 //!
 //! ```rust
 //! # #[cfg(feature = "json")]
-//! # fn dox() -> Result<(), Box<dyn std::error::Error>> {
+//! # fn dox() {
 //! use syn_serde::json;
 //!
 //! let syn_file: syn::File = syn::parse_quote! {
@@ -19,7 +19,6 @@
 //!     }
 //! };
 //! println!("{}", json::to_string_pretty(&syn_file));
-//! # Ok(())
 //! # }
 //! ```
 //!

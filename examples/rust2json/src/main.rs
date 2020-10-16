@@ -1,13 +1,22 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
 use std::{
-    env, fs,
+    fs,
     io::{self, BufWriter, Write},
-    path::PathBuf,
 };
+use structopt::{clap::AppSettings, StructOpt};
 use syn_serde::json;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+type Result<T, E = Box<dyn std::error::Error>> = std::result::Result<T, E>;
+
+#[derive(StructOpt)]
+#[structopt(setting = AppSettings::UnifiedHelpMessage)]
+struct Cli {
+    #[structopt(parse(from_os_str))]
+    input_path: std::path::PathBuf,
+    #[structopt(parse(from_os_str))]
+    output_path: Option<std::path::PathBuf>,
+}
 
 fn main() {
     if let Err(e) = try_main() {
@@ -17,23 +26,19 @@ fn main() {
 }
 
 fn try_main() -> Result<()> {
-    let mut args = env::args_os();
-    let _ = args.next(); // executable name
+    let args = Cli::from_args();
 
-    let filepath = match (args.next(), args.next()) {
-        (Some(arg), None) => PathBuf::from(arg),
-        _ => {
-            println!("Usage: rust2json path/to/filename.rs");
-            return Ok(());
-        }
-    };
-
-    let code = fs::read_to_string(&filepath)?;
+    let code = fs::read_to_string(&args.input_path)?;
     let syntax = syn::parse_file(&code)?;
 
-    let writer = io::stdout();
-    let mut writer = BufWriter::new(writer.lock());
-    json::to_writer_pretty(&mut writer, &syntax)?;
-    writer.flush()?;
+    if let Some(outpath) = args.output_path {
+        let buf = json::to_string_pretty(&syntax);
+        fs::write(outpath, buf)?;
+    } else {
+        let writer = io::stdout();
+        let mut writer = BufWriter::new(writer.lock());
+        json::to_writer_pretty(&mut writer, &syntax)?;
+        writer.flush()?;
+    }
     Ok(())
 }
