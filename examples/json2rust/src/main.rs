@@ -2,15 +2,25 @@
 
 use quote::ToTokens;
 use std::{
-    env, fs,
+    fs,
     io::{self, BufWriter, Write},
-    path::PathBuf,
+    path::Path,
     process::{Command, Stdio},
 };
+use structopt::{clap::AppSettings, StructOpt};
 use syn_serde::json;
 use tempfile::Builder;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+type Result<T, E = Box<dyn std::error::Error>> = std::result::Result<T, E>;
+
+#[derive(StructOpt)]
+#[structopt(setting = AppSettings::UnifiedHelpMessage)]
+struct Cli {
+    #[structopt(parse(from_os_str))]
+    input_path: std::path::PathBuf,
+    #[structopt(parse(from_os_str))]
+    output_path: Option<std::path::PathBuf>,
+}
 
 fn main() {
     if let Err(e) = try_main() {
@@ -20,18 +30,9 @@ fn main() {
 }
 
 fn try_main() -> Result<()> {
-    let mut args = env::args_os();
-    let _ = args.next(); // executable name
+    let args = Cli::from_args();
 
-    let filepath = match (args.next(), args.next()) {
-        (Some(arg1), None) => PathBuf::from(arg1),
-        _ => {
-            println!("Usage: rust2json path/to/filename.rs");
-            return Ok(());
-        }
-    };
-
-    let json = fs::read_to_string(&filepath)?;
+    let json = fs::read_to_string(&args.input_path)?;
     let syntax: syn::File = json::from_str(&json)?;
 
     let outdir = Builder::new().prefix("json2rust").tempdir()?;
@@ -39,16 +40,24 @@ fn try_main() -> Result<()> {
     fs::write(&outfile_path, syntax.into_token_stream().to_string())?;
 
     // Run rustfmt
-    // https://github.com/dtolnay/cargo-expand/blob/0.4.9/src/main.rs#L181-L182
-    let rustfmt_config_path = outdir.path().join("rustfmt.toml");
-    fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
-
+    write_rustfmt_config(outdir.path())?;
     // Ignore any errors.
     let _status = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
 
-    let writer = io::stdout();
-    let mut writer = BufWriter::new(writer.lock());
-    writer.write_all(&fs::read(&outfile_path)?)?;
-    writer.flush()?;
+    let buf = fs::read(&outfile_path)?;
+    if let Some(outpath) = args.output_path {
+        fs::write(outpath, buf)?;
+    } else {
+        let writer = io::stdout();
+        let mut writer = BufWriter::new(writer.lock());
+        writer.write_all(&buf)?;
+        writer.flush()?;
+    }
+    Ok(())
+}
+
+fn write_rustfmt_config(outdir: &Path) -> Result<()> {
+    let rustfmt_config_path = outdir.join("rustfmt.toml");
+    fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
     Ok(())
 }

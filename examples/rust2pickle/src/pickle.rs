@@ -1,6 +1,5 @@
 //! A module to provide functions for Pickle <-> Rust serialize and deserialize.
-//!
-//! *This module is available if syn-serde is built with the `"pickle"` feature.*
+
 use serde_pickle::Result;
 use std::io;
 use syn_serde::Syn;

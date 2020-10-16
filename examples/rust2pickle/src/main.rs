@@ -1,17 +1,23 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
-use std::fs;
-use structopt::StructOpt;
 mod pickle;
-/// Search for a pattern in a file and display the lines that contain it.
+
+use std::{
+    fs,
+    io::{self, BufWriter, Write},
+};
+use structopt::{clap::AppSettings, StructOpt};
+
+type Result<T, E = Box<dyn std::error::Error>> = std::result::Result<T, E>;
+
 #[derive(StructOpt)]
+#[structopt(setting = AppSettings::UnifiedHelpMessage)]
 struct Cli {
     #[structopt(parse(from_os_str))]
-    input: std::path::PathBuf,
+    input_path: std::path::PathBuf,
     #[structopt(parse(from_os_str))]
-    output: std::path::PathBuf,
+    output_path: Option<std::path::PathBuf>,
 }
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() {
     if let Err(e) = try_main() {
@@ -22,13 +28,18 @@ fn main() {
 
 fn try_main() -> Result<()> {
     let args = Cli::from_args();
-    let filepath = args.input;
 
-    let code = fs::read_to_string(&filepath)?;
+    let code = fs::read_to_string(&args.input_path)?;
     let syntax = syn::parse_file(&code)?;
 
     let buf = pickle::to_vec(&syntax);
-
-    let _ = fs::write(args.output, buf);
+    if let Some(outpath) = args.output_path {
+        fs::write(outpath, buf)?;
+    } else {
+        let writer = io::stdout();
+        let mut writer = BufWriter::new(writer.lock());
+        writer.write_all(&buf)?;
+        writer.flush()?;
+    }
     Ok(())
 }

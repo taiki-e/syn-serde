@@ -1,12 +1,12 @@
 [package]
 name = "rust2pickle"
-version = "0.0.1"
-authors = ["Yijun Yu <yijun.yu@gmail.com>"]
+version = "0.0.0"
+authors = ["Yijun Yu <yijun.yu@gmail.com>", "Taiki Endo <te316e89@gmail.com>"]
 edition = "2018"
 publish = false
 
 [dependencies]
 syn-serde = { path = "../.." }
-syn = { version = "1.0", features = ["full"] }
-structopt = "0.3.17"
-serde-pickle = "0.6.1"
+syn = { version = "1", features = ["full"] }
+serde-pickle = "0.6"
+structopt = "0.3"
