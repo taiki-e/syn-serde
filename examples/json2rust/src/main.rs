@@ -42,7 +42,7 @@ fn try_main() -> Result<()> {
     // Run rustfmt
     write_rustfmt_config(outdir.path())?;
     // Ignore any errors.
-    let _status = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
+    let _ = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
 
     let buf = fs::read(&outfile_path)?;
     if let Some(outpath) = args.output_path {

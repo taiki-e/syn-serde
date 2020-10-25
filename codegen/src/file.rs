@@ -26,7 +26,7 @@ pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> 
     // Run rustfmt
     write_rustfmt_config(outdir.path())?;
     // Ignore any errors.
-    let _status = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
+    let _ = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
 
     formatted.extend(fs::read(&outfile_path)?);
 

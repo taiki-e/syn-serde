@@ -229,7 +229,7 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
                 let id = format_ident!("{}", field);
                 let ref_toks = quote!(node.#id);
 
-                let (from, into) = visit(&ty, &ref_toks);
+                let (from, into) = visit(ty, &ref_toks);
 
                 if from.is_some() {
                     from_fields.extend(quote! {
@@ -242,21 +242,21 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
             }
 
             assert!(!fields.is_empty(), "fields.is_empty: {}", ty);
-            if !from_fields.is_empty() {
-                from_impl.extend(quote! {
-                    Self {
-                        #from_fields
-                    }
-                });
-                into_impl.extend(quote! {
-                    Self {
-                        #into_fields
-                    }
-                });
-            } else {
+            if from_fields.is_empty() {
                 assert!(EMPTY_STRUCTS.contains(&&*node.ident), "from_fields.is_empty(): {}", ty);
                 return;
             }
+
+            from_impl.extend(quote! {
+                Self {
+                    #from_fields
+                }
+            });
+            into_impl.extend(quote! {
+                Self {
+                    #into_fields
+                }
+            });
         }
         Data::Private => unreachable!("Data::Private: {}", ty),
     }
