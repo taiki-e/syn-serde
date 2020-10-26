@@ -168,39 +168,10 @@
                   "path": {
                     "segments": [
                       {
-                        "ident": "Box",
-                        "arguments": {
-                          "angle_bracketed": {
-                            "args": [
-                              {
-                                "type": {
-                                  "trait_object": {
-                                    "dyn": true,
-                                    "bounds": [
-                                      {
-                                        "trait": {
-                                          "path": {
-                                            "segments": [
-                                              {
-                                                "ident": "std"
-                                              },
-                                              {
-                                                "ident": "error"
-                                              },
-                                              {
-                                                "ident": "Error"
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
-                            ]
-                          }
-                        }
+                        "ident": "anyhow"
+                      },
+                      {
+                        "ident": "Error"
                       }
                     ]
                   }
@@ -459,117 +430,6 @@
     {
       "fn": {
         "ident": "main",
-        "inputs": [],
-        "output": null,
-        "stmts": [
-          {
-            "expr": {
-              "if": {
-                "cond": {
-                  "let": {
-                    "pat": {
-                      "tuple_struct": {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "Err"
-                            }
-                          ]
-                        },
-                        "pat": {
-                          "elems": [
-                            {
-                              "ident": {
-                                "ident": "e"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "expr": {
-                      "call": {
-                        "func": {
-                          "path": {
-                            "segments": [
-                              {
-                                "ident": "try_main"
-                              }
-                            ]
-                          }
-                        },
-                        "args": []
-                      }
-                    }
-                  }
-                },
-                "then_branch": [
-                  {
-                    "semi": {
-                      "macro": {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "eprintln"
-                            }
-                          ]
-                        },
-                        "delimiter": "paren",
-                        "tokens": [
-                          {
-                            "lit": "\"{}\""
-                          },
-                          {
-                            "punct": {
-                              "op": ",",
-                              "spacing": "alone"
-                            }
-                          },
-                          {
-                            "ident": "e"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "semi": {
-                      "call": {
-                        "func": {
-                          "path": {
-                            "segments": [
-                              {
-                                "ident": "std"
-                              },
-                              {
-                                "ident": "process"
-                              },
-                              {
-                                "ident": "exit"
-                              }
-                            ]
-                          }
-                        },
-                        "args": [
-                          {
-                            "lit": {
-                              "int": "1"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "fn": {
-        "ident": "try_main",
         "inputs": [],
         "output": {
           "path": {
@@ -910,9 +770,7 @@
           {
             "let": {
               "pat": {
-                "ident": {
-                  "ident": "_status"
-                }
+                "_": {}
               },
               "init": {
                 "method_call": {
