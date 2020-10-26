@@ -7,7 +7,7 @@ use std::{
 use structopt::{clap::AppSettings, StructOpt};
 use syn_serde::json;
 
-type Result<T, E = Box<dyn std::error::Error>> = std::result::Result<T, E>;
+type Result<T, E = anyhow::Error> = std::result::Result<T, E>;
 
 #[derive(StructOpt)]
 #[structopt(setting = AppSettings::UnifiedHelpMessage)]
@@ -18,14 +18,7 @@ struct Cli {
     output_path: Option<std::path::PathBuf>,
 }
 
-fn main() {
-    if let Err(e) = try_main() {
-        eprintln!("{}", e);
-        std::process::exit(1);
-    }
-}
-
-fn try_main() -> Result<()> {
+fn main() -> Result<()> {
     let args = Cli::from_args();
 
     let code = fs::read_to_string(&args.input_path)?;
