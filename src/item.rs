@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem};
+pub use crate::ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem, UseTree};
 
 ast_struct! {
     /// A constant item: `const MAX: u16 = 65535`.
@@ -242,28 +242,6 @@ ast_struct! {
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) leading_colon: bool,
         pub(crate) tree: UseTree,
-    }
-}
-
-ast_enum! {
-    /// A suffix of an import tree in a `use` item: `Type as Renamed` or `*`.
-    pub enum UseTree {
-        /// A path prefix of imports in a `use` item: `std::...`.
-        Path(UsePath),
-
-        /// An identifier imported by a `use` item: `HashMap`.
-        #[serde(rename = "ident")]
-        Name(UseName),
-
-        /// An renamed identifier imported by a `use` item: `HashMap as Map`.
-        Rename(UseRename),
-
-        /// A glob import in a `use` item: `*`.
-        #[serde(rename = "*")]
-        Glob,
-
-        /// A braced group of imports in a `use` item: `{A, B, C}`.
-        Group(UseGroup),
     }
 }
 

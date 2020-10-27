@@ -29,7 +29,9 @@ pub(crate) const IGNORED_TYPES: &[&str] = &[
     "ReturnType",
     "TraitItemMethod",
 ];
-const EMPTY_STRUCTS: &[&str] = &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
+
+pub(crate) const EMPTY_STRUCTS: &[&str] =
+    &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
 
 fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStream>, TokenStream) {
     match ty {

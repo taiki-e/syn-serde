@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::Fields;
+pub use crate::ast_enum::{Fields, Visibility};
 
 ast_struct! {
     /// An enum variant.
@@ -89,26 +89,6 @@ ast_struct! {
 
         /// Type of the field.
         pub(crate) ty: Type,
-    }
-}
-
-ast_enum! {
-    /// The visibility level of an item: inherited or `pub` or
-    /// `pub(restricted)`.
-    pub enum Visibility {
-        /// A public visibility level: `pub`.
-        #[serde(rename = "pub")]
-        Public,
-
-        /// A crate-level visibility: `crate`.
-        Crate,
-
-        /// A visibility level restricted to some path: `pub(self)` or
-        /// `pub(super)` or `pub(crate)` or `pub(in some::module)`.
-        Restricted(VisRestricted),
-
-        /// An inherited visibility, which usually means private.
-        Inherited,
     }
 }
 

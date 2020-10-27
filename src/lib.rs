@@ -167,7 +167,10 @@ mod mac;
 #[doc(hidden)]
 pub use crate::mac::{Macro, MacroDelimiter};
 
-mod op;
+mod op {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::ast_enum::{BinOp, UnOp};
+}
 #[doc(hidden)]
 pub use crate::op::{BinOp, UnOp};
 
