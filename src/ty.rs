@@ -212,56 +212,6 @@ ast_struct! {
 mod convert {
     use super::*;
 
-    // Type
-    syn_trait_impl!(syn::Type);
-    impl From<&syn::Type> for Type {
-        fn from(other: &syn::Type) -> Self {
-            use super::Type::*;
-            use syn::Type;
-            match other {
-                Type::Slice(x) => Slice(x.into()),
-                Type::Array(x) => Array(x.into()),
-                Type::Ptr(x) => Ptr(x.into()),
-                Type::Reference(x) => Reference(x.into()),
-                Type::BareFn(x) => BareFn(x.into()),
-                Type::Never(_) => Never,
-                Type::Tuple(x) => Tuple(x.into()),
-                Type::Path(x) => Path(x.into()),
-                Type::TraitObject(x) => TraitObject(x.into()),
-                Type::ImplTrait(x) => ImplTrait(x.into()),
-                Type::Paren(x) => Paren(x.into()),
-                Type::Group(x) => Group(x.into()),
-                Type::Infer(_) => Infer,
-                Type::Macro(x) => Macro(x.into()),
-                Type::Verbatim(x) => Verbatim(x.into()),
-                _ => unreachable!(),
-            }
-        }
-    }
-    impl From<&Type> for syn::Type {
-        fn from(other: &Type) -> Self {
-            use syn::Type::*;
-            match other {
-                Type::Slice(x) => Slice(x.into()),
-                Type::Array(x) => Array(x.into()),
-                Type::Ptr(x) => Ptr(x.into()),
-                Type::Reference(x) => Reference(x.into()),
-                Type::BareFn(x) => BareFn(x.into()),
-                Type::Never => Never(syn::TypeNever { bang_token: default() }),
-                Type::Tuple(x) => Tuple(x.into()),
-                Type::Path(x) => Path(x.into()),
-                Type::TraitObject(x) => TraitObject(x.into()),
-                Type::ImplTrait(x) => ImplTrait(x.into()),
-                Type::Paren(x) => Paren(x.into()),
-                Type::Group(x) => Group(x.into()),
-                Type::Infer => Infer(syn::TypeInfer { underscore_token: default() }),
-                Type::Macro(x) => Macro(x.into()),
-                Type::Verbatim(x) => Verbatim(x.into()),
-                _ => unreachable!(),
-            }
-        }
-    }
-
     // ReturnType
     syn_trait_impl!(syn::ReturnType);
     impl From<&syn::ReturnType> for ReturnType {

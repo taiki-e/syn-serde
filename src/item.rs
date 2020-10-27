@@ -572,34 +572,6 @@ mod convert {
         }
     }
 
-    // UseTree
-    syn_trait_impl!(syn::UseTree);
-    impl From<&syn::UseTree> for UseTree {
-        fn from(other: &syn::UseTree) -> Self {
-            use super::UseTree::*;
-            use syn::UseTree;
-            match other {
-                UseTree::Path(x) => Path(x.into()),
-                UseTree::Name(x) => Name(x.into()),
-                UseTree::Rename(x) => Rename(x.into()),
-                UseTree::Glob(_) => Glob,
-                UseTree::Group(x) => Group(x.into()),
-            }
-        }
-    }
-    impl From<&UseTree> for syn::UseTree {
-        fn from(other: &UseTree) -> Self {
-            use syn::UseTree::*;
-            match other {
-                UseTree::Path(x) => Path(x.into()),
-                UseTree::Name(x) => Name(x.into()),
-                UseTree::Rename(x) => Rename(x.into()),
-                UseTree::Glob => Glob(syn::UseGlob { star_token: default() }),
-                UseTree::Group(x) => Group(x.into()),
-            }
-        }
-    }
-
     // Receiver
     syn_trait_impl!(syn::Receiver);
     impl From<&syn::Receiver> for Receiver {

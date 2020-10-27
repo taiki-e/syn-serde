@@ -136,33 +136,3 @@ ast_struct! {
         pub(crate) path: Box<Path>,
     }
 }
-
-mod convert {
-    use super::*;
-
-    // Visibility
-    syn_trait_impl!(syn::Visibility);
-    impl From<&syn::Visibility> for Visibility {
-        fn from(other: &syn::Visibility) -> Self {
-            use super::Visibility::*;
-            use syn::Visibility;
-            match other {
-                Visibility::Public(_) => Public,
-                Visibility::Crate(_) => Crate,
-                Visibility::Restricted(x) => Restricted(x.ref_into()),
-                Visibility::Inherited => Inherited,
-            }
-        }
-    }
-    impl From<&Visibility> for syn::Visibility {
-        fn from(other: &Visibility) -> Self {
-            use syn::Visibility::*;
-            match other {
-                Visibility::Public => Public(syn::VisPublic { pub_token: default() }),
-                Visibility::Crate => Crate(syn::VisCrate { crate_token: default() }),
-                Visibility::Restricted(x) => Restricted(x.into()),
-                Visibility::Inherited => Inherited,
-            }
-        }
-    }
-}
