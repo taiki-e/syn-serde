@@ -1,44 +1,24 @@
 macro_rules! ast_struct {
     (
-        [$($attrs_pub:tt)*]
-        struct $name:ident $($rest:tt)*
+        $(#[$attrs:meta])*
+        pub struct $name:ident $($rest:tt)*
     ) => {
-        #[derive(crate::Serialize, crate::Deserialize)]
-        $($attrs_pub)* struct $name $($rest)*
-    };
-
-    ($($t:tt)*) => {
-        strip_attrs_pub!(ast_struct!($($t)*));
+        #[derive(serde::Serialize, serde::Deserialize)]
+        $(#[$attrs])*
+        pub struct $name $($rest)*
     };
 }
 
 macro_rules! ast_enum {
     (
-        [$($attrs_pub:tt)*]
-        enum $name:ident $($rest:tt)*
+        $(#[$attrs:meta])*
+        pub enum $name:ident $($rest:tt)*
     ) => (
-        #[derive(crate::Serialize, crate::Deserialize)]
+        #[derive(serde::Serialize, serde::Deserialize)]
         #[serde(rename_all = "snake_case")]
-        $($attrs_pub)* enum $name $($rest)*
+        $(#[$attrs])*
+        pub enum $name $($rest)*
     );
-
-    ($($t:tt)*) => {
-        strip_attrs_pub!(ast_enum!($($t)*));
-    };
-}
-
-macro_rules! strip_attrs_pub {
-    ($mac:ident!($(#[$m:meta])* $pub:ident $($t:tt)*)) => {
-        check_keyword_matches!(pub $pub);
-
-        $mac!([$(#[$m])* $pub] $($t)*);
-    };
-}
-
-macro_rules! check_keyword_matches {
-    (struct struct) => {};
-    (enum enum) => {};
-    (pub pub) => {};
 }
 
 macro_rules! syn_trait_impl {
