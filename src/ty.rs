@@ -1,62 +1,7 @@
 use super::*;
 
-ast_enum! {
-    /// The possible types that a Rust value could have.
-    pub enum Type {
-        /// A fixed size array type: `[T; n]`.
-        Array(TypeArray),
-
-        /// A bare function type: `fn(usize) -> bool`.
-        BareFn(TypeBareFn),
-
-        /// A type contained within invisible delimiters.
-        Group(TypeGroup),
-
-        /// An `impl Bound1 + Bound2 + Bound3` type where `Bound` is a trait or
-        /// a lifetime.
-        ImplTrait(TypeImplTrait),
-
-        /// Indication that a type should be inferred by the compiler: `_`.
-        #[serde(rename = "_")]
-        Infer,
-
-        /// A macro in the type position.
-        Macro(TypeMacro),
-
-        /// The never type: `!`.
-        #[serde(rename = "!")]
-        Never,
-
-        /// A parenthesized type equivalent to the inner type.
-        Paren(TypeParen),
-
-        /// A path like `std::slice::Iter`, optionally qualified with a
-        /// self-type as in `<Vec<T> as SomeTrait>::Associated`.
-        Path(TypePath),
-
-        /// A raw pointer type: `*const T` or `*mut T`.
-        Ptr(TypePtr),
-
-        /// A reference type: `&'a T` or `&'a mut T`.
-        Reference(TypeReference),
-
-        /// A dynamically sized slice type: `[T]`.
-        Slice(TypeSlice),
-
-        /// A trait object type `Bound1 + Bound2 + Bound3` where `Bound` is a
-        /// trait or a lifetime.
-        TraitObject(TypeTraitObject),
-
-        /// A tuple type: `(A, B, C, String)`.
-        Tuple(TypeTuple),
-
-        /// Tokens in type position not interpreted by Syn.
-        Verbatim(TokenStream),
-
-        #[doc(hidden)]
-        __Nonexhaustive,
-    }
-}
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::Type;
 
 ast_struct! {
     /// A fixed size array type: `[T; n]`.
@@ -211,56 +156,6 @@ ast_struct! {
 
 mod convert {
     use super::*;
-
-    // Type
-    syn_trait_impl!(syn::Type);
-    impl From<&syn::Type> for Type {
-        fn from(other: &syn::Type) -> Self {
-            use super::Type::*;
-            use syn::Type;
-            match other {
-                Type::Slice(x) => Slice(x.into()),
-                Type::Array(x) => Array(x.into()),
-                Type::Ptr(x) => Ptr(x.into()),
-                Type::Reference(x) => Reference(x.into()),
-                Type::BareFn(x) => BareFn(x.into()),
-                Type::Never(_) => Never,
-                Type::Tuple(x) => Tuple(x.into()),
-                Type::Path(x) => Path(x.into()),
-                Type::TraitObject(x) => TraitObject(x.into()),
-                Type::ImplTrait(x) => ImplTrait(x.into()),
-                Type::Paren(x) => Paren(x.into()),
-                Type::Group(x) => Group(x.into()),
-                Type::Infer(_) => Infer,
-                Type::Macro(x) => Macro(x.into()),
-                Type::Verbatim(x) => Verbatim(x.into()),
-                _ => unreachable!(),
-            }
-        }
-    }
-    impl From<&Type> for syn::Type {
-        fn from(other: &Type) -> Self {
-            use syn::Type::*;
-            match other {
-                Type::Slice(x) => Slice(x.into()),
-                Type::Array(x) => Array(x.into()),
-                Type::Ptr(x) => Ptr(x.into()),
-                Type::Reference(x) => Reference(x.into()),
-                Type::BareFn(x) => BareFn(x.into()),
-                Type::Never => Never(syn::TypeNever { bang_token: default() }),
-                Type::Tuple(x) => Tuple(x.into()),
-                Type::Path(x) => Path(x.into()),
-                Type::TraitObject(x) => TraitObject(x.into()),
-                Type::ImplTrait(x) => ImplTrait(x.into()),
-                Type::Paren(x) => Paren(x.into()),
-                Type::Group(x) => Group(x.into()),
-                Type::Infer => Infer(syn::TypeInfer { underscore_token: default() }),
-                Type::Macro(x) => Macro(x.into()),
-                Type::Verbatim(x) => Verbatim(x.into()),
-                _ => unreachable!(),
-            }
-        }
-    }
 
     // ReturnType
     syn_trait_impl!(syn::ReturnType);

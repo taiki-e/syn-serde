@@ -2702,6 +2702,51 @@ impl From<&TraitItemType> for syn::TraitItemType {
         }
     }
 }
+syn_trait_impl!(syn::Type);
+impl From<&syn::Type> for Type {
+    fn from(node: &syn::Type) -> Self {
+        match node {
+            syn::Type::Array(_0) => Type::Array((*_0).ref_into()),
+            syn::Type::BareFn(_0) => Type::BareFn((*_0).ref_into()),
+            syn::Type::Group(_0) => Type::Group((*_0).ref_into()),
+            syn::Type::ImplTrait(_0) => Type::ImplTrait((*_0).ref_into()),
+            syn::Type::Infer(..) => Type::Infer,
+            syn::Type::Macro(_0) => Type::Macro((*_0).ref_into()),
+            syn::Type::Never(..) => Type::Never,
+            syn::Type::Paren(_0) => Type::Paren((*_0).ref_into()),
+            syn::Type::Path(_0) => Type::Path((*_0).ref_into()),
+            syn::Type::Ptr(_0) => Type::Ptr((*_0).ref_into()),
+            syn::Type::Reference(_0) => Type::Reference((*_0).ref_into()),
+            syn::Type::Slice(_0) => Type::Slice((*_0).ref_into()),
+            syn::Type::TraitObject(_0) => Type::TraitObject((*_0).ref_into()),
+            syn::Type::Tuple(_0) => Type::Tuple((*_0).ref_into()),
+            syn::Type::Verbatim(_0) => Type::Verbatim((*_0).ref_into()),
+            _ => unreachable!(),
+        }
+    }
+}
+impl From<&Type> for syn::Type {
+    fn from(node: &Type) -> Self {
+        match node {
+            Type::Array(_0) => syn::Type::Array((*_0).ref_into()),
+            Type::BareFn(_0) => syn::Type::BareFn((*_0).ref_into()),
+            Type::Group(_0) => syn::Type::Group((*_0).ref_into()),
+            Type::ImplTrait(_0) => syn::Type::ImplTrait((*_0).ref_into()),
+            Type::Infer => syn::Type::Infer(syn::TypeInfer { underscore_token: default() }),
+            Type::Macro(_0) => syn::Type::Macro((*_0).ref_into()),
+            Type::Never => syn::Type::Never(syn::TypeNever { bang_token: default() }),
+            Type::Paren(_0) => syn::Type::Paren((*_0).ref_into()),
+            Type::Path(_0) => syn::Type::Path((*_0).ref_into()),
+            Type::Ptr(_0) => syn::Type::Ptr((*_0).ref_into()),
+            Type::Reference(_0) => syn::Type::Reference((*_0).ref_into()),
+            Type::Slice(_0) => syn::Type::Slice((*_0).ref_into()),
+            Type::TraitObject(_0) => syn::Type::TraitObject((*_0).ref_into()),
+            Type::Tuple(_0) => syn::Type::Tuple((*_0).ref_into()),
+            Type::Verbatim(_0) => syn::Type::Verbatim((*_0).ref_into()),
+            _ => unreachable!(),
+        }
+    }
+}
 syn_trait_impl!(syn::TypeArray);
 impl From<&syn::TypeArray> for TypeArray {
     fn from(node: &syn::TypeArray) -> Self {
@@ -2978,6 +3023,29 @@ impl From<&UseRename> for syn::UseRename {
         Self { ident: node.ident.ref_into(), as_token: default(), rename: node.rename.ref_into() }
     }
 }
+syn_trait_impl!(syn::UseTree);
+impl From<&syn::UseTree> for UseTree {
+    fn from(node: &syn::UseTree) -> Self {
+        match node {
+            syn::UseTree::Path(_0) => UseTree::Path((*_0).ref_into()),
+            syn::UseTree::Name(_0) => UseTree::Name((*_0).ref_into()),
+            syn::UseTree::Rename(_0) => UseTree::Rename((*_0).ref_into()),
+            syn::UseTree::Glob(..) => UseTree::Glob,
+            syn::UseTree::Group(_0) => UseTree::Group((*_0).ref_into()),
+        }
+    }
+}
+impl From<&UseTree> for syn::UseTree {
+    fn from(node: &UseTree) -> Self {
+        match node {
+            UseTree::Path(_0) => syn::UseTree::Path((*_0).ref_into()),
+            UseTree::Name(_0) => syn::UseTree::Name((*_0).ref_into()),
+            UseTree::Rename(_0) => syn::UseTree::Rename((*_0).ref_into()),
+            UseTree::Glob => syn::UseTree::Glob(syn::UseGlob { star_token: default() }),
+            UseTree::Group(_0) => syn::UseTree::Group((*_0).ref_into()),
+        }
+    }
+}
 syn_trait_impl!(syn::Variadic);
 impl From<&syn::Variadic> for Variadic {
     fn from(node: &syn::Variadic) -> Self {
@@ -3023,6 +3091,27 @@ impl From<&VisRestricted> for syn::VisRestricted {
             paren_token: default(),
             in_token: default_or_none(node.in_token),
             path: node.path.map_into(),
+        }
+    }
+}
+syn_trait_impl!(syn::Visibility);
+impl From<&syn::Visibility> for Visibility {
+    fn from(node: &syn::Visibility) -> Self {
+        match node {
+            syn::Visibility::Public(..) => Visibility::Public,
+            syn::Visibility::Crate(..) => Visibility::Crate,
+            syn::Visibility::Restricted(_0) => Visibility::Restricted((*_0).ref_into()),
+            syn::Visibility::Inherited => Visibility::Inherited,
+        }
+    }
+}
+impl From<&Visibility> for syn::Visibility {
+    fn from(node: &Visibility) -> Self {
+        match node {
+            Visibility::Public => syn::Visibility::Public(syn::VisPublic { pub_token: default() }),
+            Visibility::Crate => syn::Visibility::Crate(syn::VisCrate { crate_token: default() }),
+            Visibility::Restricted(_0) => syn::Visibility::Restricted((*_0).ref_into()),
+            Visibility::Inherited => syn::Visibility::Inherited,
         }
     }
 }

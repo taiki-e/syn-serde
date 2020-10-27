@@ -10,6 +10,66 @@ pub enum AttrStyle {
 }
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum BinOp {
+    #[serde(rename = "+")]
+    Add,
+    #[serde(rename = "-")]
+    Sub,
+    #[serde(rename = "*")]
+    Mul,
+    #[serde(rename = "/")]
+    Div,
+    #[serde(rename = "%")]
+    Rem,
+    #[serde(rename = "&&")]
+    And,
+    #[serde(rename = "||")]
+    Or,
+    #[serde(rename = "^")]
+    BitXor,
+    #[serde(rename = "&")]
+    BitAnd,
+    #[serde(rename = "|")]
+    BitOr,
+    #[serde(rename = "<<")]
+    Shl,
+    #[serde(rename = ">>")]
+    Shr,
+    #[serde(rename = "==")]
+    Eq,
+    #[serde(rename = "<")]
+    Lt,
+    #[serde(rename = "<=")]
+    Le,
+    #[serde(rename = "!=")]
+    Ne,
+    #[serde(rename = ">=")]
+    Ge,
+    #[serde(rename = ">")]
+    Gt,
+    #[serde(rename = "+=")]
+    AddEq,
+    #[serde(rename = "-=")]
+    SubEq,
+    #[serde(rename = "*=")]
+    MulEq,
+    #[serde(rename = "/=")]
+    DivEq,
+    #[serde(rename = "%=")]
+    RemEq,
+    #[serde(rename = "^=")]
+    BitXorEq,
+    #[serde(rename = "&=")]
+    BitAndEq,
+    #[serde(rename = "|=")]
+    BitOrEq,
+    #[serde(rename = "<<=")]
+    ShlEq,
+    #[serde(rename = ">>=")]
+    ShrEq,
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Expr {
     Array(ExprArray),
     Assign(ExprAssign),
@@ -155,6 +215,14 @@ pub enum MacroDelimiter {
 }
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum Member {
+    #[serde(rename = "ident")]
+    Named(Ident),
+    #[serde(rename = "index")]
+    Unnamed(Index),
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Meta {
     Path(Path),
     List(MetaList),
@@ -168,10 +236,50 @@ pub enum NestedMeta {
 }
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum Pat {
+    Box(PatBox),
+    Ident(PatIdent),
+    Lit(PatLit),
+    Macro(PatMacro),
+    Or(PatOr),
+    Path(PatPath),
+    Range(PatRange),
+    Reference(PatReference),
+    Rest(PatRest),
+    Slice(PatSlice),
+    Struct(PatStruct),
+    Tuple(PatTuple),
+    TupleStruct(PatTupleStruct),
+    Type(PatType),
+    Verbatim(TokenStream),
+    #[serde(rename = "_")]
+    Wild(PatWild),
+    #[doc(hidden)]
+    __Nonexhaustive,
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum PathArguments {
     None,
     AngleBracketed(AngleBracketedGenericArguments),
     Parenthesized(ParenthesizedGenericArguments),
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RangeLimits {
+    #[serde(rename = "..")]
+    HalfOpen,
+    #[serde(rename = "..=")]
+    Closed,
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Stmt {
+    #[serde(rename = "let")]
+    Local(Local),
+    Item(Item),
+    Expr(Expr),
+    Semi(Expr),
 }
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -192,9 +300,62 @@ pub enum TraitItem {
 }
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum Type {
+    Array(TypeArray),
+    BareFn(TypeBareFn),
+    Group(TypeGroup),
+    ImplTrait(TypeImplTrait),
+    #[serde(rename = "_")]
+    Infer,
+    Macro(TypeMacro),
+    #[serde(rename = "!")]
+    Never,
+    Paren(TypeParen),
+    Path(TypePath),
+    Ptr(TypePtr),
+    Reference(TypeReference),
+    Slice(TypeSlice),
+    TraitObject(TypeTraitObject),
+    Tuple(TypeTuple),
+    Verbatim(TokenStream),
+    #[doc(hidden)]
+    __Nonexhaustive,
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum TypeParamBound {
     Trait(TraitBound),
     Lifetime(Lifetime),
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UnOp {
+    #[serde(rename = "*")]
+    Deref,
+    #[serde(rename = "!")]
+    Not,
+    #[serde(rename = "-")]
+    Neg,
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UseTree {
+    Path(UsePath),
+    #[serde(rename = "ident")]
+    Name(UseName),
+    Rename(UseRename),
+    #[serde(rename = "*")]
+    Glob,
+    Group(UseGroup),
+}
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Visibility {
+    #[serde(rename = "pub")]
+    Public,
+    Crate,
+    Restricted(VisRestricted),
+    Inherited,
 }
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

@@ -1,71 +1,7 @@
 use super::*;
 
-ast_enum! {
-    /// A pattern in a local binding, function signature, match expression, or
-    /// various other places.
-    pub enum Pat {
-        /// A box pattern: `box v`.
-        Box(PatBox),
-
-        /// A pattern that binds a new variable: `ref mut binding @ SUBPATTERN`.
-        Ident(PatIdent),
-
-        /// A literal pattern: `0`.
-        ///
-        /// This holds an `Expr` rather than a `Lit` because negative numbers
-        /// are represented as an `Expr::Unary`.
-        Lit(PatLit),
-
-        /// A macro in pattern position.
-        Macro(PatMacro),
-
-        /// A pattern that matches any one of a set of cases.
-        Or(PatOr),
-
-        /// A path pattern like `Color::Red`, optionally qualified with a
-        /// self-type.
-        ///
-        /// Unqualified path patterns can legally refer to variants, structs,
-        /// constants or associated constants. Qualified path patterns like
-        /// `<A>::B::C` and `<A as Trait>::B::C` can only legally refer to
-        /// associated constants.
-        Path(PatPath),
-
-        /// A range pattern: `1..=2`.
-        Range(PatRange),
-
-        /// A reference pattern: `&mut var`.
-        Reference(PatReference),
-
-        /// The dots in a tuple or slice pattern: `[0, 1, ..]`
-        Rest(PatRest),
-
-        /// A dynamically sized slice pattern: `[a, b, ref i @ .., y, z]`.
-        Slice(PatSlice),
-
-        /// A struct or struct variant pattern: `Variant { x, y, .. }`.
-        Struct(PatStruct),
-
-        /// A tuple pattern: `(a, b)`.
-        Tuple(PatTuple),
-
-        /// A tuple struct or tuple variant pattern: `Variant(x, y, .., z)`.
-        TupleStruct(PatTupleStruct),
-
-        /// A type ascription pattern: `foo: f64`.
-        Type(PatType),
-
-        /// Tokens in pattern position not interpreted by Syn.
-        Verbatim(TokenStream),
-
-        /// A pattern that matches any value: `_`.
-        #[serde(rename = "_")]
-        Wild(PatWild),
-
-        #[doc(hidden)]
-        __Nonexhaustive,
-    }
-}
+#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+pub use crate::ast_enum::Pat;
 
 ast_struct! {
     /// A box pattern: `box v`.

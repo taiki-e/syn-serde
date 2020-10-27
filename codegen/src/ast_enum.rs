@@ -2,25 +2,32 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
 
-use crate::{convert, file, gen, Result};
+use crate::{
+    convert::{EMPTY_STRUCTS, IGNORED_TYPES},
+    file, gen, Result,
+};
 
 const AST_ENUM_SRC: &str = "../src/gen/ast_enum.rs";
 
-const IGNORED_TYPES: &[&str] = &[
-    // renamed
-    "Member",
-    "RangeLimits",
-    "UseTree",
-    "Visibility",
-    "BinOp",
-    "UnOp",
-    "Pat",
-    "Stmt",
-    "Type",
-];
+fn rename(ident: &str, variant: &str) -> Option<&'static str> {
+    match (ident, variant) {
+        ("Pat", "Wild") => Some("_"),
+        ("Type", "Infer") => Some("_"),
+        ("Type", "Never") => Some("!"),
+        ("Stmt", "Local") => Some("let"),
+        ("UseTree", "Glob") => Some("*"),
+        ("UseTree", "Name") => Some("ident"),
+        ("Member", "Named") => Some("ident"),
+        ("Member", "Unnamed") => Some("index"),
+        ("RangeLimits", "HalfOpen") => Some(".."),
+        ("RangeLimits", "Closed") => Some("..="),
+        ("Visibility", "Public") => Some("pub"),
+        _ => None,
+    }
+}
 
-fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
-    if convert::IGNORED_TYPES.contains(&&*node.ident) || IGNORED_TYPES.contains(&&*node.ident) {
+fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
+    if IGNORED_TYPES.contains(&&*node.ident) {
         return;
     }
 
@@ -29,33 +36,37 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
             let mut body = TokenStream::new();
 
             for (variant, fields) in variants {
+                body.extend(rename(&node.ident, variant).map(|s| quote!(#[serde(rename = #s)])));
+
                 let variant = format_ident!("{}", variant);
 
                 if fields.is_empty() {
-                    body.extend(quote! {
-                        #variant,
-                    });
+                    body.extend(quote!(#variant,));
                 } else {
-                    assert_eq!(fields.len(), 1);
+                    assert!(fields.len() == 1 || node.ident == "Stmt");
                     match &fields[0] {
+                        Type::Syn(s) if EMPTY_STRUCTS.contains(&&**s) => {
+                            body.extend(quote!(#variant,));
+                        }
                         Type::Syn(s) | Type::Ext(s) => {
                             let field = format_ident!("{}", s);
-
+                            body.extend(quote!(#variant(#field),));
+                        }
+                        Type::Token(t) if node.ident == "BinOp" || node.ident == "UnOp" => {
+                            let s = &defs.tokens[t];
                             body.extend(quote! {
-                                #variant(#field),
+                                #[serde(rename = #s)]
+                                #variant,
                             });
                         }
                         Type::Token(_) | Type::Group(_) => {
-                            body.extend(quote! {
-                                #variant,
-                            });
+                            body.extend(quote!(#variant,));
                         }
                         _ => unreachable!("Data::Enum: {}", node.ident),
                     }
                 }
             }
 
-            let ident = format_ident!("{}", node.ident);
             if !node.exhaustive {
                 body.extend(quote! {
                     #[doc(hidden)]
@@ -63,6 +74,7 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
                 });
             }
 
+            let ident = format_ident!("{}", node.ident);
             impls.extend(quote! {
                 #[derive(Serialize, Deserialize)]
                 #[serde(rename_all = "snake_case")]

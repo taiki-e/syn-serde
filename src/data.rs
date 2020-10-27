@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::Fields;
+pub use crate::ast_enum::{Fields, Visibility};
 
 ast_struct! {
     /// An enum variant.
@@ -92,26 +92,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// The visibility level of an item: inherited or `pub` or
-    /// `pub(restricted)`.
-    pub enum Visibility {
-        /// A public visibility level: `pub`.
-        #[serde(rename = "pub")]
-        Public,
-
-        /// A crate-level visibility: `crate`.
-        Crate,
-
-        /// A visibility level restricted to some path: `pub(self)` or
-        /// `pub(super)` or `pub(crate)` or `pub(in some::module)`.
-        Restricted(VisRestricted),
-
-        /// An inherited visibility, which usually means private.
-        Inherited,
-    }
-}
-
 impl Visibility {
     pub(crate) fn is_inherited(&self) -> bool {
         match self {
@@ -134,35 +114,5 @@ ast_struct! {
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) in_token: bool,
         pub(crate) path: Box<Path>,
-    }
-}
-
-mod convert {
-    use super::*;
-
-    // Visibility
-    syn_trait_impl!(syn::Visibility);
-    impl From<&syn::Visibility> for Visibility {
-        fn from(other: &syn::Visibility) -> Self {
-            use super::Visibility::*;
-            use syn::Visibility;
-            match other {
-                Visibility::Public(_) => Public,
-                Visibility::Crate(_) => Crate,
-                Visibility::Restricted(x) => Restricted(x.ref_into()),
-                Visibility::Inherited => Inherited,
-            }
-        }
-    }
-    impl From<&Visibility> for syn::Visibility {
-        fn from(other: &Visibility) -> Self {
-            use syn::Visibility::*;
-            match other {
-                Visibility::Public => Public(syn::VisPublic { pub_token: default() }),
-                Visibility::Crate => Crate(syn::VisCrate { crate_token: default() }),
-                Visibility::Restricted(x) => Restricted(x.into()),
-                Visibility::Inherited => Inherited,
-            }
-        }
     }
 }

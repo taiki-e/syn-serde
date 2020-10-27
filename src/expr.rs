@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::{Expr, GenericMethodArgument};
+pub use crate::ast_enum::{Expr, GenericMethodArgument, Member, RangeLimits};
 
 ast_struct! {
     /// A slice literal expression: `[a, b, c, d]`.
@@ -447,19 +447,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// A struct or tuple struct field accessed in a struct literal or field
-    /// expression.
-    pub enum Member {
-        /// A named field like `self.x`.
-        #[serde(rename = "ident")]
-        Named(Ident),
-        /// An unnamed field like `self.0`.
-        #[serde(rename = "index")]
-        Unnamed(Index),
-    }
-}
-
 ast_struct! {
     /// The index of an unnamed tuple struct field.
     #[serde(transparent)]
@@ -516,18 +503,6 @@ ast_struct! {
         pub(crate) body: Box<Expr>,
         // #[serde(default, skip_serializing_if = "not")]
         // pub(crate) comma: bool,
-    }
-}
-
-ast_enum! {
-    /// Limit types of a range, inclusive or exclusive.
-    pub enum RangeLimits {
-        /// Inclusive at the beginning, exclusive at the end.
-        #[serde(rename = "..")]
-        HalfOpen,
-        /// Inclusive at the beginning and end.
-        #[serde(rename = "..=")]
-        Closed,
     }
 }
 

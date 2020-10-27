@@ -20,32 +20,30 @@ pub(crate) const IGNORED_TYPES: &[&str] = &[
     "LitFloat",
     "LitInt",
     "LitStr",
-    /* cannot be implemented by codegen */
-    "Type",
-    "UseTree",
-    "Visibility",
-    "Receiver",
     /* optimize */
-    "Generics",
-    "ExprMatch",
     "Arm",
-    "TraitItemMethod",
+    "ExprMatch",
+    "Generics",
     "ItemStruct",
+    "Receiver",
     "ReturnType",
+    "TraitItemMethod",
 ];
-const EMPTY_STRUCTS: &[&str] = &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
 
-fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
+pub(crate) const EMPTY_STRUCTS: &[&str] =
+    &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
+
+fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStream>, TokenStream) {
     match ty {
         Type::Box(_) | Type::Vec(_) | Type::Punctuated(_) => {
-            let from = Some(quote!(#name.map_into()));
-            let into = quote!(#name.map_into());
+            let from = Some(quote!(#var.map_into()));
+            let into = quote!(#var.map_into());
             (from, into)
         }
         Type::Option(t) => match &**t {
             Type::Token(_) | Type::Group(_) => {
-                let from = Some(quote!(#name.is_some()));
-                let into = quote!(default_or_none(#name));
+                let from = Some(quote!(#var.is_some()));
+                let into = quote!(default_or_none(#var));
                 (from, into)
             }
             Type::Tuple(t) => {
@@ -56,7 +54,7 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
 
                 for (i, t) in t.iter().enumerate() {
                     let id = format_ident!("_{}", i);
-                    let (from, into) = visit(t, &quote!((*#id)));
+                    let (from, into) = visit(t, &quote!((*#id)), defs);
 
                     from_pat.push(id.clone());
                     into_expr.push(into);
@@ -70,39 +68,34 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
                 assert_ne!(into_pat.len(), 0);
 
                 if into_pat.len() == 1 {
-                    let from = Some(quote!(#name.ref_map(|(#(#from_pat),*)| #(#from_expr),*)));
-                    let into = quote!(#name.ref_map(|#(#into_pat),*| (#(#into_expr),*)));
+                    let from = Some(quote!(#var.ref_map(|(#(#from_pat),*)| #(#from_expr),*)));
+                    let into = quote!(#var.ref_map(|#(#into_pat),*| (#(#into_expr),*)));
                     (from, into)
                 } else {
-                    let from = Some(quote!(#name.ref_map(|(#(#from_pat),*)| (#(#from_expr),*))));
-                    let into = quote!(#name.ref_map(|(#(#into_pat),*)| (#(#into_expr),*)));
+                    let from = Some(quote!(#var.ref_map(|(#(#from_pat),*)| (#(#from_expr),*))));
+                    let into = quote!(#var.ref_map(|(#(#into_pat),*)| (#(#into_expr),*)));
                     (from, into)
                 }
             }
             Type::Box(_) | Type::Vec(_) | Type::Punctuated(_) => {
-                let from = Some(quote!(#name.ref_map(MapInto::map_into)));
-                let into = quote!(#name.ref_map(MapInto::map_into));
+                let from = Some(quote!(#var.ref_map(MapInto::map_into)));
+                let into = quote!(#var.ref_map(MapInto::map_into));
                 (from, into)
             }
             Type::Std(t) if t == "String" => {
                 // `From<&String> for String` requires Rust 1.36:
                 // https://github.com/rust-lang/rust/pull/59825
-                let from = Some(quote!(#name.ref_map(ToString::to_string)));
-                let into = quote!(#name.ref_map(ToString::to_string));
+                let from = Some(quote!(#var.ref_map(ToString::to_string)));
+                let into = quote!(#var.ref_map(ToString::to_string));
                 (from, into)
             }
             _ => {
-                let from = Some(quote!(#name.map_into()));
-                let into = quote!(#name.map_into());
+                let from = Some(quote!(#var.map_into()));
+                let into = quote!(#var.map_into());
                 (from, into)
             }
         },
         Type::Token(_) | Type::Group(_) => {
-            let from = None;
-            let into = quote!(default());
-            (from, into)
-        }
-        Type::Syn(t) if t == "Reserved" => {
             let from = None;
             let into = quote!(default());
             (from, into)
@@ -112,19 +105,35 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
             let into = quote!(proc_macro2::Span::call_site());
             (from, into)
         }
+        Type::Syn(t) if t == "Reserved" => {
+            let from = None;
+            let into = quote!(default());
+            (from, into)
+        }
+        Type::Syn(t) if EMPTY_STRUCTS.contains(&&**t) => {
+            let node = &defs.types[defs.types.iter().position(|node| node.ident == *t).unwrap()];
+            let ident = format_ident!("{}", node.ident);
+            if let Data::Struct(fields) = &node.data {
+                let from = None;
+                let fields = fields.keys().map(|f| format_ident!("{}", f));
+                let into = quote!(syn::#ident { #(#fields: default(),)* });
+                return (from, into);
+            }
+            unreachable!()
+        }
         Type::Syn(_) | Type::Ext(_) => {
-            let from = Some(quote!(#name.ref_into()));
-            let into = quote!(#name.ref_into());
+            let from = Some(quote!(#var.ref_into()));
+            let into = quote!(#var.ref_into());
             (from, into)
         }
         Type::Std(t) => {
             if let "usize" | "u32" | "bool" = &**t {
-                let from = Some(quote!(#name));
-                let into = quote!(#name);
+                let from = Some(quote!(#var));
+                let into = quote!(#var);
                 (from, into)
             } else {
-                let from = Some(quote!(#name.into()));
-                let into = quote!(#name.into());
+                let from = Some(quote!(#var.into()));
+                let into = quote!(#var.into());
                 (from, into)
             }
         }
@@ -132,13 +141,12 @@ fn visit(ty: &Type, name: &TokenStream) -> (Option<TokenStream>, TokenStream) {
     }
 }
 
-fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
+fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
     if IGNORED_TYPES.contains(&&*node.ident) {
         return;
     }
 
-    let ty = format_ident!("{}", &node.ident);
-
+    let ident = format_ident!("{}", &node.ident);
     let mut from_impl = TokenStream::new();
     let mut into_impl = TokenStream::new();
 
@@ -148,60 +156,49 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
             let mut into_variants = TokenStream::new();
 
             for (variant, fields) in variants {
-                let variant_ident = format_ident!("{}", variant);
+                let variant = format_ident!("{}", variant);
 
                 if fields.is_empty() {
                     from_variants.extend(quote! {
-                        syn::#ty::#variant_ident => {
-                            #ty::#variant_ident
-                        }
+                        syn::#ident::#variant => #ident::#variant,
                     });
                     into_variants.extend(quote! {
-                        #ty::#variant_ident => {
-                            syn::#ty::#variant_ident
-                        }
+                        #ident::#variant => syn::#ident::#variant,
+                    });
+                    continue;
+                }
+
+                let mut from_expr = Vec::new();
+                let mut from_pat = Vec::new();
+                let mut into_expr = Vec::new();
+                let mut into_pat = Vec::new();
+
+                for (i, t) in fields.iter().enumerate() {
+                    let id = format_ident!("_{}", i);
+                    let (from, into) = visit(t, &quote!((*#id)), defs);
+
+                    from_pat.push(id.clone());
+                    into_expr.push(into);
+                    if from.is_some() {
+                        into_pat.push(id);
+                        from_expr.push(from);
+                    }
+                }
+
+                if from_expr.is_empty() {
+                    from_variants.extend(quote! {
+                        syn::#ident::#variant(..) => #ident::#variant,
+                    });
+                    into_variants.extend(quote! {
+                        #ident::#variant => syn::#ident::#variant(#(#into_expr),*),
                     });
                 } else {
-                    let mut from_expr = Vec::new();
-                    let mut from_pat = Vec::new();
-                    let mut into_expr = Vec::new();
-                    let mut into_pat = Vec::new();
-
-                    for (i, t) in fields.iter().enumerate() {
-                        let id = format_ident!("_{}", i);
-                        let (from, into) = visit(t, &quote!((*#id)));
-
-                        from_pat.push(id.clone());
-                        into_expr.push(into);
-                        if from.is_some() {
-                            into_pat.push(id);
-                            from_expr.push(from);
-                        }
-                    }
-
-                    if from_expr.is_empty() {
-                        from_variants.extend(quote! {
-                            syn::#ty::#variant_ident(..) => {
-                                #ty::#variant_ident
-                            }
-                        });
-                        into_variants.extend(quote! {
-                            #ty::#variant_ident => {
-                                syn::#ty::#variant_ident(#(#into_expr),*)
-                            }
-                        });
-                    } else {
-                        from_variants.extend(quote! {
-                            syn::#ty::#variant_ident(#(#from_pat),*) => {
-                                #ty::#variant_ident(#(#from_expr),*)
-                            }
-                        });
-                        into_variants.extend(quote! {
-                            #ty::#variant_ident(#(#into_pat),*) => {
-                                syn::#ty::#variant_ident(#(#into_expr),*)
-                            }
-                        });
-                    }
+                    from_variants.extend(quote! {
+                        syn::#ident::#variant(#(#from_pat),*) => #ident::#variant(#(#from_expr),*),
+                    });
+                    into_variants.extend(quote! {
+                        #ident::#variant(#(#into_pat),*) => syn::#ident::#variant(#(#into_expr),*),
+                    });
                 }
             }
 
@@ -222,6 +219,10 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
             });
         }
         Data::Struct(fields) => {
+            if EMPTY_STRUCTS.contains(&&*node.ident) {
+                return;
+            }
+
             let mut from_fields = TokenStream::new();
             let mut into_fields = TokenStream::new();
 
@@ -229,47 +230,36 @@ fn node(impls: &mut TokenStream, node: &Node, _defs: &Definitions) {
                 let id = format_ident!("{}", field);
                 let ref_toks = quote!(node.#id);
 
-                let (from, into) = visit(ty, &ref_toks);
+                let (from, into) = visit(ty, &ref_toks, defs);
 
                 if from.is_some() {
-                    from_fields.extend(quote! {
-                        #id: #from,
-                    });
+                    from_fields.extend(quote!(#id: #from,));
                 }
-                into_fields.extend(quote! {
-                    #id: #into,
-                });
+                into_fields.extend(quote!(#id: #into,));
             }
 
-            assert!(!fields.is_empty(), "fields.is_empty: {}", ty);
-            if from_fields.is_empty() {
-                assert!(EMPTY_STRUCTS.contains(&&*node.ident), "from_fields.is_empty(): {}", ty);
-                return;
-            }
+            assert!(!fields.is_empty(), "fields.is_empty: {}", ident);
+            assert!(!from_fields.is_empty(), "from_fields.is_empty(): {}", ident);
 
             from_impl.extend(quote! {
-                Self {
-                    #from_fields
-                }
+                Self { #from_fields }
             });
             into_impl.extend(quote! {
-                Self {
-                    #into_fields
-                }
+                Self { #into_fields }
             });
         }
-        Data::Private => unreachable!("Data::Private: {}", ty),
+        Data::Private => unreachable!("Data::Private: {}", ident),
     }
 
     impls.extend(quote! {
-        syn_trait_impl!(syn::#ty);
-        impl From<&syn::#ty> for #ty {
-            fn from(node: &syn::#ty) -> Self {
+        syn_trait_impl!(syn::#ident);
+        impl From<&syn::#ident> for #ident {
+            fn from(node: &syn::#ident) -> Self {
                 #from_impl
             }
         }
-        impl From<&#ty> for syn::#ty {
-            fn from(node: &#ty) -> Self {
+        impl From<&#ident> for syn::#ident {
+            fn from(node: &#ident) -> Self {
                 #into_impl
             }
         }

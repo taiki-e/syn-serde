@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem};
+pub use crate::ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem, UseTree};
 
 ast_struct! {
     /// A constant item: `const MAX: u16 = 65535`.
@@ -242,28 +242,6 @@ ast_struct! {
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) leading_colon: bool,
         pub(crate) tree: UseTree,
-    }
-}
-
-ast_enum! {
-    /// A suffix of an import tree in a `use` item: `Type as Renamed` or `*`.
-    pub enum UseTree {
-        /// A path prefix of imports in a `use` item: `std::...`.
-        Path(UsePath),
-
-        /// An identifier imported by a `use` item: `HashMap`.
-        #[serde(rename = "ident")]
-        Name(UseName),
-
-        /// An renamed identifier imported by a `use` item: `HashMap as Map`.
-        Rename(UseRename),
-
-        /// A glob import in a `use` item: `*`.
-        #[serde(rename = "*")]
-        Glob,
-
-        /// A braced group of imports in a `use` item: `{A, B, C}`.
-        Group(UseGroup),
     }
 }
 
@@ -568,34 +546,6 @@ mod convert {
                 sig: other.sig.ref_into(),
                 default: other.default.map_into(),
                 semi_token: default_or_none(other.default.is_none()),
-            }
-        }
-    }
-
-    // UseTree
-    syn_trait_impl!(syn::UseTree);
-    impl From<&syn::UseTree> for UseTree {
-        fn from(other: &syn::UseTree) -> Self {
-            use super::UseTree::*;
-            use syn::UseTree;
-            match other {
-                UseTree::Path(x) => Path(x.into()),
-                UseTree::Name(x) => Name(x.into()),
-                UseTree::Rename(x) => Rename(x.into()),
-                UseTree::Glob(_) => Glob,
-                UseTree::Group(x) => Group(x.into()),
-            }
-        }
-    }
-    impl From<&UseTree> for syn::UseTree {
-        fn from(other: &UseTree) -> Self {
-            use syn::UseTree::*;
-            match other {
-                UseTree::Path(x) => Path(x.into()),
-                UseTree::Name(x) => Name(x.into()),
-                UseTree::Rename(x) => Rename(x.into()),
-                UseTree::Glob => Glob(syn::UseGlob { star_token: default() }),
-                UseTree::Group(x) => Group(x.into()),
             }
         }
     }
