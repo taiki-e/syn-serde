@@ -2,17 +2,20 @@
 // It is not intended for manual editing.
 
 use crate::*;
+/// An adapter for [`struct@syn::Abi`].
 #[derive(Serialize, Deserialize)]
 pub struct Abi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) name: Option<LitStr>,
 }
+/// An adapter for [`struct@syn::AngleBracketedGenericArguments`].
 #[derive(Serialize, Deserialize)]
 pub struct AngleBracketedGenericArguments {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) colon2_token: bool,
     pub(crate) args: Punctuated<GenericArgument>,
 }
+/// An adapter for [`struct@syn::BareFnArg`].
 #[derive(Serialize, Deserialize)]
 pub struct BareFnArg {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -21,21 +24,25 @@ pub struct BareFnArg {
     pub(crate) name: Option<Ident>,
     pub(crate) ty: Type,
 }
+/// An adapter for [`struct@syn::Binding`].
 #[derive(Serialize, Deserialize)]
 pub struct Binding {
     pub(crate) ident: Ident,
     pub(crate) ty: Type,
 }
+/// An adapter for [`struct@syn::Block`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Block {
     pub(crate) stmts: Vec<Stmt>,
 }
+/// An adapter for [`struct@syn::BoundLifetimes`].
 #[derive(Serialize, Deserialize, Default)]
 #[serde(transparent)]
 pub struct BoundLifetimes {
     pub(crate) lifetimes: Punctuated<LifetimeDef>,
 }
+/// An adapter for [`struct@syn::ConstParam`].
 #[derive(Serialize, Deserialize)]
 pub struct ConstParam {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -47,17 +54,20 @@ pub struct ConstParam {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) default: Option<Expr>,
 }
+/// An adapter for [`struct@syn::Constraint`].
 #[derive(Serialize, Deserialize)]
 pub struct Constraint {
     pub(crate) ident: Ident,
     pub(crate) bounds: Punctuated<TypeParamBound>,
 }
+/// An adapter for [`struct@syn::ExprArray`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprArray {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) elems: Punctuated<Expr>,
 }
+/// An adapter for [`struct@syn::ExprAssign`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprAssign {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -65,6 +75,7 @@ pub struct ExprAssign {
     pub(crate) left: Box<Expr>,
     pub(crate) right: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprAssignOp`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprAssignOp {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -73,12 +84,14 @@ pub struct ExprAssignOp {
     pub(crate) op: BinOp,
     pub(crate) right: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprAwait`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprAwait {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) base: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprBinary`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprBinary {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -87,12 +100,14 @@ pub struct ExprBinary {
     pub(crate) op: BinOp,
     pub(crate) right: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprBox`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprBox {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprBreak`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprBreak {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -102,6 +117,7 @@ pub struct ExprBreak {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) expr: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::ExprCall`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprCall {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -109,6 +125,7 @@ pub struct ExprCall {
     pub(crate) func: Box<Expr>,
     pub(crate) args: Punctuated<Expr>,
 }
+/// An adapter for [`struct@syn::ExprCast`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprCast {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -116,6 +133,7 @@ pub struct ExprCast {
     pub(crate) expr: Box<Expr>,
     pub(crate) ty: Box<Type>,
 }
+/// An adapter for [`struct@syn::ExprClosure`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprClosure {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -134,6 +152,7 @@ pub struct ExprClosure {
     pub(crate) output: ReturnType,
     pub(crate) body: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprContinue`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprContinue {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -141,6 +160,7 @@ pub struct ExprContinue {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) label: Option<Lifetime>,
 }
+/// An adapter for [`struct@syn::ExprField`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprField {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -149,12 +169,14 @@ pub struct ExprField {
     #[serde(flatten)]
     pub(crate) member: Member,
 }
+/// An adapter for [`struct@syn::ExprGroup`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprGroup {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprIf`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprIf {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -164,6 +186,7 @@ pub struct ExprIf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) else_branch: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::ExprIndex`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprIndex {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -171,6 +194,7 @@ pub struct ExprIndex {
     pub(crate) expr: Box<Expr>,
     pub(crate) index: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprLet`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprLet {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -178,6 +202,7 @@ pub struct ExprLet {
     pub(crate) pat: Pat,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprMacro {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -185,6 +210,7 @@ pub struct ExprMacro {
     #[serde(flatten)]
     pub(crate) mac: Macro,
 }
+/// An adapter for [`struct@syn::ExprMatch`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprMatch {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -192,6 +218,7 @@ pub struct ExprMatch {
     pub(crate) expr: Box<Expr>,
     pub(crate) arms: Vec<Arm>,
 }
+/// An adapter for [`struct@syn::ExprMethodCall`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprMethodCall {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -202,12 +229,14 @@ pub struct ExprMethodCall {
     pub(crate) turbofish: Option<MethodTurbofish>,
     pub(crate) args: Punctuated<Expr>,
 }
+/// An adapter for [`struct@syn::ExprParen`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprParen {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprRange`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprRange {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -218,6 +247,7 @@ pub struct ExprRange {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) to: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::ExprReference`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprReference {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -227,6 +257,7 @@ pub struct ExprReference {
     pub(crate) mutability: bool,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprRepeat`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprRepeat {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -234,6 +265,7 @@ pub struct ExprRepeat {
     pub(crate) expr: Box<Expr>,
     pub(crate) len: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprReturn`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprReturn {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -241,6 +273,7 @@ pub struct ExprReturn {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) expr: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::ExprStruct`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprStruct {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -252,18 +285,21 @@ pub struct ExprStruct {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) rest: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::ExprTry`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprTry {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprTuple`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprTuple {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) elems: Punctuated<Expr>,
 }
+/// An adapter for [`struct@syn::ExprType`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprType {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -271,6 +307,7 @@ pub struct ExprType {
     pub(crate) expr: Box<Expr>,
     pub(crate) ty: Box<Type>,
 }
+/// An adapter for [`struct@syn::ExprUnary`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprUnary {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -278,6 +315,7 @@ pub struct ExprUnary {
     pub(crate) op: UnOp,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprYield`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprYield {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -285,6 +323,7 @@ pub struct ExprYield {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) expr: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::FieldPat`].
 #[derive(Serialize, Deserialize)]
 pub struct FieldPat {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -295,6 +334,7 @@ pub struct FieldPat {
     pub(crate) colon_token: bool,
     pub(crate) pat: Box<Pat>,
 }
+/// An adapter for [`struct@syn::FieldValue`].
 #[derive(Serialize, Deserialize)]
 pub struct FieldValue {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -305,16 +345,19 @@ pub struct FieldValue {
     pub(crate) colon_token: bool,
     pub(crate) expr: Expr,
 }
+/// An adapter for [`struct@syn::FieldsNamed`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct FieldsNamed {
     pub(crate) named: Punctuated<Field>,
 }
+/// An adapter for [`struct@syn::FieldsUnnamed`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct FieldsUnnamed {
     pub(crate) unnamed: Punctuated<Field>,
 }
+/// An adapter for [`struct@syn::File`].
 #[derive(Serialize, Deserialize)]
 pub struct File {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -323,6 +366,7 @@ pub struct File {
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) items: Vec<Item>,
 }
+/// An adapter for [`struct@syn::ForeignItemFn`].
 #[derive(Serialize, Deserialize)]
 pub struct ForeignItemFn {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -332,6 +376,7 @@ pub struct ForeignItemFn {
     #[serde(flatten)]
     pub(crate) sig: Signature,
 }
+/// An adapter for [`struct@syn::ForeignItemMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct ForeignItemMacro {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -341,6 +386,7 @@ pub struct ForeignItemMacro {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) semi_token: bool,
 }
+/// An adapter for [`struct@syn::ForeignItemStatic`].
 #[derive(Serialize, Deserialize)]
 pub struct ForeignItemStatic {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -353,6 +399,7 @@ pub struct ForeignItemStatic {
     pub(crate) ident: Ident,
     pub(crate) ty: Box<Type>,
 }
+/// An adapter for [`struct@syn::ForeignItemType`].
 #[derive(Serialize, Deserialize)]
 pub struct ForeignItemType {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -361,6 +408,7 @@ pub struct ForeignItemType {
     pub(crate) vis: Visibility,
     pub(crate) ident: Ident,
 }
+/// An adapter for [`struct@syn::ImplItemConst`].
 #[derive(Serialize, Deserialize)]
 pub struct ImplItemConst {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -374,6 +422,7 @@ pub struct ImplItemConst {
     pub(crate) ty: Type,
     pub(crate) expr: Expr,
 }
+/// An adapter for [`struct@syn::ImplItemMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct ImplItemMacro {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -383,6 +432,7 @@ pub struct ImplItemMacro {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) semi_token: bool,
 }
+/// An adapter for [`struct@syn::ImplItemType`].
 #[derive(Serialize, Deserialize)]
 pub struct ImplItemType {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -397,11 +447,13 @@ pub struct ImplItemType {
     pub(crate) generics: Generics,
     pub(crate) ty: Type,
 }
+/// An adapter for [`struct@syn::Index`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Index {
     pub(crate) index: u32,
 }
+/// An adapter for [`struct@syn::ItemConst`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemConst {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -412,6 +464,7 @@ pub struct ItemConst {
     pub(crate) ty: Box<Type>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ItemEnum`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemEnum {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -423,6 +476,7 @@ pub struct ItemEnum {
     pub(crate) generics: Generics,
     pub(crate) variants: Punctuated<Variant>,
 }
+/// An adapter for [`struct@syn::ItemExternCrate`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemExternCrate {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -433,6 +487,7 @@ pub struct ItemExternCrate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) rename: Option<Ident>,
 }
+/// An adapter for [`struct@syn::ItemForeignMod`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemForeignMod {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -440,6 +495,7 @@ pub struct ItemForeignMod {
     pub(crate) abi: Abi,
     pub(crate) items: Vec<ForeignItem>,
 }
+/// An adapter for [`struct@syn::ItemMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemMacro {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -451,6 +507,7 @@ pub struct ItemMacro {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) semi_token: bool,
 }
+/// An adapter for [`struct@syn::ItemMacro2`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemMacro2 {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -460,6 +517,7 @@ pub struct ItemMacro2 {
     pub(crate) ident: Ident,
     pub(crate) rules: TokenStream,
 }
+/// An adapter for [`struct@syn::ItemStatic`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemStatic {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -473,6 +531,7 @@ pub struct ItemStatic {
     pub(crate) ty: Box<Type>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ItemTraitAlias`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemTraitAlias {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -484,6 +543,7 @@ pub struct ItemTraitAlias {
     pub(crate) generics: Generics,
     pub(crate) bounds: Punctuated<TypeParamBound>,
 }
+/// An adapter for [`struct@syn::ItemType`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemType {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -495,6 +555,7 @@ pub struct ItemType {
     pub(crate) generics: Generics,
     pub(crate) ty: Box<Type>,
 }
+/// An adapter for [`struct@syn::ItemUnion`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemUnion {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -506,6 +567,7 @@ pub struct ItemUnion {
     pub(crate) generics: Generics,
     pub(crate) fields: FieldsNamed,
 }
+/// An adapter for [`struct@syn::ItemUse`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemUse {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -516,16 +578,19 @@ pub struct ItemUse {
     pub(crate) leading_colon: bool,
     pub(crate) tree: UseTree,
 }
+/// An adapter for [`struct@syn::Label`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Label {
     pub(crate) name: Lifetime,
 }
+/// An adapter for [`struct@syn::Lifetime`].
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(transparent)]
 pub struct Lifetime {
     pub(crate) ident: Ident,
 }
+/// An adapter for [`struct@syn::Local`].
 #[derive(Serialize, Deserialize)]
 pub struct Local {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -534,38 +599,45 @@ pub struct Local {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) init: Option<Box<Expr>>,
 }
+/// An adapter for [`struct@syn::Macro`].
 #[derive(Serialize, Deserialize)]
 pub struct Macro {
     pub(crate) path: Path,
     pub(crate) delimiter: MacroDelimiter,
     pub(crate) tokens: TokenStream,
 }
+/// An adapter for [`struct@syn::MetaList`].
 #[derive(Serialize, Deserialize)]
 pub struct MetaList {
     pub(crate) path: Path,
     pub(crate) nested: Punctuated<NestedMeta>,
 }
+/// An adapter for [`struct@syn::MetaNameValue`].
 #[derive(Serialize, Deserialize)]
 pub struct MetaNameValue {
     pub(crate) path: Path,
     pub(crate) lit: Lit,
 }
+/// An adapter for [`struct@syn::MethodTurbofish`].
 #[derive(Serialize, Deserialize)]
 pub struct MethodTurbofish {
     pub(crate) args: Punctuated<GenericMethodArgument>,
 }
+/// An adapter for [`struct@syn::ParenthesizedGenericArguments`].
 #[derive(Serialize, Deserialize)]
 pub struct ParenthesizedGenericArguments {
     pub(crate) inputs: Punctuated<Type>,
     #[serde(default)]
     pub(crate) output: ReturnType,
 }
+/// An adapter for [`struct@syn::PatBox`].
 #[derive(Serialize, Deserialize)]
 pub struct PatBox {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) pat: Box<Pat>,
 }
+/// An adapter for [`struct@syn::PatIdent`].
 #[derive(Serialize, Deserialize)]
 pub struct PatIdent {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -580,12 +652,14 @@ pub struct PatIdent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) subpat: Option<Box<Pat>>,
 }
+/// An adapter for [`struct@syn::PatLit`].
 #[derive(Serialize, Deserialize)]
 pub struct PatLit {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::PatMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct PatMacro {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -593,6 +667,7 @@ pub struct PatMacro {
     #[serde(flatten)]
     pub(crate) mac: Macro,
 }
+/// An adapter for [`struct@syn::PatRange`].
 #[derive(Serialize, Deserialize)]
 pub struct PatRange {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -601,6 +676,7 @@ pub struct PatRange {
     pub(crate) limits: RangeLimits,
     pub(crate) hi: Box<Expr>,
 }
+/// An adapter for [`struct@syn::PatReference`].
 #[derive(Serialize, Deserialize)]
 pub struct PatReference {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -610,17 +686,20 @@ pub struct PatReference {
     pub(crate) mutability: bool,
     pub(crate) pat: Box<Pat>,
 }
+/// An adapter for [`struct@syn::PatRest`].
 #[derive(Serialize, Deserialize)]
 pub struct PatRest {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
 }
+/// An adapter for [`struct@syn::PatSlice`].
 #[derive(Serialize, Deserialize)]
 pub struct PatSlice {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) elems: Punctuated<Pat>,
 }
+/// An adapter for [`struct@syn::PatStruct`].
 #[derive(Serialize, Deserialize)]
 pub struct PatStruct {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -630,12 +709,14 @@ pub struct PatStruct {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) dot2_token: bool,
 }
+/// An adapter for [`struct@syn::PatTuple`].
 #[derive(Serialize, Deserialize)]
 pub struct PatTuple {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) elems: Punctuated<Pat>,
 }
+/// An adapter for [`struct@syn::PatTupleStruct`].
 #[derive(Serialize, Deserialize)]
 pub struct PatTupleStruct {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -643,6 +724,7 @@ pub struct PatTupleStruct {
     pub(crate) path: Path,
     pub(crate) pat: PatTuple,
 }
+/// An adapter for [`struct@syn::PatType`].
 #[derive(Serialize, Deserialize)]
 pub struct PatType {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -650,33 +732,39 @@ pub struct PatType {
     pub(crate) pat: Box<Pat>,
     pub(crate) ty: Box<Type>,
 }
+/// An adapter for [`struct@syn::PatWild`].
 #[derive(Serialize, Deserialize)]
 pub struct PatWild {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
 }
+/// An adapter for [`struct@syn::Path`].
 #[derive(Serialize, Deserialize)]
 pub struct Path {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) leading_colon: bool,
     pub(crate) segments: Punctuated<PathSegment>,
 }
+/// An adapter for [`struct@syn::PathSegment`].
 #[derive(Serialize, Deserialize)]
 pub struct PathSegment {
     pub(crate) ident: Ident,
     #[serde(default, skip_serializing_if = "PathArguments::is_none")]
     pub(crate) arguments: PathArguments,
 }
+/// An adapter for [`struct@syn::PredicateEq`].
 #[derive(Serialize, Deserialize)]
 pub struct PredicateEq {
     pub(crate) lhs_ty: Type,
     pub(crate) rhs_ty: Type,
 }
+/// An adapter for [`struct@syn::PredicateLifetime`].
 #[derive(Serialize, Deserialize)]
 pub struct PredicateLifetime {
     pub(crate) lifetime: Lifetime,
     pub(crate) bounds: Punctuated<Lifetime>,
 }
+/// An adapter for [`struct@syn::QSelf`].
 #[derive(Serialize, Deserialize)]
 pub struct QSelf {
     pub(crate) ty: Box<Type>,
@@ -684,6 +772,7 @@ pub struct QSelf {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) as_token: bool,
 }
+/// An adapter for [`struct@syn::Signature`].
 #[derive(Serialize, Deserialize)]
 pub struct Signature {
     #[serde(rename = "const")]
@@ -706,6 +795,7 @@ pub struct Signature {
     #[serde(default)]
     pub(crate) output: ReturnType,
 }
+/// An adapter for [`struct@syn::TraitBound`].
 #[derive(Serialize, Deserialize)]
 pub struct TraitBound {
     #[serde(default, skip_serializing_if = "not")]
@@ -716,6 +806,7 @@ pub struct TraitBound {
     pub(crate) lifetimes: Option<BoundLifetimes>,
     pub(crate) path: Path,
 }
+/// An adapter for [`struct@syn::TraitItemConst`].
 #[derive(Serialize, Deserialize)]
 pub struct TraitItemConst {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -725,6 +816,7 @@ pub struct TraitItemConst {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) default: Option<Expr>,
 }
+/// An adapter for [`struct@syn::TraitItemMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct TraitItemMacro {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -734,11 +826,13 @@ pub struct TraitItemMacro {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) semi_token: bool,
 }
+/// An adapter for [`struct@syn::TypeArray`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeArray {
     pub(crate) elem: Box<Type>,
     pub(crate) len: Expr,
 }
+/// An adapter for [`struct@syn::TypeBareFn`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeBareFn {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -754,23 +848,28 @@ pub struct TypeBareFn {
     #[serde(default)]
     pub(crate) output: ReturnType,
 }
+/// An adapter for [`struct@syn::TypeGroup`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeGroup {
     pub(crate) elem: Box<Type>,
 }
+/// An adapter for [`struct@syn::TypeImplTrait`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeImplTrait {
     pub(crate) bounds: Punctuated<TypeParamBound>,
 }
+/// An adapter for [`struct@syn::TypeMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeMacro {
     #[serde(flatten)]
     pub(crate) mac: Macro,
 }
+/// An adapter for [`struct@syn::TypeParen`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeParen {
     pub(crate) elem: Box<Type>,
 }
+/// An adapter for [`struct@syn::TypePtr`].
 #[derive(Serialize, Deserialize)]
 pub struct TypePtr {
     #[serde(rename = "const")]
@@ -781,6 +880,7 @@ pub struct TypePtr {
     pub(crate) mutability: bool,
     pub(crate) elem: Box<Type>,
 }
+/// An adapter for [`struct@syn::TypeReference`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -790,10 +890,12 @@ pub struct TypeReference {
     pub(crate) mutability: bool,
     pub(crate) elem: Box<Type>,
 }
+/// An adapter for [`struct@syn::TypeSlice`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeSlice {
     pub(crate) elem: Box<Type>,
 }
+/// An adapter for [`struct@syn::TypeTraitObject`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeTraitObject {
     #[serde(rename = "dyn")]
@@ -801,35 +903,42 @@ pub struct TypeTraitObject {
     pub(crate) dyn_token: bool,
     pub(crate) bounds: Punctuated<TypeParamBound>,
 }
+/// An adapter for [`struct@syn::TypeTuple`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeTuple {
     pub(crate) elems: Punctuated<Type>,
 }
+/// An adapter for [`struct@syn::UseGroup`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct UseGroup {
     pub(crate) items: Punctuated<UseTree>,
 }
+/// An adapter for [`struct@syn::UseName`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct UseName {
     pub(crate) ident: Ident,
 }
+/// An adapter for [`struct@syn::UsePath`].
 #[derive(Serialize, Deserialize)]
 pub struct UsePath {
     pub(crate) ident: Ident,
     pub(crate) tree: Box<UseTree>,
 }
+/// An adapter for [`struct@syn::UseRename`].
 #[derive(Serialize, Deserialize)]
 pub struct UseRename {
     pub(crate) ident: Ident,
     pub(crate) rename: Ident,
 }
+/// An adapter for [`struct@syn::Variadic`].
 #[derive(Serialize, Deserialize)]
 pub struct Variadic {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
 }
+/// An adapter for [`struct@syn::Variant`].
 #[derive(Serialize, Deserialize)]
 pub struct Variant {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -839,12 +948,14 @@ pub struct Variant {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) discriminant: Option<Expr>,
 }
+/// An adapter for [`struct@syn::VisRestricted`].
 #[derive(Serialize, Deserialize)]
 pub struct VisRestricted {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) in_token: bool,
     pub(crate) path: Box<Path>,
 }
+/// An adapter for [`struct@syn::WhereClause`].
 #[derive(Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct WhereClause {

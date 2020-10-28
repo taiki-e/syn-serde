@@ -71,7 +71,9 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
         }
 
         let ident = format_ident!("{}", node.ident);
+        let doc = format!(" An adapter for [`enum@syn::{}`].", node.ident);
         impls.extend(quote! {
+            #[doc = #doc]
             #[derive(Serialize, Deserialize)]
             #[serde(rename_all = "snake_case")]
             pub enum #ident {

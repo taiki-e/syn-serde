@@ -224,7 +224,9 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 
         let attrs = struct_attrs(&node.ident);
         let ident = format_ident!("{}", node.ident);
+        let doc = format!(" An adapter for [`struct@syn::{}`].", node.ident);
         impls.extend(quote! {
+            #[doc = #doc]
             #[derive(Serialize, Deserialize)]
             #attrs
             #transparent
