@@ -15,6 +15,14 @@ pub struct AngleBracketedGenericArguments {
     pub(crate) colon2_token: bool,
     pub(crate) args: Punctuated<GenericArgument>,
 }
+/// An adapter for [`struct@syn::Attribute`].
+#[derive(Serialize, Deserialize)]
+pub struct Attribute {
+    pub(crate) style: AttrStyle,
+    pub(crate) path: Path,
+    #[serde(default, skip_serializing_if = "TokenStream::is_empty")]
+    pub(crate) tokens: TokenStream,
+}
 /// An adapter for [`struct@syn::BareFnArg`].
 #[derive(Serialize, Deserialize)]
 pub struct BareFnArg {
@@ -234,6 +242,14 @@ pub struct ExprLet {
     pub(crate) pat: Pat,
     pub(crate) expr: Box<Expr>,
 }
+/// An adapter for [`struct@syn::ExprLit`].
+#[derive(Serialize, Deserialize)]
+pub struct ExprLit {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    #[serde(flatten)]
+    pub(crate) lit: Lit,
+}
 /// An adapter for [`struct@syn::ExprLoop`].
 #[derive(Serialize, Deserialize)]
 pub struct ExprLoop {
@@ -276,6 +292,16 @@ pub struct ExprParen {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
     pub(crate) expr: Box<Expr>,
+}
+/// An adapter for [`struct@syn::ExprPath`].
+#[derive(Serialize, Deserialize)]
+pub struct ExprPath {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) qself: Option<QSelf>,
+    #[serde(flatten)]
+    pub(crate) path: Path,
 }
 /// An adapter for [`struct@syn::ExprRange`].
 #[derive(Serialize, Deserialize)]
@@ -589,6 +615,25 @@ pub struct ItemForeignMod {
     pub(crate) abi: Abi,
     pub(crate) items: Vec<ForeignItem>,
 }
+/// An adapter for [`struct@syn::ItemImpl`].
+#[derive(Serialize, Deserialize)]
+pub struct ItemImpl {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    #[serde(rename = "default")]
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) defaultness: bool,
+    #[serde(rename = "unsafe")]
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) unsafety: bool,
+    #[serde(default, skip_serializing_if = "Generics::is_none")]
+    pub(crate) generics: Generics,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "trait")]
+    pub(crate) trait_: Option<(bool, Path)>,
+    pub(crate) self_ty: Box<Type>,
+    pub(crate) items: Vec<ImplItem>,
+}
 /// An adapter for [`struct@syn::ItemMacro`].
 #[derive(Serialize, Deserialize)]
 pub struct ItemMacro {
@@ -624,6 +669,28 @@ pub struct ItemStatic {
     pub(crate) ident: Ident,
     pub(crate) ty: Box<Type>,
     pub(crate) expr: Box<Expr>,
+}
+/// An adapter for [`struct@syn::ItemTrait`].
+#[derive(Serialize, Deserialize)]
+pub struct ItemTrait {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
+    pub(crate) vis: Visibility,
+    #[serde(rename = "unsafe")]
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) unsafety: bool,
+    #[serde(rename = "auto")]
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) auto_token: bool,
+    pub(crate) ident: Ident,
+    #[serde(default, skip_serializing_if = "Generics::is_none")]
+    pub(crate) generics: Generics,
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) colon_token: bool,
+    #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+    pub(crate) supertraits: Punctuated<TypeParamBound>,
+    pub(crate) items: Vec<TraitItem>,
 }
 /// An adapter for [`struct@syn::ItemTraitAlias`].
 #[derive(Serialize, Deserialize)]
@@ -683,6 +750,23 @@ pub struct Label {
 #[serde(transparent)]
 pub struct Lifetime {
     pub(crate) ident: Ident,
+}
+/// An adapter for [`struct@syn::LifetimeDef`].
+#[derive(Serialize, Deserialize)]
+pub struct LifetimeDef {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    pub(crate) lifetime: Lifetime,
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) colon_token: bool,
+    #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+    pub(crate) bounds: Punctuated<Lifetime>,
+}
+/// An adapter for [`struct@syn::LitBool`].
+#[derive(Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct LitBool {
+    pub(crate) value: bool,
 }
 /// An adapter for [`struct@syn::Local`].
 #[derive(Serialize, Deserialize)]
@@ -760,6 +844,16 @@ pub struct PatMacro {
     pub(crate) attrs: Vec<Attribute>,
     #[serde(flatten)]
     pub(crate) mac: Macro,
+}
+/// An adapter for [`struct@syn::PatPath`].
+#[derive(Serialize, Deserialize)]
+pub struct PatPath {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) qself: Option<QSelf>,
+    #[serde(flatten)]
+    pub(crate) path: Path,
 }
 /// An adapter for [`struct@syn::PatRange`].
 #[derive(Serialize, Deserialize)]
@@ -920,6 +1014,21 @@ pub struct TraitItemMacro {
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) semi_token: bool,
 }
+/// An adapter for [`struct@syn::TraitItemType`].
+#[derive(Serialize, Deserialize)]
+pub struct TraitItemType {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    pub(crate) ident: Ident,
+    #[serde(default, skip_serializing_if = "Generics::is_none")]
+    pub(crate) generics: Generics,
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) colon_token: bool,
+    #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+    pub(crate) bounds: Punctuated<TypeParamBound>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) default: Option<Type>,
+}
 /// An adapter for [`struct@syn::TypeArray`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeArray {
@@ -958,10 +1067,33 @@ pub struct TypeMacro {
     #[serde(flatten)]
     pub(crate) mac: Macro,
 }
+/// An adapter for [`struct@syn::TypeParam`].
+#[derive(Serialize, Deserialize)]
+pub struct TypeParam {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) attrs: Vec<Attribute>,
+    pub(crate) ident: Ident,
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) colon_token: bool,
+    #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
+    pub(crate) bounds: Punctuated<TypeParamBound>,
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) eq_token: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) default: Option<Type>,
+}
 /// An adapter for [`struct@syn::TypeParen`].
 #[derive(Serialize, Deserialize)]
 pub struct TypeParen {
     pub(crate) elem: Box<Type>,
+}
+/// An adapter for [`struct@syn::TypePath`].
+#[derive(Serialize, Deserialize)]
+pub struct TypePath {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) qself: Option<QSelf>,
+    #[serde(flatten)]
+    pub(crate) path: Path,
 }
 /// An adapter for [`struct@syn::TypePtr`].
 #[derive(Serialize, Deserialize)]

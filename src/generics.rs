@@ -4,7 +4,8 @@ use super::*;
 pub use crate::{
     ast_enum::{GenericParam, TraitBoundModifier, TypeParamBound, WherePredicate},
     ast_struct::{
-        BoundLifetimes, ConstParam, PredicateEq, PredicateLifetime, TraitBound, WhereClause,
+        BoundLifetimes, ConstParam, LifetimeDef, PredicateEq, PredicateLifetime, TraitBound,
+        TypeParam, WhereClause,
     },
 };
 
@@ -27,36 +28,6 @@ ast_struct! {
 impl Generics {
     pub(crate) fn is_none(&self) -> bool {
         self.params.is_empty() && self.where_clause.is_none() // && !self.lt_token && !self.gt_token
-    }
-}
-
-ast_struct! {
-    /// A generic type parameter: `T: Into<String>`.
-    pub struct TypeParam {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        pub(crate) ident: Ident,
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) colon_token: bool,
-        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-        pub(crate) bounds: Punctuated<TypeParamBound>,
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) eq_token: bool,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) default: Option<Type>,
-    }
-}
-
-ast_struct! {
-    /// A lifetime definition: `'a: 'b + 'c + 'd`.
-    pub struct LifetimeDef {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        pub(crate) lifetime: Lifetime,
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) colon_token: bool,
-        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-        pub(crate) bounds: Punctuated<Lifetime>,
     }
 }
 

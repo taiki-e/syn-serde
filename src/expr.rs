@@ -6,37 +6,12 @@ pub use crate::{
     ast_struct::{
         ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBox,
         ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop,
-        ExprGroup, ExprIf, ExprIndex, ExprLet, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
-        ExprParen, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
-        ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue,
-        Index, Label, MethodTurbofish,
+        ExprGroup, ExprIf, ExprIndex, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch,
+        ExprMethodCall, ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn,
+        ExprStruct, ExprTry, ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprWhile,
+        ExprYield, FieldValue, Index, Label, MethodTurbofish,
     },
 };
-
-ast_struct! {
-    /// A literal in place of an expression: `1`, `"foo"`.
-    pub struct ExprLit {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(flatten)]
-        pub(crate) lit: Lit,
-    }
-}
-
-ast_struct! {
-    /// A path like `std::mem::replace` possibly containing generic
-    /// parameters and a qualified self-type.
-    ///
-    /// A plain identifier like `x` is a path of length 1.
-    pub struct ExprPath {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) qself: Option<QSelf>,
-        #[serde(flatten)]
-        pub(crate) path: Path,
-    }
-}
 
 ast_struct! {
     /// One arm of a `match` expression: `0...10 => { return true; }`.

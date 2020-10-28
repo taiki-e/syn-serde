@@ -6,34 +6,11 @@ pub use crate::{
     ast_struct::{
         ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType, ImplItemConst,
         ImplItemMacro, ImplItemMethod, ImplItemType, ItemConst, ItemEnum, ItemExternCrate, ItemFn,
-        ItemForeignMod, ItemMacro, ItemMacro2, ItemStatic, ItemTraitAlias, ItemType, ItemUnion,
-        ItemUse, Signature, TraitItemConst, TraitItemMacro, UseGroup, UseName, UsePath, UseRename,
+        ItemForeignMod, ItemImpl, ItemMacro, ItemMacro2, ItemStatic, ItemTrait, ItemTraitAlias,
+        ItemType, ItemUnion, ItemUse, Signature, TraitItemConst, TraitItemMacro, TraitItemType,
+        UseGroup, UseName, UsePath, UseRename,
     },
 };
-
-ast_struct! {
-    /// An impl block providing trait or associated items: `impl<A> Trait
-    /// for Data<A> { ... }`.
-    pub struct ItemImpl {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(rename = "default")]
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) defaultness: bool,
-        #[serde(rename = "unsafe")]
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) unsafety: bool,
-        #[serde(default, skip_serializing_if = "Generics::is_none")]
-        pub(crate) generics: Generics,
-        /// Trait this impl implements.
-        #[serde(rename = "trait")]
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) trait_: Option<(bool, Path)>,
-        /// The Self type of the impl.
-        pub(crate) self_ty: Box<Type>,
-        pub(crate) items: Vec<ImplItem>,
-    }
-}
 
 ast_struct! {
     /// A module or module declaration: `mod m` or `mod m { ... }`.
@@ -69,30 +46,6 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A trait definition: `pub trait Iterator { ... }`.
-    pub struct ItemTrait {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-        pub(crate) vis: Visibility,
-        #[serde(rename = "unsafe")]
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) unsafety: bool,
-        #[serde(rename = "auto")]
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) auto_token: bool,
-        pub(crate) ident: Ident,
-        #[serde(default, skip_serializing_if = "Generics::is_none")]
-        pub(crate) generics: Generics,
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) colon_token: bool,
-        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-        pub(crate) supertraits: Punctuated<TypeParamBound>,
-        pub(crate) items: Vec<TraitItem>,
-    }
-}
-
-ast_struct! {
     /// A trait method within the definition of a trait.
     pub struct TraitItemMethod {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -103,23 +56,6 @@ ast_struct! {
         pub(crate) default: Option<Block>,
         // #[serde(default, skip_serializing_if = "not")]
         // pub(crate) semi_token: bool,
-    }
-}
-
-ast_struct! {
-    /// An associated type within the definition of a trait.
-    pub struct TraitItemType {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        pub(crate) ident: Ident,
-        #[serde(default, skip_serializing_if = "Generics::is_none")]
-        pub(crate) generics: Generics,
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) colon_token: bool,
-        #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
-        pub(crate) bounds: Punctuated<TypeParamBound>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) default: Option<Type>,
     }
 }
 

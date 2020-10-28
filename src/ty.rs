@@ -5,20 +5,9 @@ pub use crate::{
     ast_enum::Type,
     ast_struct::{
         Abi, BareFnArg, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro, TypeParen,
-        TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple, Variadic,
+        TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple, Variadic,
     },
 };
-
-ast_struct! {
-    /// A path like `std::slice::Iter`, optionally qualified with a
-    /// self-type as in `<Vec<T> as SomeTrait>::Associated`.
-    pub struct TypePath {
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) qself: Option<QSelf>,
-        #[serde(flatten)]
-        pub(crate) path: Path,
-    }
-}
 
 ast_struct! {
     /// Return type of a function signature.

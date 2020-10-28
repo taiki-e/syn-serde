@@ -111,7 +111,13 @@ mod ast_enum;
 #[path = "gen/convert.rs"]
 mod convert;
 
-mod attr;
+mod attr {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::{
+        ast_enum::{AttrStyle, Meta, NestedMeta},
+        ast_struct::{Attribute, MetaList, MetaNameValue},
+    };
+}
 #[doc(hidden)]
 pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue, NestedMeta};
 

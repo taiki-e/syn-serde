@@ -1,4 +1,4 @@
-use proc_macro2::{Ident, TokenStream};
+use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Punctuated, Type};
 
@@ -7,48 +7,23 @@ use crate::{convert::EMPTY_STRUCTS, file, gen, Result};
 const AST_ENUM_SRC: &str = "../src/gen/ast_struct.rs";
 
 const SKIPED: &[&str] = &[
-    // lit.rs
-    "LitBool", // TODO
-    // attr.rs
-    "Attribute",
     // data.rs
-    "Field",
+    "Field", // TODO
     // expr.rs
-    "ExprLit",
-    "ExprPath",
     "Arm",
     // generics.rs
     "Generics",
-    "TypeParam",
-    "LifetimeDef",
-    "PredicateType",
+    "PredicateType", // TODO
     // item.rs
-    "ItemImpl",
-    "ItemMod",
+    "ItemMod", // TODO
     "ItemStruct",
-    "ItemTrait",
     "TraitItemMethod",
-    "TraitItemType",
     "Receiver",
     // pat.rs
-    "PatOr",
-    "PatPath",
+    "PatOr", // TODO
     // ty.rs
-    "TypePath",
     "ReturnType",
 ];
-
-fn allow_transparent(ident: &str, field: &str, ty: &Type) -> bool {
-    const DISALLOWED: &[&str] = &[
-        // TODO: revisit
-        "MethodTurbofish",
-    ];
-
-    field != "attrs"
-        && !matches!(ty, Type::Option(_))
-        && !DISALLOWED.contains(&ident)
-        && !ident.starts_with("Type")
-}
 
 fn struct_attrs(ident: &str) -> TokenStream {
     match ident {
@@ -63,20 +38,21 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
     fn is_keyword(token: &str) -> bool {
         matches!(
             token,
-            "Mut" | "Ref" | "Const" | "Dyn" | "Unsafe" | "Default" | "Async" | "Static" | "Move"
+            "Mut"
+                | "Ref"
+                | "Const"
+                | "Dyn"
+                | "Unsafe"
+                | "Default"
+                | "Async"
+                | "Static"
+                | "Move"
+                | "Auto"
         )
     }
 
     match ty {
         Type::Box(ty) => return field_attrs(field, ty, defs),
-        Type::Vec(ty) => {
-            if let Type::Syn(ty) = &**ty {
-                if matches!(&**ty, "Attribute") {
-                    assert!(matches!(field, "attrs"));
-                    return quote!(#[serde(default, skip_serializing_if = "Vec::is_empty")]);
-                }
-            }
-        }
         Type::Option(ty) => match &**ty {
             Type::Token(ty) | Type::Group(ty) => {
                 let attr = quote!(#[serde(default, skip_serializing_if = "not")]);
@@ -93,6 +69,7 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
                             | "asyncness"
                             | "movability"
                             | "capture"
+                            | "auto_token"
                     ));
                     let s = &defs.tokens[ty];
                     quote! {
@@ -106,10 +83,6 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
             _ => return quote!(#[serde(default, skip_serializing_if = "Option::is_none")]),
         },
         Type::Syn(ty) => match &**ty {
-            "Member" | "Macro" | "Signature" => {
-                assert!(matches!(field, "member" | "mac" | "sig"));
-                return quote!(#[serde(flatten)]);
-            }
             "Visibility" => {
                 assert_eq!(field, "vis");
                 return quote!(#[serde(default, skip_serializing_if = "Visibility::is_inherited")]);
@@ -145,17 +118,58 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
     quote!()
 }
 
-fn rename(_ident: &str, _field: &str) -> Option<&'static str> {
-    None
+fn skip_serializing_if(ident: &str, field: &str, ty: &Type) -> Option<String> {
+    match (ident, field) {
+        (_, "attrs")
+        | ("Attribute", "tokens")
+        | ("TypeParam", "bounds")
+        | ("LifetimeDef", "bounds")
+        | ("ItemTrait", "supertraits")
+        | ("TraitItemType", "bounds") => Some(format!("{}::is_empty", outer_ty(ty))),
+        _ => None,
+    }
 }
 
-fn container_ty(ty: &Type) -> Ident {
+fn allow_transparent(ident: &str, field: &str, ty: &Type) -> bool {
+    const DISALLOWED: &[&str] = &[
+        // TODO: revisit
+        "MethodTurbofish",
+    ];
+
+    field != "attrs"
+        && !matches!(ty, Type::Option(_))
+        && !DISALLOWED.contains(&ident)
+        && !ident.starts_with("Type")
+}
+
+fn flatten(ident: &str, field: &str, ty: &Type) -> bool {
+    match (field, base_ty(ty)) {
+        ("member", Some("Member")) | ("mac", Some("Macro")) | ("sig", Some("Signature")) => true,
+        ("lit", Some("Lit")) => ident.ends_with("Lit"),
+        ("path", Some("Path")) => ident.ends_with("Path"),
+        _ => false,
+    }
+}
+
+fn rename<'a>(_ident: &str, field: &'a str) -> Option<&'a str> {
+    field.strip_suffix('_')
+}
+
+fn base_ty(ty: &Type) -> Option<&str> {
     match ty {
-        Type::Box(_) => format_ident!("Box"),
-        Type::Vec(_) => format_ident!("Vec"),
-        Type::Punctuated(_) => format_ident!("Punctuated"),
-        Type::Option(_) => format_ident!("Option"),
-        _ => unreachable!("container_ty: {:?}", ty),
+        Type::Syn(ty) | Type::Ext(ty) | Type::Std(ty) => Some(ty),
+        _ => None,
+    }
+}
+
+fn outer_ty(ty: &Type) -> &str {
+    match ty {
+        Type::Box(_) => "Box",
+        Type::Vec(_) => "Vec",
+        Type::Punctuated(_) => "Punctuated",
+        Type::Option(_) => "Option",
+        Type::Syn(ty) | Type::Ext(ty) | Type::Std(ty) => ty,
+        _ => unreachable!("outer_ty: {:?}", ty),
     }
 }
 
@@ -167,7 +181,7 @@ fn format_ty(ty: &Type) -> Option<TokenStream> {
         | Type::Option(t) => match &**t {
             Type::Token(_) | Type::Group(_) => Some(quote!(bool)),
             Type::Tuple(t) => {
-                let container = container_ty(ty);
+                let container = format_ident!("{}", outer_ty(ty));
                 let tys: Vec<_> = t.iter().filter_map(format_ty).collect();
                 assert_ne!(tys.len(), 0);
 
@@ -175,7 +189,7 @@ fn format_ty(ty: &Type) -> Option<TokenStream> {
                 Some(quote!(#container<#t>))
             }
             _ => {
-                let container = container_ty(ty);
+                let container = format_ident!("{}", outer_ty(ty));
                 let t = format_ty(t).unwrap_or_else(|| unimplemented!("format_ty: {:?}", ty));
                 Some(quote!(#container<#t>))
             }
@@ -204,11 +218,20 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             if let Some(t) = format_ty(ty) {
                 let attrs = field_attrs(field, ty, defs);
                 let rename = rename(&node.ident, field).map(|s| quote!(#[serde(rename = #s)]));
+                let skip_serializing_if = skip_serializing_if(&node.ident, field, ty)
+                    .map(|s| quote!(#[serde(default, skip_serializing_if = #s)]));
+                let flatten = if flatten(&node.ident, field, ty) {
+                    quote!(#[serde(flatten)])
+                } else {
+                    quote!()
+                };
                 let f = format_ident!("{}", field);
 
                 body.push(quote! {
                     #attrs
                     #rename
+                    #skip_serializing_if
+                    #flatten
                     pub(crate) #f: #t,
                 });
                 last = &**field;

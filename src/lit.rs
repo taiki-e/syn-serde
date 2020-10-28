@@ -1,7 +1,7 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::Lit;
+pub use crate::{ast_enum::Lit, ast_struct::LitBool};
 
 ast_struct! {
     /// A UTF-8 string literal: `"foo"`.
@@ -50,14 +50,6 @@ ast_struct! {
     #[serde(transparent)]
     pub struct LitFloat {
         token: Literal,
-    }
-}
-
-ast_struct! {
-    /// A boolean literal: `true` or `false`.
-    #[serde(transparent)]
-    pub struct LitBool {
-        pub(crate) value: bool,
     }
 }
 
