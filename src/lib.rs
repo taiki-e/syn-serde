@@ -102,13 +102,22 @@
 #[macro_use]
 mod macros;
 
+#[path = "gen/ast_struct.rs"]
+mod ast_struct;
+
 #[path = "gen/ast_enum.rs"]
 mod ast_enum;
 
 #[path = "gen/convert.rs"]
 mod convert;
 
-mod attr;
+mod attr {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::{
+        ast_enum::{AttrStyle, Meta, NestedMeta},
+        ast_struct::{Attribute, MetaList, MetaNameValue},
+    };
+}
 #[doc(hidden)]
 pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue, NestedMeta};
 
@@ -149,11 +158,17 @@ pub use crate::item::{
     UseName, UsePath, UseRename, UseTree,
 };
 
-mod file;
+mod file {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::ast_struct::File;
+}
 #[doc(hidden)]
 pub use crate::file::File;
 
-mod lifetime;
+mod lifetime {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::ast_struct::Lifetime;
+}
 #[doc(hidden)]
 pub use crate::lifetime::Lifetime;
 
@@ -163,7 +178,10 @@ pub use crate::lit::{
     Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr, StrStyle,
 };
 
-mod mac;
+mod mac {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::{ast_enum::MacroDelimiter, ast_struct::Macro};
+}
 #[doc(hidden)]
 pub use crate::mac::{Macro, MacroDelimiter};
 
@@ -195,7 +213,13 @@ pub use crate::path::{
     ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
 };
 
-mod stmt;
+mod stmt {
+    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
+    pub use crate::{
+        ast_enum::Stmt,
+        ast_struct::{Block, Local},
+    };
+}
 #[doc(hidden)]
 pub use crate::stmt::{Block, Local, Stmt};
 

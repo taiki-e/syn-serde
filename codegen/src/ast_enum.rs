@@ -31,60 +31,55 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
         return;
     }
 
-    match &node.data {
-        Data::Enum(variants) => {
-            let mut body = TokenStream::new();
+    if let Data::Enum(variants) = &node.data {
+        let mut body = TokenStream::new();
 
-            for (variant, fields) in variants {
-                body.extend(rename(&node.ident, variant).map(|s| quote!(#[serde(rename = #s)])));
+        for (variant, fields) in variants {
+            body.extend(rename(&node.ident, variant).map(|s| quote!(#[serde(rename = #s)])));
 
-                let variant = format_ident!("{}", variant);
+            let variant = format_ident!("{}", variant);
 
-                if fields.is_empty() {
-                    body.extend(quote!(#variant,));
-                } else {
-                    assert!(fields.len() == 1 || node.ident == "Stmt");
-                    match &fields[0] {
-                        Type::Syn(s) if EMPTY_STRUCTS.contains(&&**s) => {
-                            body.extend(quote!(#variant,));
-                        }
-                        Type::Syn(s) | Type::Ext(s) => {
-                            let field = format_ident!("{}", s);
-                            body.extend(quote!(#variant(#field),));
-                        }
-                        Type::Token(t) if node.ident == "BinOp" || node.ident == "UnOp" => {
-                            let s = &defs.tokens[t];
-                            body.extend(quote! {
-                                #[serde(rename = #s)]
-                                #variant,
-                            });
-                        }
-                        Type::Token(_) | Type::Group(_) => {
-                            body.extend(quote!(#variant,));
-                        }
-                        _ => unreachable!("Data::Enum: {}", node.ident),
+            if fields.is_empty() {
+                body.extend(quote!(#variant,));
+            } else {
+                assert!(fields.len() == 1 || node.ident == "Stmt");
+                match &fields[0] {
+                    Type::Syn(s) if EMPTY_STRUCTS.contains(&&**s) => {
+                        body.extend(quote!(#variant,));
                     }
+                    Type::Syn(s) | Type::Ext(s) => {
+                        let ty = format_ident!("{}", s);
+                        body.extend(quote!(#variant(#ty),));
+                    }
+                    Type::Token(t) | Type::Group(t) => {
+                        if matches!(&*node.ident, "BinOp" | "UnOp") {
+                            let s = &defs.tokens[t];
+                            body.extend(quote!(#[serde(rename = #s)]));
+                        }
+                        body.extend(quote!(#variant,));
+                    }
+                    _ => unreachable!("Data::Enum: {}", node.ident),
                 }
             }
+        }
 
-            if !node.exhaustive {
-                body.extend(quote! {
-                    #[doc(hidden)]
-                    __Nonexhaustive,
-                });
-            }
-
-            let ident = format_ident!("{}", node.ident);
-            impls.extend(quote! {
-                #[derive(Serialize, Deserialize)]
-                #[serde(rename_all = "snake_case")]
-                pub enum #ident {
-                    #body
-                }
+        if !node.exhaustive {
+            body.extend(quote! {
+                #[doc(hidden)]
+                __Nonexhaustive,
             });
         }
-        Data::Struct(_) => {}
-        Data::Private => unreachable!("Data::Private: {}", node.ident),
+
+        let ident = format_ident!("{}", node.ident);
+        let doc = format!(" An adapter for [`enum@syn::{}`].", node.ident);
+        impls.extend(quote! {
+            #[doc = #doc]
+            #[derive(Serialize, Deserialize)]
+            #[serde(rename_all = "snake_case")]
+            pub enum #ident {
+                #body
+            }
+        });
     }
 }
 

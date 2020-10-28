@@ -9,11 +9,11 @@ pub(crate) fn traverse(
     types.sort_by(|a, b| a.ident.cmp(&b.ident));
 
     let mut impls = TokenStream::new();
-    for s in types {
-        if s.ident == "Reserved" {
-            continue;
-        }
-        node(&mut impls, &s, defs);
+    for ty in types.iter().filter(|ty| {
+        // We don't provide types that are not available only with "full" feature
+        (ty.features.any.is_empty() || ty.features.any.contains("full")) && ty.ident != "Reserved"
+    }) {
+        node(&mut impls, &ty, defs);
     }
 
     impls

@@ -2,12 +2,14 @@
 // It is not intended for manual editing.
 
 use crate::*;
+/// An adapter for [`enum@syn::AttrStyle`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum AttrStyle {
     Outer,
     Inner,
 }
+/// An adapter for [`enum@syn::BinOp`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum BinOp {
@@ -68,6 +70,7 @@ pub enum BinOp {
     #[serde(rename = ">>=")]
     ShrEq,
 }
+/// An adapter for [`enum@syn::Expr`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Expr {
@@ -114,6 +117,7 @@ pub enum Expr {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::Fields`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Fields {
@@ -121,12 +125,14 @@ pub enum Fields {
     Unnamed(FieldsUnnamed),
     Unit,
 }
+/// An adapter for [`enum@syn::FnArg`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FnArg {
     Receiver(Receiver),
     Typed(PatType),
 }
+/// An adapter for [`enum@syn::ForeignItem`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ForeignItem {
@@ -138,6 +144,7 @@ pub enum ForeignItem {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::GenericArgument`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum GenericArgument {
@@ -147,12 +154,14 @@ pub enum GenericArgument {
     Constraint(Constraint),
     Const(Expr),
 }
+/// An adapter for [`enum@syn::GenericMethodArgument`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum GenericMethodArgument {
     Type(Type),
     Const(Expr),
 }
+/// An adapter for [`enum@syn::GenericParam`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum GenericParam {
@@ -160,6 +169,7 @@ pub enum GenericParam {
     Lifetime(LifetimeDef),
     Const(ConstParam),
 }
+/// An adapter for [`enum@syn::ImplItem`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ImplItem {
@@ -171,6 +181,7 @@ pub enum ImplItem {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::Item`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Item {
@@ -194,6 +205,7 @@ pub enum Item {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::Lit`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Lit {
@@ -206,6 +218,7 @@ pub enum Lit {
     Bool(LitBool),
     Verbatim(Literal),
 }
+/// An adapter for [`enum@syn::MacroDelimiter`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MacroDelimiter {
@@ -213,6 +226,7 @@ pub enum MacroDelimiter {
     Brace,
     Bracket,
 }
+/// An adapter for [`enum@syn::Member`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Member {
@@ -221,6 +235,7 @@ pub enum Member {
     #[serde(rename = "index")]
     Unnamed(Index),
 }
+/// An adapter for [`enum@syn::Meta`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Meta {
@@ -228,12 +243,14 @@ pub enum Meta {
     List(MetaList),
     NameValue(MetaNameValue),
 }
+/// An adapter for [`enum@syn::NestedMeta`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NestedMeta {
     Meta(Meta),
     Lit(Lit),
 }
+/// An adapter for [`enum@syn::Pat`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Pat {
@@ -257,6 +274,7 @@ pub enum Pat {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::PathArguments`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PathArguments {
@@ -264,6 +282,7 @@ pub enum PathArguments {
     AngleBracketed(AngleBracketedGenericArguments),
     Parenthesized(ParenthesizedGenericArguments),
 }
+/// An adapter for [`enum@syn::RangeLimits`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RangeLimits {
@@ -272,6 +291,7 @@ pub enum RangeLimits {
     #[serde(rename = "..=")]
     Closed,
 }
+/// An adapter for [`enum@syn::Stmt`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Stmt {
@@ -281,12 +301,14 @@ pub enum Stmt {
     Expr(Expr),
     Semi(Expr),
 }
+/// An adapter for [`enum@syn::TraitBoundModifier`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TraitBoundModifier {
     None,
     Maybe,
 }
+/// An adapter for [`enum@syn::TraitItem`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TraitItem {
@@ -298,6 +320,7 @@ pub enum TraitItem {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::Type`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Type {
@@ -321,12 +344,14 @@ pub enum Type {
     #[doc(hidden)]
     __Nonexhaustive,
 }
+/// An adapter for [`enum@syn::TypeParamBound`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TypeParamBound {
     Trait(TraitBound),
     Lifetime(Lifetime),
 }
+/// An adapter for [`enum@syn::UnOp`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UnOp {
@@ -337,6 +362,7 @@ pub enum UnOp {
     #[serde(rename = "-")]
     Neg,
 }
+/// An adapter for [`enum@syn::UseTree`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UseTree {
@@ -348,6 +374,7 @@ pub enum UseTree {
     Glob,
     Group(UseGroup),
 }
+/// An adapter for [`enum@syn::Visibility`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Visibility {
@@ -357,6 +384,7 @@ pub enum Visibility {
     Restricted(VisRestricted),
     Inherited,
 }
+/// An adapter for [`enum@syn::WherePredicate`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum WherePredicate {
