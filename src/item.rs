@@ -5,26 +5,11 @@ pub use crate::{
     ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem, UseTree},
     ast_struct::{
         ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType, ImplItemConst,
-        ImplItemMacro, ImplItemType, ItemConst, ItemEnum, ItemExternCrate, ItemForeignMod,
-        ItemMacro, ItemMacro2, ItemStatic, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Signature,
-        TraitItemConst, TraitItemMacro, UseGroup, UseName, UsePath, UseRename,
+        ImplItemMacro, ImplItemMethod, ImplItemType, ItemConst, ItemEnum, ItemExternCrate, ItemFn,
+        ItemForeignMod, ItemMacro, ItemMacro2, ItemStatic, ItemTraitAlias, ItemType, ItemUnion,
+        ItemUse, Signature, TraitItemConst, TraitItemMacro, UseGroup, UseName, UsePath, UseRename,
     },
 };
-
-ast_struct! {
-    /// A free-standing function: `fn process(n: usize) -> Result<()> { ...
-    /// }`.
-    pub struct ItemFn {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-        pub(crate) vis: Visibility,
-        #[serde(flatten)]
-        pub(crate) sig: Signature,
-        #[serde(rename = "stmts")]
-        pub(crate) block: Box<Block>,
-    }
-}
 
 ast_struct! {
     /// An impl block providing trait or associated items: `impl<A> Trait
@@ -135,23 +120,6 @@ ast_struct! {
         pub(crate) bounds: Punctuated<TypeParamBound>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) default: Option<Type>,
-    }
-}
-
-ast_struct! {
-    /// A method within an impl block.
-    pub struct ImplItemMethod {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
-        pub(crate) vis: Visibility,
-        #[serde(rename = "default")]
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) defaultness: bool,
-        #[serde(flatten)]
-        pub(crate) sig: Signature,
-        #[serde(rename = "stmts")]
-        pub(crate) block: Block,
     }
 }
 

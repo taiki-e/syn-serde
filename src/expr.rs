@@ -4,52 +4,14 @@ use super::*;
 pub use crate::{
     ast_enum::{Expr, GenericMethodArgument, Member, RangeLimits},
     ast_struct::{
-        ExprArray, ExprAssign, ExprAssignOp, ExprAwait, ExprBinary, ExprBox, ExprBreak, ExprCall,
-        ExprCast, ExprClosure, ExprContinue, ExprField, ExprGroup, ExprIf, ExprIndex, ExprLet,
-        ExprMacro, ExprMatch, ExprMethodCall, ExprParen, ExprRange, ExprReference, ExprRepeat,
-        ExprReturn, ExprStruct, ExprTry, ExprTuple, ExprType, ExprUnary, ExprYield, FieldValue,
+        ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBox,
+        ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop,
+        ExprGroup, ExprIf, ExprIndex, ExprLet, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
+        ExprParen, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
+        ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue,
         Index, Label, MethodTurbofish,
     },
 };
-
-ast_struct! {
-    /// An async block: `async { ... }`.
-    pub struct ExprAsync {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(rename = "move")]
-        #[serde(default, skip_serializing_if = "not")]
-        pub(crate) capture: bool,
-        #[serde(rename = "stmts")]
-        pub(crate) block: Block,
-    }
-}
-
-ast_struct! {
-    /// A blocked scope: `{ ... }`.
-    pub struct ExprBlock {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) label: Option<Label>,
-        #[serde(rename = "stmts")]
-        pub(crate) block: Block,
-    }
-}
-
-ast_struct! {
-    /// A for loop: `for pat in expr { ... }`.
-    pub struct ExprForLoop {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) label: Option<Label>,
-        pub(crate) pat: Pat,
-        pub(crate) expr: Box<Expr>,
-        // should rename to stmts?
-        pub(crate) body: Block,
-    }
-}
 
 ast_struct! {
     /// A literal in place of an expression: `1`, `"foo"`.
@@ -58,18 +20,6 @@ ast_struct! {
         pub(crate) attrs: Vec<Attribute>,
         #[serde(flatten)]
         pub(crate) lit: Lit,
-    }
-}
-
-ast_struct! {
-    /// Conditionless loop: `loop { ... }`.
-    pub struct ExprLoop {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) label: Option<Label>,
-        // should rename to stmts?
-        pub(crate) body: Block,
     }
 }
 
@@ -85,39 +35,6 @@ ast_struct! {
         pub(crate) qself: Option<QSelf>,
         #[serde(flatten)]
         pub(crate) path: Path,
-    }
-}
-
-ast_struct! {
-    /// A try block: `try { ... }`.
-    pub struct ExprTryBlock {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(rename = "stmts")]
-        pub(crate) block: Block,
-    }
-}
-
-ast_struct! {
-    /// An unsafe block: `unsafe { ... }`.
-    pub struct ExprUnsafe {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(rename = "stmts")]
-        pub(crate) block: Block,
-    }
-}
-
-ast_struct! {
-    /// A while loop: `while expr { ... }`.
-    pub struct ExprWhile {
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        pub(crate) attrs: Vec<Attribute>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) label: Option<Label>,
-        pub(crate) cond: Box<Expr>,
-        // should rename to stmts?
-        pub(crate) body: Block,
     }
 }
 

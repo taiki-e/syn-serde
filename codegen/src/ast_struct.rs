@@ -14,15 +14,8 @@ const SKIPED: &[&str] = &[
     // data.rs
     "Field",
     // expr.rs
-    "ExprAsync",
-    "ExprBlock",
-    "ExprForLoop",
     "ExprLit",
-    "ExprLoop",
     "ExprPath",
-    "ExprTryBlock",
-    "ExprUnsafe",
-    "ExprWhile",
     "Arm",
     // generics.rs
     "Generics",
@@ -30,14 +23,12 @@ const SKIPED: &[&str] = &[
     "LifetimeDef",
     "PredicateType",
     // item.rs
-    "ItemFn",
     "ItemImpl",
     "ItemMod",
     "ItemStruct",
     "ItemTrait",
     "TraitItemMethod",
     "TraitItemType",
-    "ImplItemMethod",
     "Receiver",
     // pat.rs
     "PatOr",
@@ -77,6 +68,7 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
     }
 
     match ty {
+        Type::Box(ty) => return field_attrs(field, ty, defs),
         Type::Vec(ty) => {
             if let Type::Syn(ty) = &**ty {
                 if matches!(&**ty, "Attribute") {
@@ -88,7 +80,7 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
         Type::Option(ty) => match &**ty {
             Type::Token(ty) | Type::Group(ty) => {
                 let attr = quote!(#[serde(default, skip_serializing_if = "not")]);
-                if is_keyword(ty) {
+                return if is_keyword(ty) {
                     assert!(matches!(
                         field,
                         "mutability"
@@ -103,13 +95,13 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
                             | "capture"
                     ));
                     let s = &defs.tokens[ty];
-                    return quote! {
+                    quote! {
                         #[serde(rename = #s)]
                         #attr
-                    };
+                    }
                 } else {
-                    return attr;
-                }
+                    attr
+                };
             }
             _ => return quote!(#[serde(default, skip_serializing_if = "Option::is_none")]),
         },
@@ -137,6 +129,14 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
             "ReturnType" => {
                 assert_eq!(field, "output");
                 return quote!(#[serde(default)]);
+            }
+            "Block" => {
+                if field == "block" {
+                    return quote!(#[serde(rename = "stmts")]);
+                } else {
+                    // TODO: should we rename "body" to "stmts"?
+                    assert!(matches!(field, "body" | "then_branch"));
+                }
             }
             _ => {}
         },
