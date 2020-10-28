@@ -6,29 +6,9 @@ use crate::{file, gen, Result};
 
 const CONVERT_SRC: &str = "../src/gen/convert.rs";
 
-pub(crate) const IGNORED_TYPES: &[&str] = &[
-    /* we don't have them */
-    "DeriveInput",
-    "Data",
-    "DataStruct",
-    "DataEnum",
-    "DataUnion",
-    /* private */
-    "LitByte",
-    "LitByteStr",
-    "LitChar",
-    "LitFloat",
-    "LitInt",
-    "LitStr",
-    /* optimize */
-    "Arm",
-    "ExprMatch",
-    "Generics",
-    "ItemStruct",
-    "Receiver",
-    "ReturnType",
-    "TraitItemMethod",
-];
+// optimize
+pub(crate) const IGNORED_TYPES: &[&str] =
+    &["Arm", "ExprMatch", "Generics", "ItemStruct", "Receiver", "ReturnType", "TraitItemMethod"];
 
 pub(crate) const EMPTY_STRUCTS: &[&str] =
     &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
@@ -142,7 +122,7 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
 }
 
 fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
-    if IGNORED_TYPES.contains(&&*node.ident) {
+    if IGNORED_TYPES.contains(&&*node.ident) || EMPTY_STRUCTS.contains(&&*node.ident) {
         return;
     }
 
@@ -219,23 +199,19 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             });
         }
         Data::Struct(fields) => {
-            if EMPTY_STRUCTS.contains(&&*node.ident) {
-                return;
-            }
-
             let mut from_fields = TokenStream::new();
             let mut into_fields = TokenStream::new();
 
             for (field, ty) in fields {
-                let id = format_ident!("{}", field);
-                let ref_toks = quote!(node.#id);
+                let field = format_ident!("{}", field);
+                let ref_toks = quote!(node.#field);
 
                 let (from, into) = visit(ty, &ref_toks, defs);
 
                 if from.is_some() {
-                    from_fields.extend(quote!(#id: #from,));
+                    from_fields.extend(quote!(#field: #from,));
                 }
-                into_fields.extend(quote!(#id: #into,));
+                into_fields.extend(quote!(#field: #into,));
             }
 
             assert!(!fields.is_empty(), "fields.is_empty: {}", ident);
@@ -248,7 +224,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                 Self { #into_fields }
             });
         }
-        Data::Private => unreachable!("Data::Private: {}", ident),
+        Data::Private => return,
     }
 
     impls.extend(quote! {

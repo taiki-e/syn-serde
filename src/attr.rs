@@ -1,7 +1,10 @@
 use super::*;
 
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-pub use crate::ast_enum::{AttrStyle, Meta, NestedMeta};
+pub use crate::{
+    ast_enum::{AttrStyle, Meta, NestedMeta},
+    ast_struct::{MetaList, MetaNameValue},
+};
 
 ast_struct! {
     /// An attribute like `#[repr(transparent)]`.
@@ -39,21 +42,5 @@ ast_struct! {
         pub(crate) path: Path,
         #[serde(default, skip_serializing_if = "TokenStream::is_empty")]
         pub(crate) tokens: TokenStream,
-    }
-}
-
-ast_struct! {
-    /// A structured list within an attribute, like `derive(Copy, Clone)`.
-    pub struct MetaList {
-        pub(crate) path: Path,
-        pub(crate) nested: Punctuated<NestedMeta>,
-    }
-}
-
-ast_struct! {
-    /// A name-value pair within an attribute, like `feature = "nightly"`.
-    pub struct MetaNameValue {
-        pub(crate) path: Path,
-        pub(crate) lit: Lit,
     }
 }
