@@ -19,7 +19,6 @@ defaults:
 
 jobs:
   test:
-    name: test
     strategy:
       matrix:
         rust:
@@ -53,7 +52,6 @@ jobs:
         run: bash scripts/check-minimal-versions.sh
 
   codegen:
-    name: codegen
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -63,7 +61,6 @@ jobs:
       - run: git diff --exit-code
 
   clippy:
-    name: clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -72,7 +69,6 @@ jobs:
       - run: cargo clippy --all --all-features --all-targets
 
   rustfmt:
-    name: rustfmt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -81,7 +77,6 @@ jobs:
       - run: cargo fmt --all -- --check
 
   rustdoc:
-    name: rustdoc
     env:
       RUSTDOCFLAGS: -Dwarnings
     runs-on: ubuntu-latest
@@ -92,7 +87,6 @@ jobs:
       - run: cargo doc --no-deps --all --all-features
 
   shellcheck:
-    name: shellcheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
