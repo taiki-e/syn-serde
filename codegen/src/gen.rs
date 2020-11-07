@@ -13,7 +13,7 @@ pub(crate) fn traverse(
         // We don't provide types that are not available only with "full" feature
         (ty.features.any.is_empty() || ty.features.any.contains("full")) && ty.ident != "Reserved"
     }) {
-        node(&mut impls, &ty, defs);
+        node(&mut impls, ty, defs);
     }
 
     impls
