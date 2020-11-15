@@ -39,17 +39,17 @@ jobs:
       - if: matrix.rust == '1.31.0'
         run: cargo check --all-features
       - if: matrix.rust != '1.31.0'
-        run: cargo test --all-features
+        run: cargo test --all --all-features
       - if: matrix.rust != '1.31.0'
         run: cargo hack check --all --feature-powerset --no-dev-deps
-      - if: matrix.rust == 'nightly'
+      - if: startsWith(matrix.rust, 'nightly')
         run: cargo run -p rust2json -- examples/rust2json/src/main.rs examples/rust2json/main.json
-      - if: matrix.rust == 'nightly'
+      - if: startsWith(matrix.rust, 'nightly')
         run: cargo run -p rust2json -- examples/json2rust/src/main.rs examples/json2rust/main.json
-      - if: matrix.rust == 'nightly'
+      - if: startsWith(matrix.rust, 'nightly')
         run: cargo run -p rust2json -- examples/rust2pickle/src/main.rs examples/rust2pickle/main.json
       - run: git diff --exit-code
-      - if: matrix.rust == 'nightly'
+      - if: startsWith(matrix.rust, 'nightly')
         run: bash scripts/check-minimal-versions.sh
 
   codegen:

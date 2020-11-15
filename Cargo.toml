@@ -27,6 +27,7 @@ members = [
     "examples/json2rust",
     "examples/rust2json",
     "examples/rust2pickle",
+    "tests/doc",
 ]
 
 [features]
