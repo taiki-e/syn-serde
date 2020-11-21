@@ -78,7 +78,6 @@
 //! [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/master/examples/rust2json
 //! [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/master/examples/json2rust
 
-#![doc(html_root_url = "https://docs.rs/syn-serde/0.2.0")]
 #![doc(test(
     no_crate_inject,
     attr(deny(warnings, rust_2018_idioms, single_use_lifetimes), allow(dead_code))
