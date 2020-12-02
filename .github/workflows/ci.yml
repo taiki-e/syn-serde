@@ -38,7 +38,7 @@ jobs:
       - if: matrix.rust != '1.31.0'
         run: cargo install cargo-hack
       - if: matrix.rust == '1.31.0'
-        run: cargo check --all-features
+        run: cargo build --all-features
       - if: matrix.rust != '1.31.0'
         run: cargo test --all --all-features
       - if: matrix.rust != '1.31.0'
