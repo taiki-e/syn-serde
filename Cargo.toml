@@ -32,6 +32,7 @@ members = [
 [features]
 json = ["serde_json"]
 
+# NB: proc-macro2, serde, serde_json, and syn are public dependencies.
 [dependencies]
 proc-macro2 = { version = "1", default-features = false }
 serde = { version = "1.0.103", features = ["derive"] }
