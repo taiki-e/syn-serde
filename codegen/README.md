@@ -8,5 +8,5 @@ actual AST.
 To run this program, run `cargo run` in this directory, and the `gen/` folder
 will be re-generated.
 
-This program is slow, and is therefore not run when building `syn-serde` as part of
-the build script to save on compile time.
+This program is slow, and is therefore not run when building `syn-serde` as part
+of the build script to save on compile time.
