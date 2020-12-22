@@ -79,19 +79,7 @@
           "path": {
             "ident": "structopt",
             "tree": {
-              "group": [
-                {
-                  "path": {
-                    "ident": "clap",
-                    "tree": {
-                      "ident": "AppSettings"
-                    }
-                  }
-                },
-                {
-                  "ident": "StructOpt"
-                }
-              ]
+              "ident": "StructOpt"
             }
           }
         }
@@ -191,52 +179,6 @@
                   "stream": [
                     {
                       "ident": "StructOpt"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "structopt"
-                }
-              ]
-            },
-            "tokens": [
-              {
-                "group": {
-                  "delimiter": "parenthesis",
-                  "stream": [
-                    {
-                      "ident": "setting"
-                    },
-                    {
-                      "punct": {
-                        "op": "=",
-                        "spacing": "alone"
-                      }
-                    },
-                    {
-                      "ident": "AppSettings"
-                    },
-                    {
-                      "punct": {
-                        "op": ":",
-                        "spacing": "joint"
-                      }
-                    },
-                    {
-                      "punct": {
-                        "op": ":",
-                        "spacing": "alone"
-                      }
-                    },
-                    {
-                      "ident": "UnifiedHelpMessage"
                     }
                   ]
                 }

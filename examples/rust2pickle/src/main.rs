@@ -6,12 +6,11 @@ use std::{
     fs,
     io::{self, BufWriter, Write},
 };
-use structopt::{clap::AppSettings, StructOpt};
+use structopt::StructOpt;
 
 type Result<T, E = anyhow::Error> = std::result::Result<T, E>;
 
 #[derive(StructOpt)]
-#[structopt(setting = AppSettings::UnifiedHelpMessage)]
 struct Cli {
     #[structopt(parse(from_os_str))]
     input_path: std::path::PathBuf,

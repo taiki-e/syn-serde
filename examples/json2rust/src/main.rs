@@ -7,14 +7,13 @@ use std::{
     path::Path,
     process::{Command, Stdio},
 };
-use structopt::{clap::AppSettings, StructOpt};
+use structopt::StructOpt;
 use syn_serde::json;
 use tempfile::Builder;
 
 type Result<T, E = anyhow::Error> = std::result::Result<T, E>;
 
 #[derive(StructOpt)]
-#[structopt(setting = AppSettings::UnifiedHelpMessage)]
 struct Cli {
     #[structopt(parse(from_os_str))]
     input_path: std::path::PathBuf,
@@ -50,7 +49,7 @@ fn main() -> Result<()> {
 }
 
 fn write_rustfmt_config(outdir: &Path) -> Result<()> {
-    let rustfmt_config_path = outdir.join("rustfmt.toml");
+    let rustfmt_config_path = outdir.join(".rustfmt.toml");
     fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
     Ok(())
 }
