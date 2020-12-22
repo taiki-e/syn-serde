@@ -11,13 +11,11 @@ const AST_ENUM_SRC: &str = "../src/gen/ast_enum.rs";
 
 fn rename(ident: &str, variant: &str) -> Option<&'static str> {
     match (ident, variant) {
-        ("Pat", "Wild") => Some("_"),
-        ("Type", "Infer") => Some("_"),
+        ("Pat", "Wild") | ("Type", "Infer") => Some("_"),
         ("Type", "Never") => Some("!"),
         ("Stmt", "Local") => Some("let"),
         ("UseTree", "Glob") => Some("*"),
-        ("UseTree", "Name") => Some("ident"),
-        ("Member", "Named") => Some("ident"),
+        ("UseTree", "Name") | ("Member", "Named") => Some("ident"),
         ("Member", "Unnamed") => Some("index"),
         ("RangeLimits", "HalfOpen") => Some(".."),
         ("RangeLimits", "Closed") => Some("..="),

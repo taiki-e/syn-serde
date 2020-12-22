@@ -39,9 +39,9 @@ pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> 
 }
 
 fn write_rustfmt_config(outdir: &Path) -> Result<()> {
-    let rustfmt_config_path = outdir.join("rustfmt.toml");
+    let rustfmt_config_path = outdir.join(".rustfmt.toml");
     let mut rustfmt_config = Vec::new();
-    let workspace_config_path = manifest_dir().join("../rustfmt.toml");
+    let workspace_config_path = manifest_dir().join("../.rustfmt.toml");
     if workspace_config_path.is_file() {
         rustfmt_config = fs::read(workspace_config_path)?;
     }
