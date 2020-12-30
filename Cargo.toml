@@ -9,6 +9,7 @@ documentation = "https://docs.rs/syn-serde"
 keywords = ["serde", "serialization", "syn"]
 categories = ["development-tools::procedural-macro-helpers", "encoding"]
 readme = "README.md"
+exclude = ["/.github", "/scripts"]
 description = """
 Library to serialize and deserialize Syn syntax trees.
 """
