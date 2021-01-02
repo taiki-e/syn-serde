@@ -3,9 +3,9 @@
 // This crate generates the Syn trait in syn-serde programmatically from
 // the syntax tree description.
 
-#![warn(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
+#![warn(rust_2018_idioms, single_use_lifetimes)]
 
-const SYN_JSON: &str = "../syn.json";
+const SYN_JSON: &str = "syn.json";
 
 mod ast_enum;
 mod ast_struct;
