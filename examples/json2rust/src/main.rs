@@ -1,5 +1,6 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
+use anyhow::Result;
 use quote::ToTokens;
 use std::{
     fs,
@@ -10,8 +11,6 @@ use std::{
 use structopt::StructOpt;
 use syn_serde::json;
 use tempfile::Builder;
-
-type Result<T, E = anyhow::Error> = std::result::Result<T, E>;
 
 #[derive(StructOpt)]
 struct Cli {

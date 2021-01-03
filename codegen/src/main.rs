@@ -13,9 +13,8 @@ mod convert;
 mod file;
 mod gen;
 
+use anyhow::Result;
 use std::fs;
-
-type Result<T, E = anyhow::Error> = std::result::Result<T, E>;
 
 fn main() -> Result<()> {
     let defs = fs::read_to_string(file::manifest_dir().join(SYN_JSON))?;

@@ -2,13 +2,12 @@
 
 mod pickle;
 
+use anyhow::Result;
 use std::{
     fs,
     io::{self, BufWriter, Write},
 };
 use structopt::StructOpt;
-
-type Result<T, E = anyhow::Error> = std::result::Result<T, E>;
 
 #[derive(StructOpt)]
 struct Cli {
