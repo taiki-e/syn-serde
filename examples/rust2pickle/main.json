@@ -43,6 +43,18 @@
       "use": {
         "tree": {
           "path": {
+            "ident": "anyhow",
+            "tree": {
+              "ident": "Result"
+            }
+          }
+        }
+      }
+    },
+    {
+      "use": {
+        "tree": {
+          "path": {
             "ident": "std",
             "tree": {
               "group": [
@@ -81,81 +93,6 @@
             "tree": {
               "ident": "StructOpt"
             }
-          }
-        }
-      }
-    },
-    {
-      "type": {
-        "ident": "Result",
-        "generics": {
-          "params": [
-            {
-              "type": {
-                "ident": "T"
-              }
-            },
-            {
-              "type": {
-                "ident": "E",
-                "eq_token": true,
-                "default": {
-                  "path": {
-                    "segments": [
-                      {
-                        "ident": "anyhow"
-                      },
-                      {
-                        "ident": "Error"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "ty": {
-          "path": {
-            "segments": [
-              {
-                "ident": "std"
-              },
-              {
-                "ident": "result"
-              },
-              {
-                "ident": "Result",
-                "arguments": {
-                  "angle_bracketed": {
-                    "args": [
-                      {
-                        "type": {
-                          "path": {
-                            "segments": [
-                              {
-                                "ident": "T"
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      {
-                        "type": {
-                          "path": {
-                            "segments": [
-                              {
-                                "ident": "E"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
           }
         }
       }
