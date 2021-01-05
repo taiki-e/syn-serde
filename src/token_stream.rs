@@ -172,7 +172,7 @@ impl Literal {
 // TODO: when release the next minor version, remove this.
 impl fmt::Display for Literal {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        self.text.fmt(f)
+        fmt::Display::fmt(&self.text, f)
     }
 }
 
