@@ -80,7 +80,10 @@
 
 #![doc(test(
     no_crate_inject,
-    attr(deny(warnings, rust_2018_idioms, single_use_lifetimes), allow(dead_code))
+    attr(
+        deny(warnings, rust_2018_idioms, single_use_lifetimes),
+        allow(dead_code, unused_variables)
+    )
 ))]
 #![forbid(unsafe_code)]
 #![warn(future_incompatible, rust_2018_idioms, unreachable_pub)]
@@ -277,7 +280,7 @@ pub trait Syn: Sized + private::Sealed {
     /// }"#;
     ///
     /// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_str(json)?;
-    /// let _syn_file = syn::File::from_adapter(&serializable_file);
+    /// let syn_file = syn::File::from_adapter(&serializable_file);
     /// # Ok(())
     /// # }
     /// ```
