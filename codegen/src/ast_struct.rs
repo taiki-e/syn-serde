@@ -106,10 +106,9 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
             "Block" => {
                 if field == "block" {
                     return quote!(#[serde(rename = "stmts")]);
-                } else {
-                    // TODO: should we rename "body" to "stmts"?
-                    assert!(matches!(field, "body" | "then_branch"));
                 }
+                // TODO: should we rename "body" to "stmts"?
+                assert!(matches!(field, "body" | "then_branch"));
             }
             _ => {}
         },

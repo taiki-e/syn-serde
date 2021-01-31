@@ -1,5 +1,6 @@
-use super::*;
 use std::fmt;
+
+use super::*;
 
 ast_struct! {
     /// An abstract stream of tokens, or more concretely a sequence of token trees.
@@ -197,12 +198,11 @@ mod convert {
     impl From<&proc_macro2::TokenTree> for TokenTree {
         fn from(other: &proc_macro2::TokenTree) -> Self {
             use super::TokenTree::*;
-            use proc_macro2::TokenTree;
             match other {
-                TokenTree::Group(t) => Group(t.into()),
-                TokenTree::Ident(t) => Ident(t.into()),
-                TokenTree::Punct(t) => Punct(t.into()),
-                TokenTree::Literal(t) => Literal(t.into()),
+                proc_macro2::TokenTree::Group(t) => Group(t.into()),
+                proc_macro2::TokenTree::Ident(t) => Ident(t.into()),
+                proc_macro2::TokenTree::Punct(t) => Punct(t.into()),
+                proc_macro2::TokenTree::Literal(t) => Literal(t.into()),
             }
         }
     }
@@ -236,12 +236,11 @@ mod convert {
     impl From<&proc_macro2::Delimiter> for Delimiter {
         fn from(other: &proc_macro2::Delimiter) -> Self {
             use super::Delimiter::*;
-            use proc_macro2::Delimiter;
             match other {
-                Delimiter::Parenthesis => Parenthesis,
-                Delimiter::Brace => Brace,
-                Delimiter::Bracket => Bracket,
-                Delimiter::None => None,
+                proc_macro2::Delimiter::Parenthesis => Parenthesis,
+                proc_macro2::Delimiter::Brace => Brace,
+                proc_macro2::Delimiter::Bracket => Bracket,
+                proc_macro2::Delimiter::None => None,
             }
         }
     }
@@ -288,10 +287,9 @@ mod convert {
     impl From<&proc_macro2::Spacing> for Spacing {
         fn from(other: &proc_macro2::Spacing) -> Self {
             use super::Spacing::*;
-            use proc_macro2::Spacing;
             match other {
-                Spacing::Alone => Alone,
-                Spacing::Joint => Joint,
+                proc_macro2::Spacing::Alone => Alone,
+                proc_macro2::Spacing::Joint => Joint,
             }
         }
     }

@@ -1,5 +1,4 @@
 use super::*;
-
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
 pub use crate::{ast_enum::Lit, ast_struct::LitBool};
 
@@ -67,12 +66,14 @@ ast_enum! {
 }
 
 mod value {
-    use super::*;
-    use proc_macro2::{TokenStream, TokenTree};
     use std::{
         char,
         ops::{Index, RangeFrom},
     };
+
+    use proc_macro2::{TokenStream, TokenTree};
+
+    use super::*;
 
     /// Get the byte at offset idx, or a default of `b'\0'` if we're looking
     /// past the end of the input buffer.

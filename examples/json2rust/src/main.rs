@@ -1,13 +1,14 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
-use anyhow::Result;
-use quote::ToTokens;
 use std::{
     fs,
     io::{self, BufWriter, Write},
     path::Path,
     process::{Command, Stdio},
 };
+
+use anyhow::Result;
+use quote::ToTokens;
 use structopt::StructOpt;
 use syn_serde::json;
 use tempfile::Builder;

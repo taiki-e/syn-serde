@@ -1,9 +1,10 @@
-use proc_macro2::TokenStream;
 use std::{
     fs,
     path::Path,
     process::{Command, Stdio},
 };
+
+use proc_macro2::TokenStream;
 use tempfile::Builder;
 
 use crate::Result;

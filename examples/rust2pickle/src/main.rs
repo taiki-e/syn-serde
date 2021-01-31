@@ -2,11 +2,12 @@
 
 mod pickle;
 
-use anyhow::Result;
 use std::{
     fs,
     io::{self, BufWriter, Write},
 };
+
+use anyhow::Result;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]

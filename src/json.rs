@@ -2,9 +2,11 @@
 //!
 //! *This module is available if syn-serde is built with the `"json"` feature.*
 
-use super::*;
-use serde_json::Result;
 use std::io;
+
+use serde_json::Result;
+
+use super::*;
 
 // Serialize [`Syn`] type into JSON data.
 

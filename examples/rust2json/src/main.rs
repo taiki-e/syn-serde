@@ -1,10 +1,11 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
-use anyhow::Result;
 use std::{
     fs,
     io::{self, BufWriter, Write},
 };
+
+use anyhow::Result;
 use structopt::StructOpt;
 use syn_serde::json;
 
