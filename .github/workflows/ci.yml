@@ -37,7 +37,6 @@ jobs:
       - run: cargo test --all --all-features
       - run: cargo hack check --all --ignore-private --feature-powerset --no-dev-deps
       - name: Run examples
-        if: startsWith(matrix.rust, 'nightly')
         run: |
           set -x
           cargo run -p rust2json -- examples/rust2json/src/main.rs examples/rust2json/main.json
@@ -46,8 +45,9 @@ jobs:
           if ! git diff --exit-code; then
             echo "::warning::examples/*/main.json needs to be updated"
           fi
-      - if: startsWith(matrix.rust, 'nightly')
-        run: scripts/check-minimal-versions.sh
+        if: startsWith(matrix.rust, 'nightly')
+      - run: scripts/check-minimal-versions.sh
+        if: startsWith(matrix.rust, 'nightly')
 
   build:
     strategy:
