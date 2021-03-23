@@ -75,8 +75,8 @@
 //!   deserializing.
 //!
 //! [Syn]: https://github.com/dtolnay/syn
-//! [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/master/examples/rust2json
-//! [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/master/examples/json2rust
+//! [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
+//! [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
 
 #![doc(test(
     no_crate_inject,
