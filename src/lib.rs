@@ -289,6 +289,8 @@ pub trait Syn: Sized + private::Sealed {
 
 // =============================================================================
 
+use std::ops;
+
 use proc_macro2::Span;
 use serde::{Deserialize, Serialize};
 
@@ -310,7 +312,7 @@ where
 
 fn not<T>(x: T) -> T::Output
 where
-    T: std::ops::Not,
+    T: ops::Not,
 {
     !x
 }
