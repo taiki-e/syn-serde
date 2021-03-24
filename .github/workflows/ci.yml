@@ -46,7 +46,7 @@ jobs:
             echo "::warning::examples/*/main.json needs to be updated"
           fi
         if: startsWith(matrix.rust, 'nightly')
-      - run: scripts/check-minimal-versions.sh
+      - run: tools/check-minimal-versions.sh
         if: startsWith(matrix.rust, 'nightly')
 
   build:
