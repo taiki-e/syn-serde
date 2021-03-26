@@ -7,7 +7,6 @@ use std::{
     io::{self, BufWriter, Write},
 };
 
-use anyhow::Result;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -18,7 +17,7 @@ struct Cli {
     output_path: Option<std::path::PathBuf>,
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::from_args();
 
     let code = fs::read_to_string(&args.input_path)?;

@@ -71,18 +71,6 @@
       "use": {
         "tree": {
           "path": {
-            "ident": "anyhow",
-            "tree": {
-              "ident": "Result"
-            }
-          }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
             "ident": "structopt",
             "tree": {
               "ident": "StructOpt"
@@ -275,6 +263,49 @@
                         "type": {
                           "tuple": {
                             "elems": []
+                          }
+                        }
+                      },
+                      {
+                        "type": {
+                          "path": {
+                            "segments": [
+                              {
+                                "ident": "Box",
+                                "arguments": {
+                                  "angle_bracketed": {
+                                    "args": [
+                                      {
+                                        "type": {
+                                          "trait_object": {
+                                            "dyn": true,
+                                            "bounds": [
+                                              {
+                                                "trait": {
+                                                  "path": {
+                                                    "segments": [
+                                                      {
+                                                        "ident": "std"
+                                                      },
+                                                      {
+                                                        "ident": "error"
+                                                      },
+                                                      {
+                                                        "ident": "Error"
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
                           }
                         }
                       }

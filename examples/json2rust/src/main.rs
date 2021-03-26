@@ -3,11 +3,9 @@
 use std::{
     fs,
     io::{self, BufWriter, Write},
-    path::Path,
     process::{Command, Stdio},
 };
 
-use anyhow::Result;
 use quote::ToTokens;
 use structopt::StructOpt;
 use syn_serde::json;
@@ -21,7 +19,7 @@ struct Cli {
     output_path: Option<std::path::PathBuf>,
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::from_args();
 
     let json = fs::read_to_string(&args.input_path)?;
@@ -32,7 +30,8 @@ fn main() -> Result<()> {
     fs::write(&outfile_path, syntax.into_token_stream().to_string())?;
 
     // Run rustfmt
-    write_rustfmt_config(outdir.path())?;
+    let rustfmt_config_path = outdir.path().join(".rustfmt.toml");
+    fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
     // Ignore any errors.
     let _ = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
 
@@ -45,11 +44,5 @@ fn main() -> Result<()> {
         writer.write_all(&buf)?;
         writer.flush()?;
     }
-    Ok(())
-}
-
-fn write_rustfmt_config(outdir: &Path) -> Result<()> {
-    let rustfmt_config_path = outdir.join(".rustfmt.toml");
-    fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
     Ok(())
 }

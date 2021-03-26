@@ -63,14 +63,6 @@
                 },
                 {
                   "path": {
-                    "ident": "path",
-                    "tree": {
-                      "ident": "Path"
-                    }
-                  }
-                },
-                {
-                  "path": {
                     "ident": "process",
                     "tree": {
                       "group": [
@@ -85,18 +77,6 @@
                   }
                 }
               ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
-            "ident": "anyhow",
-            "tree": {
-              "ident": "Result"
             }
           }
         }
@@ -322,6 +302,49 @@
                         "type": {
                           "tuple": {
                             "elems": []
+                          }
+                        }
+                      },
+                      {
+                        "type": {
+                          "path": {
+                            "segments": [
+                              {
+                                "ident": "Box",
+                                "arguments": {
+                                  "angle_bracketed": {
+                                    "args": [
+                                      {
+                                        "type": {
+                                          "trait_object": {
+                                            "dyn": true,
+                                            "bounds": [
+                                              {
+                                                "trait": {
+                                                  "path": {
+                                                    "segments": [
+                                                      {
+                                                        "ident": "std"
+                                                      },
+                                                      {
+                                                        "ident": "error"
+                                                      },
+                                                      {
+                                                        "ident": "Error"
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
                           }
                         }
                       }
@@ -611,6 +634,42 @@
             }
           },
           {
+            "let": {
+              "pat": {
+                "ident": {
+                  "ident": "rustfmt_config_path"
+                }
+              },
+              "init": {
+                "method_call": {
+                  "receiver": {
+                    "method_call": {
+                      "receiver": {
+                        "path": {
+                          "segments": [
+                            {
+                              "ident": "outdir"
+                            }
+                          ]
+                        }
+                      },
+                      "method": "path",
+                      "args": []
+                    }
+                  },
+                  "method": "join",
+                  "args": [
+                    {
+                      "lit": {
+                        "str": "\".rustfmt.toml\""
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
             "semi": {
               "try": {
                 "expr": {
@@ -619,25 +678,27 @@
                       "path": {
                         "segments": [
                           {
-                            "ident": "write_rustfmt_config"
+                            "ident": "fs"
+                          },
+                          {
+                            "ident": "write"
                           }
                         ]
                       }
                     },
                     "args": [
                       {
-                        "method_call": {
-                          "receiver": {
-                            "path": {
-                              "segments": [
-                                {
-                                  "ident": "outdir"
-                                }
-                              ]
+                        "path": {
+                          "segments": [
+                            {
+                              "ident": "rustfmt_config_path"
                             }
-                          },
-                          "method": "path",
-                          "args": []
+                          ]
+                        }
+                      },
+                      {
+                        "lit": {
+                          "str": "\"normalize_doc_attributes = true\\n\""
                         }
                       }
                     ]
@@ -981,149 +1042,6 @@
                               }
                             }
                           }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          {
-            "expr": {
-              "call": {
-                "func": {
-                  "path": {
-                    "segments": [
-                      {
-                        "ident": "Ok"
-                      }
-                    ]
-                  }
-                },
-                "args": [
-                  {
-                    "tuple": {
-                      "elems": []
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "fn": {
-        "ident": "write_rustfmt_config",
-        "inputs": [
-          {
-            "typed": {
-              "pat": {
-                "ident": {
-                  "ident": "outdir"
-                }
-              },
-              "ty": {
-                "reference": {
-                  "elem": {
-                    "path": {
-                      "segments": [
-                        {
-                          "ident": "Path"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ],
-        "output": {
-          "path": {
-            "segments": [
-              {
-                "ident": "Result",
-                "arguments": {
-                  "angle_bracketed": {
-                    "args": [
-                      {
-                        "type": {
-                          "tuple": {
-                            "elems": []
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "stmts": [
-          {
-            "let": {
-              "pat": {
-                "ident": {
-                  "ident": "rustfmt_config_path"
-                }
-              },
-              "init": {
-                "method_call": {
-                  "receiver": {
-                    "path": {
-                      "segments": [
-                        {
-                          "ident": "outdir"
-                        }
-                      ]
-                    }
-                  },
-                  "method": "join",
-                  "args": [
-                    {
-                      "lit": {
-                        "str": "\".rustfmt.toml\""
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          {
-            "semi": {
-              "try": {
-                "expr": {
-                  "call": {
-                    "func": {
-                      "path": {
-                        "segments": [
-                          {
-                            "ident": "fs"
-                          },
-                          {
-                            "ident": "write"
-                          }
-                        ]
-                      }
-                    },
-                    "args": [
-                      {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "rustfmt_config_path"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "lit": {
-                          "str": "\"normalize_doc_attributes = true\\n\""
                         }
                       }
                     ]

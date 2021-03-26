@@ -8,5 +8,4 @@ publish = false
 [dependencies]
 syn-serde = { path = "../..", features = ["json"] }
 syn = { version = "1", features = ["full"] }
-anyhow = "1"
 structopt = "0.3"
