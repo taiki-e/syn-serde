@@ -37,18 +37,6 @@
       "use": {
         "tree": {
           "path": {
-            "ident": "anyhow",
-            "tree": {
-              "ident": "Result"
-            }
-          }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
             "ident": "std",
             "tree": {
               "group": [
@@ -74,6 +62,18 @@
                   }
                 }
               ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "use": {
+        "tree": {
+          "path": {
+            "ident": "anyhow",
+            "tree": {
+              "ident": "Result"
             }
           }
         }

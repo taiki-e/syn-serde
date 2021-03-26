@@ -1,17 +1,18 @@
 use std::{
     fs,
-    path::Path,
+    path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 
+use anyhow::Result;
 use proc_macro2::TokenStream;
 use tempfile::Builder;
 
-use crate::Result;
-
-pub(crate) fn manifest_dir<'a>() -> &'a Path {
-    const CARGO_MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
-    Path::new(CARGO_MANIFEST_DIR)
+pub(crate) fn root_dir() -> PathBuf {
+    let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    dir.pop(); // codegen
+    dir.pop(); // tools
+    dir
 }
 
 pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> {
@@ -42,7 +43,7 @@ pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> 
 fn write_rustfmt_config(outdir: &Path) -> Result<()> {
     let rustfmt_config_path = outdir.join(".rustfmt.toml");
     let mut rustfmt_config = Vec::new();
-    let workspace_config_path = manifest_dir().join("../.rustfmt.toml");
+    let workspace_config_path = root_dir().join(".rustfmt.toml");
     if workspace_config_path.is_file() {
         rustfmt_config = fs::read(workspace_config_path)?;
     }

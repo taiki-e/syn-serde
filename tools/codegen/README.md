@@ -1,4 +1,4 @@
-# syn_serde_codegen
+# syn-serde-internal-codegen
 
 This is an internal (not published on crates.io) crate which is used to generate
 the files in the `gen/` directory of `syn-serde`. It is used to ensure that the

@@ -5,20 +5,19 @@
 
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 
-const SYN_JSON: &str = "syn.json";
-
 mod ast_enum;
 mod ast_struct;
 mod convert;
 mod file;
 mod gen;
 
-use std::fs;
+use std::{fs, path::Path};
 
 use anyhow::Result;
 
 fn main() -> Result<()> {
-    let defs = fs::read_to_string(file::manifest_dir().join(SYN_JSON))?;
+    let syn_json = Path::new(env!("CARGO_MANIFEST_DIR")).join("syn.json");
+    let defs = fs::read_to_string(syn_json)?;
     let defs = serde_json::from_str(&defs)?;
 
     ast_struct::generate(&defs)?;

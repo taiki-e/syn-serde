@@ -1,10 +1,11 @@
+use anyhow::Result;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
 
-use crate::{file, gen, Result};
+use crate::{file, gen};
 
-const CONVERT_SRC: &str = "../src/gen/convert.rs";
+const CONVERT_SRC: &str = "src/gen/convert.rs";
 
 // optimize
 pub(crate) const IGNORED_TYPES: &[&str] =
@@ -244,7 +245,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let impls = gen::traverse(defs, node);
-    let path = file::manifest_dir().join(CONVERT_SRC);
+    let path = file::root_dir().join(CONVERT_SRC);
     file::write(path, quote! {
         #![allow(unused_parens)]
         #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]

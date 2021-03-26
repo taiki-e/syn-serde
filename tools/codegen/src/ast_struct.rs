@@ -1,10 +1,11 @@
+use anyhow::Result;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Punctuated, Type};
 
-use crate::{convert::EMPTY_STRUCTS, file, gen, Result};
+use crate::{convert::EMPTY_STRUCTS, file, gen};
 
-const AST_ENUM_SRC: &str = "../src/gen/ast_struct.rs";
+const AST_ENUM_SRC: &str = "src/gen/ast_struct.rs";
 
 const SKIPED: &[&str] = &[
     // data.rs
@@ -261,7 +262,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let impls = gen::traverse(defs, node);
-    let path = file::manifest_dir().join(AST_ENUM_SRC);
+    let path = file::root_dir().join(AST_ENUM_SRC);
     file::write(path, quote! {
         use crate::*;
 
