@@ -92,6 +92,7 @@
 #![warn(clippy::all, clippy::default_trait_access)]
 #![allow(clippy::needless_doctest_main)]
 #![allow(clippy::used_underscore_binding, clippy::wildcard_imports)]
+#![allow(clippy::wrong_self_convention)] // https://github.com/rust-lang/rust-clippy/issues/6983
 
 #[macro_use]
 mod macros;
