@@ -71,7 +71,7 @@ jobs:
       - uses: taiki-e/github-actions/install-rust@main
         with:
           component: rustfmt
-      - run: cargo run --manifest-path tools/codegen/Cargo.toml
+      - run: tools/gen.sh
       - run: git diff --exit-code
 
   clippy:
