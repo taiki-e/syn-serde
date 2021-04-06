@@ -93,6 +93,7 @@
 #![allow(clippy::needless_doctest_main)]
 #![allow(clippy::used_underscore_binding, clippy::wildcard_imports)]
 #![allow(clippy::wrong_self_convention)] // https://github.com/rust-lang/rust-clippy/issues/6983
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[macro_use]
 mod macros;
@@ -225,6 +226,7 @@ pub use crate::token_stream::{
 };
 
 #[cfg(feature = "json")]
+#[cfg_attr(docsrs, doc(cfg(feature = "json")))]
 pub mod json;
 
 // =============================================================================
