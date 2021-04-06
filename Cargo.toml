@@ -15,6 +15,7 @@ Library to serialize and deserialize Syn syntax trees.
 
 [package.metadata.docs.rs]
 all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [workspace]
@@ -33,8 +34,9 @@ json = ["serde_json"]
 [dependencies]
 proc-macro2 = { version = "1", default-features = false }
 serde = { version = "1.0.103", features = ["derive"] }
-serde_json = { version = "1", optional = true }
 syn = { version = "1.0.44", default-features = false, features = ["full"] }
+
+serde_json = { version = "1", optional = true }
 
 [dev-dependencies]
 quote = "1"

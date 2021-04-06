@@ -99,7 +99,7 @@ jobs:
       - uses: taiki-e/github-actions/install-rust@main
       - run: cargo doc --no-deps --all --all-features
         env:
-          RUSTDOCFLAGS: -D warnings
+          RUSTDOCFLAGS: -D warnings --cfg docsrs
 
   shellcheck:
     runs-on: ubuntu-latest
