@@ -11,7 +11,7 @@ mod convert;
 mod file;
 mod gen;
 
-use std::{fs, path::Path};
+use std::path::Path;
 
 use anyhow::Result;
 
