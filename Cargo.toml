@@ -7,7 +7,7 @@ license = "Apache-2.0 OR MIT"
 repository = "https://github.com/taiki-e/syn-serde"
 documentation = "https://docs.rs/syn-serde"
 keywords = ["serde", "serialization", "syn"]
-categories = ["development-tools::procedural-macro-helpers", "encoding"]
+categories = ["development-tools::procedural-macro-helpers", "encoding", "parser-implementations"]
 exclude = ["/.*", "/tools"]
 description = """
 Library to serialize and deserialize Syn syntax trees.
