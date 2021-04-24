@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run all code generators.
+# Run code generators.
 #
 # Usage:
 #    ./tools/gen.sh
