@@ -45,7 +45,7 @@ ast_struct! {
 ast_struct! {
     /// A floating point literal: `1f64` or `1.0e10f64`.
     ///
-    /// Must be finite. May not be infinte or NaN.
+    /// Must be finite. May not be infinite or NaN.
     #[serde(transparent)]
     pub struct LitFloat {
         token: Literal,
