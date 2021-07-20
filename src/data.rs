@@ -23,7 +23,7 @@ pub(crate) fn assert_struct_semi(fields: &Fields, semi_token: bool) {
         Fields::Named(_) => assert!(!semi_token, "unexpected token: `;`"),
         // struct foo ()
         Fields::Unnamed(_) => {
-            assert!(semi_token, "unexpected end of input, expected `where` or `;`")
+            assert!(semi_token, "unexpected end of input, expected `where` or `;`");
         }
         // struct foo
         Fields::Unit => assert!(
