@@ -26,7 +26,6 @@ use super::*;
 /// serde_json::to_writer(writer, &serializable_file)
 /// # }
 /// ```
-#[inline]
 pub fn to_writer<S, W>(writer: W, syn: &S) -> Result<()>
 where
     S: Syn,
@@ -50,7 +49,6 @@ where
 /// serde_json::to_writer_pretty(writer, &serializable_file)
 /// # }
 /// ```
-#[inline]
 pub fn to_writer_pretty<S, W>(writer: W, syn: &S) -> Result<()>
 where
     S: Syn,
@@ -72,7 +70,6 @@ where
 /// serde_json::to_vec(&serializable_file).unwrap()
 /// # }
 /// ```
-#[inline]
 pub fn to_vec<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
@@ -93,7 +90,6 @@ where
 /// serde_json::to_vec_pretty(&serializable_file).unwrap()
 /// # }
 /// ```
-#[inline]
 pub fn to_vec_pretty<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
@@ -114,7 +110,6 @@ where
 /// serde_json::to_string(&serializable_file).unwrap()
 /// # }
 /// ```
-#[inline]
 pub fn to_string<S>(syn: &S) -> String
 where
     S: Syn,
@@ -135,7 +130,6 @@ where
 /// serde_json::to_string_pretty(&serializable_file).unwrap()
 /// # }
 /// ```
-#[inline]
 pub fn to_string_pretty<S>(syn: &S) -> String
 where
     S: Syn,

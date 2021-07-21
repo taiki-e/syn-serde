@@ -18,7 +18,6 @@ use syn_serde::Syn;
 /// serde_pickle::to_vec(&serializable_file, true).unwrap()
 /// # }
 /// ```
-#[inline]
 pub fn to_vec<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
