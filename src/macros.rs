@@ -23,7 +23,7 @@ macro_rules! ast_enum {
 
 macro_rules! syn_trait_impl {
     ($path:ident :: $ty:ident) => {
-        impl crate::private::Sealed for $path::$ty {}
+        impl crate::sealed::Sealed for $path::$ty {}
         impl crate::Syn for $path::$ty {
             type Adapter = $ty;
             fn to_adapter(&self) -> Self::Adapter {

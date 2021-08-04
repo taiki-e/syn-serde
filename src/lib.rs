@@ -229,19 +229,19 @@ pub use crate::token_stream::{
 #[cfg_attr(docsrs, doc(cfg(feature = "json")))]
 pub mod json;
 
-// =============================================================================
-// Syn trait
-
-mod private {
+mod sealed {
     pub trait Sealed {}
 }
+
+// =============================================================================
+// Syn trait
 
 /// A trait for the data structures of [Syn] and [proc-macro2].
 ///
 /// [Syn]: https://github.com/dtolnay/syn
 /// [proc-macro2]: https://github.com/alexcrichton/proc-macro2
 #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
-pub trait Syn: Sized + private::Sealed {
+pub trait Syn: Sized + sealed::Sealed {
     type Adapter: Serialize + for<'de> Deserialize<'de>;
 
     /// Converts a `Syn` type into an adapter.
