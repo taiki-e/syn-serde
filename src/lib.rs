@@ -310,7 +310,11 @@ fn default_or_none<T>(x: bool) -> Option<T>
 where
     T: Default,
 {
-    if x { Some(T::default()) } else { None }
+    if x {
+        Some(T::default())
+    } else {
+        None
+    }
 }
 
 fn not<T>(x: T) -> T::Output
