@@ -14,6 +14,7 @@ mod gen;
 use std::path::Path;
 
 use anyhow::Result;
+use fs_err as fs;
 
 fn main() -> Result<()> {
     let syn_json = Path::new(env!("CARGO_MANIFEST_DIR")).join("syn.json");

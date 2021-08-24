@@ -245,8 +245,8 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let impls = gen::traverse(defs, node);
-    let path = file::root_dir().join(CONVERT_SRC);
-    file::write(path, quote! {
+    let path = &file::root_dir().join(CONVERT_SRC);
+    file::write(path, &quote! {
         #![allow(unused_parens)]
         #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
 

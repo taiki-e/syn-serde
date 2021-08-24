@@ -4,8 +4,8 @@ use std::{
 };
 
 use anyhow::Result;
+use fs_err as fs;
 use proc_macro2::TokenStream;
-use tempfile::Builder;
 
 pub(crate) fn root_dir() -> PathBuf {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -20,42 +20,18 @@ fn header() -> String {
         env!("CARGO_BIN_NAME"),
         ".\n",
         "// It is not intended for manual editing.\n",
-        "\n"
+        "\n",
     )
     .into()
 }
 
-pub(crate) fn write(path: impl AsRef<Path>, content: TokenStream) -> Result<()> {
-    let mut out = header();
-
-    let outdir = Builder::new().prefix("codegen").tempdir()?;
-    let outfile_path = outdir.path().join("generated");
-    fs::write(&outfile_path, content.to_string())?;
-
-    // Run rustfmt
-    write_rustfmt_config(outdir.path())?;
+pub(crate) fn write(path: &Path, content: &TokenStream) -> Result<()> {
+    fs::write(path, header() + &content.to_string())?;
     // Ignore any errors.
-    let _ = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
-
-    out += &fs::read_to_string(&outfile_path)?;
-
-    if path.as_ref().is_file() && fs::read(&path)? == out.as_bytes() {
-        return Ok(());
-    }
-
-    fs::write(path, out)?;
-    Ok(())
-}
-
-fn write_rustfmt_config(outdir: &Path) -> Result<()> {
-    let rustfmt_config_path = outdir.join(".rustfmt.toml");
-    let mut rustfmt_config = Vec::new();
-    let workspace_config_path = root_dir().join(".rustfmt.toml");
-    if workspace_config_path.is_file() {
-        rustfmt_config = fs::read(workspace_config_path)?;
-    }
-    rustfmt_config.extend_from_slice(b"normalize_doc_attributes = true\n");
-    rustfmt_config.extend_from_slice(b"format_macro_matchers = true\n");
-    fs::write(rustfmt_config_path, rustfmt_config)?;
+    let _ = Command::new("rustfmt")
+        .arg(path)
+        .args(&["--config", "normalize_doc_attributes=true,format_macro_matchers=true"])
+        .stderr(Stdio::null())
+        .status();
     Ok(())
 }
