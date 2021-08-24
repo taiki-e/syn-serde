@@ -1,9 +1,9 @@
 use std::{
     path::{Path, PathBuf},
-    process::{Command, Stdio},
+    process::Command,
 };
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use fs_err as fs;
 use proc_macro2::TokenStream;
 
@@ -27,11 +27,12 @@ fn header() -> String {
 
 pub(crate) fn write(path: &Path, content: &TokenStream) -> Result<()> {
     fs::write(path, header() + &content.to_string())?;
-    // Ignore any errors.
-    let _ = Command::new("rustfmt")
+    let status = Command::new("rustfmt")
         .arg(path)
         .args(&["--config", "normalize_doc_attributes=true,format_macro_matchers=true"])
-        .stderr(Stdio::null())
-        .status();
+        .status()?;
+    if !status.success() {
+        bail!("rustfmt didn't exit successfully");
+    }
     Ok(())
 }
