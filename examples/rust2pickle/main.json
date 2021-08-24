@@ -47,6 +47,9 @@
             "tree": {
               "group": [
                 {
+                  "ident": "env"
+                },
+                {
                   "ident": "fs"
                 },
                 {
@@ -70,174 +73,6 @@
               ]
             }
           }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
-            "ident": "structopt",
-            "tree": {
-              "ident": "StructOpt"
-            }
-          }
-        }
-      }
-    },
-    {
-      "struct": {
-        "attrs": [
-          {
-            "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "derive"
-                }
-              ]
-            },
-            "tokens": [
-              {
-                "group": {
-                  "delimiter": "parenthesis",
-                  "stream": [
-                    {
-                      "ident": "StructOpt"
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        ],
-        "ident": "Cli",
-        "fields": {
-          "named": [
-            {
-              "attrs": [
-                {
-                  "style": "outer",
-                  "path": {
-                    "segments": [
-                      {
-                        "ident": "structopt"
-                      }
-                    ]
-                  },
-                  "tokens": [
-                    {
-                      "group": {
-                        "delimiter": "parenthesis",
-                        "stream": [
-                          {
-                            "ident": "parse"
-                          },
-                          {
-                            "group": {
-                              "delimiter": "parenthesis",
-                              "stream": [
-                                {
-                                  "ident": "from_os_str"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              ],
-              "ident": "input_path",
-              "colon_token": true,
-              "ty": {
-                "path": {
-                  "segments": [
-                    {
-                      "ident": "std"
-                    },
-                    {
-                      "ident": "path"
-                    },
-                    {
-                      "ident": "PathBuf"
-                    }
-                  ]
-                }
-              }
-            },
-            {
-              "attrs": [
-                {
-                  "style": "outer",
-                  "path": {
-                    "segments": [
-                      {
-                        "ident": "structopt"
-                      }
-                    ]
-                  },
-                  "tokens": [
-                    {
-                      "group": {
-                        "delimiter": "parenthesis",
-                        "stream": [
-                          {
-                            "ident": "parse"
-                          },
-                          {
-                            "group": {
-                              "delimiter": "parenthesis",
-                              "stream": [
-                                {
-                                  "ident": "from_os_str"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              ],
-              "ident": "output_path",
-              "colon_token": true,
-              "ty": {
-                "path": {
-                  "segments": [
-                    {
-                      "ident": "Option",
-                      "arguments": {
-                        "angle_bracketed": {
-                          "args": [
-                            {
-                              "type": {
-                                "path": {
-                                  "segments": [
-                                    {
-                                      "ident": "std"
-                                    },
-                                    {
-                                      "ident": "path"
-                                    },
-                                    {
-                                      "ident": "PathBuf"
-                                    }
-                                  ]
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ]
         }
       }
     },
@@ -314,25 +149,265 @@
           {
             "let": {
               "pat": {
-                "ident": {
-                  "ident": "args"
-                }
-              },
-              "init": {
-                "call": {
-                  "func": {
+                "type": {
+                  "pat": {
+                    "ident": {
+                      "ident": "args"
+                    }
+                  },
+                  "ty": {
                     "path": {
                       "segments": [
                         {
-                          "ident": "Cli"
-                        },
+                          "ident": "Vec",
+                          "arguments": {
+                            "angle_bracketed": {
+                              "args": [
+                                {
+                                  "type": "_"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "init": {
+                "method_call": {
+                  "receiver": {
+                    "method_call": {
+                      "receiver": {
+                        "call": {
+                          "func": {
+                            "path": {
+                              "segments": [
+                                {
+                                  "ident": "env"
+                                },
+                                {
+                                  "ident": "args_os"
+                                }
+                              ]
+                            }
+                          },
+                          "args": []
+                        }
+                      },
+                      "method": "skip",
+                      "args": [
                         {
-                          "ident": "from_args"
+                          "lit": {
+                            "int": "1"
+                          }
                         }
                       ]
                     }
                   },
+                  "method": "collect",
                   "args": []
+                }
+              }
+            }
+          },
+          {
+            "let": {
+              "pat": {
+                "tuple": {
+                  "elems": [
+                    {
+                      "ident": {
+                        "ident": "input_path"
+                      }
+                    },
+                    {
+                      "ident": {
+                        "ident": "output_path"
+                      }
+                    }
+                  ]
+                }
+              },
+              "init": {
+                "match": {
+                  "expr": {
+                    "reference": {
+                      "expr": {
+                        "index": {
+                          "expr": {
+                            "path": {
+                              "segments": [
+                                {
+                                  "ident": "args"
+                                }
+                              ]
+                            }
+                          },
+                          "index": {
+                            "range": {
+                              "limits": ".."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "arms": [
+                    {
+                      "pat": {
+                        "slice": {
+                          "elems": [
+                            {
+                              "ident": {
+                                "ident": "input"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "body": {
+                        "tuple": {
+                          "elems": [
+                            {
+                              "path": {
+                                "segments": [
+                                  {
+                                    "ident": "input"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "path": {
+                                "segments": [
+                                  {
+                                    "ident": "None"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "pat": {
+                        "slice": {
+                          "elems": [
+                            {
+                              "ident": {
+                                "ident": "input"
+                              }
+                            },
+                            {
+                              "ident": {
+                                "ident": "output"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "body": {
+                        "tuple": {
+                          "elems": [
+                            {
+                              "path": {
+                                "segments": [
+                                  {
+                                    "ident": "input"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "call": {
+                                "func": {
+                                  "path": {
+                                    "segments": [
+                                      {
+                                        "ident": "Some"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "args": [
+                                  {
+                                    "path": {
+                                      "segments": [
+                                        {
+                                          "ident": "output"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "pat": {
+                        "_": {}
+                      },
+                      "body": {
+                        "block": {
+                          "stmts": [
+                            {
+                              "semi": {
+                                "macro": {
+                                  "path": {
+                                    "segments": [
+                                      {
+                                        "ident": "println"
+                                      }
+                                    ]
+                                  },
+                                  "delimiter": "paren",
+                                  "tokens": [
+                                    {
+                                      "lit": "\"Usage: rust2pickle <input_path> [output_path]\""
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "semi": {
+                                "call": {
+                                  "func": {
+                                    "path": {
+                                      "segments": [
+                                        {
+                                          "ident": "std"
+                                        },
+                                        {
+                                          "ident": "process"
+                                        },
+                                        {
+                                          "ident": "exit"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "args": [
+                                    {
+                                      "lit": {
+                                        "int": "1"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -364,17 +439,12 @@
                         {
                           "reference": {
                             "expr": {
-                              "field": {
-                                "base": {
-                                  "path": {
-                                    "segments": [
-                                      {
-                                        "ident": "args"
-                                      }
-                                    ]
+                              "path": {
+                                "segments": [
+                                  {
+                                    "ident": "input_path"
                                   }
-                                },
-                                "ident": "input_path"
+                                ]
                               }
                             }
                           }
@@ -488,7 +558,7 @@
                           "elems": [
                             {
                               "ident": {
-                                "ident": "outpath"
+                                "ident": "output_path"
                               }
                             }
                           ]
@@ -496,17 +566,12 @@
                       }
                     },
                     "expr": {
-                      "field": {
-                        "base": {
-                          "path": {
-                            "segments": [
-                              {
-                                "ident": "args"
-                              }
-                            ]
+                      "path": {
+                        "segments": [
+                          {
+                            "ident": "output_path"
                           }
-                        },
-                        "ident": "output_path"
+                        ]
                       }
                     }
                   }
@@ -534,7 +599,7 @@
                                 "path": {
                                   "segments": [
                                     {
-                                      "ident": "outpath"
+                                      "ident": "output_path"
                                     }
                                   ]
                                 }

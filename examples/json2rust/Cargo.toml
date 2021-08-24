@@ -9,5 +9,4 @@ publish = false
 syn-serde = { path = "../..", features = ["json"] }
 syn = { version = "1", features = ["full"] }
 quote = "1"
-structopt = "0.3"
 tempfile = "3"
