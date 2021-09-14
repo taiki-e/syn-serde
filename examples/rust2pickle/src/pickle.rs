@@ -23,7 +23,7 @@ where
     S: Syn,
 {
     let adapter = syn.to_adapter();
-    serde_pickle::to_vec(&adapter, true).unwrap()
+    serde_pickle::to_vec(&adapter, Default::default()).unwrap()
 }
 
 // Deserialize JSON data to [`Syn`] type.
@@ -48,7 +48,7 @@ where
     S: Syn,
     R: io::Read,
 {
-    let adapter: S::Adapter = serde_pickle::from_reader(rdr)?;
+    let adapter: S::Adapter = serde_pickle::from_reader(rdr, Default::default())?;
     Ok(S::from_adapter(&adapter))
 }
 
@@ -70,6 +70,6 @@ pub fn from_slice<S>(v: &[u8]) -> Result<S>
 where
     S: Syn,
 {
-    let adapter: S::Adapter = serde_pickle::from_slice(v)?;
+    let adapter: S::Adapter = serde_pickle::from_slice(v, Default::default())?;
     Ok(S::from_adapter(&adapter))
 }
