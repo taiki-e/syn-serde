@@ -90,9 +90,8 @@
 // It cannot be included in the published code because these lints have false positives in the minimum required version.
 #![cfg_attr(test, warn(single_use_lifetimes))]
 #![warn(clippy::default_trait_access)]
-#![allow(clippy::needless_doctest_main)]
+#![allow(clippy::needless_doctest_main, clippy::if_then_panic)]
 #![allow(clippy::used_underscore_binding, clippy::wildcard_imports)]
-#![allow(clippy::wrong_self_convention)] // https://github.com/rust-lang/rust-clippy/issues/6983
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[macro_use]
