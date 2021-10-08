@@ -7,7 +7,7 @@ use anyhow::{bail, Result};
 use fs_err as fs;
 use proc_macro2::TokenStream;
 
-pub(crate) fn root_dir() -> PathBuf {
+pub(crate) fn workspace_root() -> PathBuf {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     dir.pop(); // codegen
     dir.pop(); // tools
@@ -25,14 +25,26 @@ fn header() -> String {
     .into()
 }
 
-pub(crate) fn write(path: &Path, content: &TokenStream) -> Result<()> {
-    fs::write(path, header() + &content.to_string())?;
+pub(crate) fn write(path: &Path, contents: &TokenStream) -> Result<()> {
+    let contents = header() + &contents.to_string();
+
+    let tmpdir = tempfile::Builder::new().prefix("codegen").tempdir()?;
+    let tmpfile = &tmpdir.path().join("generated");
+    fs::write(tmpfile, &contents)?;
+    fs::copy(workspace_root().join(".rustfmt.toml"), tmpdir.path().join(".rustfmt.toml"))?;
+
     let status = Command::new("rustfmt")
-        .arg(path)
+        .arg(tmpfile)
         .args(&["--config", "normalize_doc_attributes=true,format_macro_matchers=true"])
         .status()?;
     if !status.success() {
         bail!("rustfmt didn't exit successfully");
     }
+
+    let out = fs::read(tmpfile)?;
+    if path.is_file() && fs::read(&path)? == out {
+        return Ok(());
+    }
+    fs::write(path, out)?;
     Ok(())
 }
