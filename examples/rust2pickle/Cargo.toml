@@ -1,7 +1,6 @@
 [package]
 name = "rust2pickle"
 version = "0.0.0"
-authors = ["Yijun Yu <yijun.yu@gmail.com>", "Taiki Endo <te316e89@gmail.com>"]
 edition = "2018"
 publish = false
 
