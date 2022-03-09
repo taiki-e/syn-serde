@@ -169,7 +169,7 @@ fn outer_ty(ty: &Type) -> &str {
         Type::Punctuated(_) => "Punctuated",
         Type::Option(_) => "Option",
         Type::Syn(ty) | Type::Ext(ty) | Type::Std(ty) => ty,
-        _ => unreachable!("outer_ty: {:?}", ty),
+        _ => unreachable!("outer_ty: {ty:?}"),
     }
 }
 
@@ -190,7 +190,7 @@ fn format_ty(ty: &Type) -> Option<TokenStream> {
             }
             _ => {
                 let container = format_ident!("{}", outer_ty(ty));
-                let t = format_ty(t).unwrap_or_else(|| unimplemented!("format_ty: {:?}", ty));
+                let t = format_ty(t).unwrap_or_else(|| unimplemented!("format_ty: {ty:?}"));
                 Some(quote!(#container<#t>))
             }
         },
@@ -199,10 +199,10 @@ fn format_ty(ty: &Type) -> Option<TokenStream> {
         Type::Syn(t) if t == "Reserved" => None,
         Type::Syn(t) if EMPTY_STRUCTS.contains(&&**t) => None,
         Type::Syn(t) | Type::Ext(t) | Type::Std(t) => {
-            let t = format_ident!("{}", t);
+            let t = format_ident!("{t}");
             Some(quote!(#t))
         }
-        Type::Tuple(_) => unreachable!("format_ty: {:?}", ty),
+        Type::Tuple(_) => unreachable!("format_ty: {ty:?}"),
     }
 }
 
@@ -225,7 +225,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                 } else {
                     quote!()
                 };
-                let f = format_ident!("{}", field);
+                let f = format_ident!("{field}");
 
                 body.push(quote! {
                     #attrs

@@ -8,7 +8,6 @@ use std::{
 
 use quote::ToTokens;
 use syn_serde::json;
-use tempfile::Builder;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<_> = env::args_os().skip(1).collect();
@@ -24,12 +23,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let json = fs::read_to_string(&input_path)?;
     let syntax: syn::File = json::from_str(&json)?;
 
-    let outdir = Builder::new().prefix("json2rust").tempdir()?;
-    let outfile_path = outdir.path().join("expanded");
+    let tmpdir = tempfile::tempdir()?;
+    let outfile_path = tmpdir.path().join("expanded");
     fs::write(&outfile_path, syntax.into_token_stream().to_string())?;
 
     // Run rustfmt
-    let rustfmt_config_path = outdir.path().join(".rustfmt.toml");
+    let rustfmt_config_path = tmpdir.path().join(".rustfmt.toml");
     fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
     // Ignore any errors.
     let _ = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();

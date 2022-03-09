@@ -36,7 +36,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
         for (variant, fields) in variants {
             body.extend(rename(&node.ident, variant).map(|s| quote!(#[serde(rename = #s)])));
 
-            let variant = format_ident!("{}", variant);
+            let variant = format_ident!("{variant}");
 
             if fields.is_empty() {
                 body.extend(quote!(#variant,));
@@ -47,7 +47,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                         body.extend(quote!(#variant,));
                     }
                     Type::Syn(s) | Type::Ext(s) => {
-                        let ty = format_ident!("{}", s);
+                        let ty = format_ident!("{s}");
                         body.extend(quote!(#variant(#ty),));
                     }
                     Type::Token(t) | Type::Group(t) => {

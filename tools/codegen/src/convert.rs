@@ -34,7 +34,7 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
                 let mut into_pat = Vec::new();
 
                 for (i, t) in t.iter().enumerate() {
-                    let id = format_ident!("_{}", i);
+                    let id = format_ident!("_{i}",);
                     let (from, into) = visit(t, &quote!((*#id)), defs);
 
                     from_pat.push(id.clone());
@@ -96,7 +96,7 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
             let ident = format_ident!("{}", node.ident);
             if let Data::Struct(fields) = &node.data {
                 let from = None;
-                let fields = fields.keys().map(|f| format_ident!("{}", f));
+                let fields = fields.keys().map(|f| format_ident!("{f}"));
                 let into = quote!(syn::#ident { #(#fields: default(),)* });
                 return (from, into);
             }
@@ -137,7 +137,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             let mut into_variants = TokenStream::new();
 
             for (variant, fields) in variants {
-                let variant = format_ident!("{}", variant);
+                let variant = format_ident!("{variant}");
 
                 if fields.is_empty() {
                     from_variants.extend(quote! {
@@ -155,7 +155,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                 let mut into_pat = Vec::new();
 
                 for (i, t) in fields.iter().enumerate() {
-                    let id = format_ident!("_{}", i);
+                    let id = format_ident!("_{i}");
                     let (from, into) = visit(t, &quote!((*#id)), defs);
 
                     from_pat.push(id.clone());
@@ -204,7 +204,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             let mut into_fields = TokenStream::new();
 
             for (field, ty) in fields {
-                let field = format_ident!("{}", field);
+                let field = format_ident!("{field}");
                 let ref_toks = quote!(node.#field);
 
                 let (from, into) = visit(ty, &ref_toks, defs);
