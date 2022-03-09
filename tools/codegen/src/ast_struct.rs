@@ -169,7 +169,7 @@ fn outer_ty(ty: &Type) -> &str {
         Type::Punctuated(_) => "Punctuated",
         Type::Option(_) => "Option",
         Type::Syn(ty) | Type::Ext(ty) | Type::Std(ty) => ty,
-        _ => unreachable!("outer_ty: {ty:?}"),
+        _ => unreachable!("outer_ty: {:?}", ty),
     }
 }
 
@@ -202,7 +202,7 @@ fn format_ty(ty: &Type) -> Option<TokenStream> {
             let t = format_ident!("{t}");
             Some(quote!(#t))
         }
-        Type::Tuple(_) => unreachable!("format_ty: {ty:?}"),
+        Type::Tuple(_) => unreachable!("format_ty: {:?}", ty),
     }
 }
 
