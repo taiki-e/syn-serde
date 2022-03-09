@@ -110,18 +110,6 @@
       }
     },
     {
-      "use": {
-        "tree": {
-          "path": {
-            "ident": "tempfile",
-            "tree": {
-              "ident": "Builder"
-            }
-          }
-        }
-      }
-    },
-    {
       "fn": {
         "ident": "main",
         "inputs": [],
@@ -565,43 +553,25 @@
             "let": {
               "pat": {
                 "ident": {
-                  "ident": "outdir"
+                  "ident": "tmpdir"
                 }
               },
               "init": {
                 "try": {
                   "expr": {
-                    "method_call": {
-                      "receiver": {
-                        "method_call": {
-                          "receiver": {
-                            "call": {
-                              "func": {
-                                "path": {
-                                  "segments": [
-                                    {
-                                      "ident": "Builder"
-                                    },
-                                    {
-                                      "ident": "new"
-                                    }
-                                  ]
-                                }
-                              },
-                              "args": []
-                            }
-                          },
-                          "method": "prefix",
-                          "args": [
+                    "call": {
+                      "func": {
+                        "path": {
+                          "segments": [
                             {
-                              "lit": {
-                                "str": "\"json2rust\""
-                              }
+                              "ident": "tempfile"
+                            },
+                            {
+                              "ident": "tempdir"
                             }
                           ]
                         }
                       },
-                      "method": "tempdir",
                       "args": []
                     }
                   }
@@ -624,7 +594,7 @@
                         "path": {
                           "segments": [
                             {
-                              "ident": "outdir"
+                              "ident": "tmpdir"
                             }
                           ]
                         }
@@ -718,7 +688,7 @@
                         "path": {
                           "segments": [
                             {
-                              "ident": "outdir"
+                              "ident": "tmpdir"
                             }
                           ]
                         }
