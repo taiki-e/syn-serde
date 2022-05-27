@@ -25,8 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Some(output_path) = output_path {
         fs::write(output_path, buf)?;
     } else {
-        let writer = io::stdout();
-        let mut writer = BufWriter::new(writer.lock());
+        let mut writer = BufWriter::new(io::stdout().lock());
         writer.write_all(&buf)?;
         writer.flush()?;
     }

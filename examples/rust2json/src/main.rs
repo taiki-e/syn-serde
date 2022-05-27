@@ -25,8 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let buf = json::to_string_pretty(&syntax);
         fs::write(output_path, buf)?;
     } else {
-        let writer = io::stdout();
-        let mut writer = BufWriter::new(writer.lock());
+        let mut writer = BufWriter::new(io::stdout().lock());
         json::to_writer_pretty(&mut writer, &syntax)?;
         writer.flush()?;
     }

@@ -633,32 +633,6 @@
                         "let": {
                           "pat": {
                             "ident": {
-                              "ident": "writer"
-                            }
-                          },
-                          "init": {
-                            "call": {
-                              "func": {
-                                "path": {
-                                  "segments": [
-                                    {
-                                      "ident": "io"
-                                    },
-                                    {
-                                      "ident": "stdout"
-                                    }
-                                  ]
-                                }
-                              },
-                              "args": []
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "let": {
-                          "pat": {
-                            "ident": {
                               "mut": true,
                               "ident": "writer"
                             }
@@ -681,12 +655,20 @@
                                 {
                                   "method_call": {
                                     "receiver": {
-                                      "path": {
-                                        "segments": [
-                                          {
-                                            "ident": "writer"
+                                      "call": {
+                                        "func": {
+                                          "path": {
+                                            "segments": [
+                                              {
+                                                "ident": "io"
+                                              },
+                                              {
+                                                "ident": "stdout"
+                                              }
+                                            ]
                                           }
-                                        ]
+                                        },
+                                        "args": []
                                       }
                                     },
                                     "method": "lock",
