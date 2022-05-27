@@ -48,7 +48,7 @@ jobs:
       - run: cargo test --workspace --all-features
       - run: cargo hack build --workspace --ignore-private --feature-powerset --no-dev-deps
 
-  build:
+  msrv:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -112,7 +112,7 @@ jobs:
     if: github.event_name == 'push' && success()
     needs:
       - test
-      - build
+      - msrv
       - codegen
       - tidy
       - docs
