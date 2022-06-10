@@ -45,7 +45,8 @@ pub struct Block {
     pub(crate) stmts: Vec<Stmt>,
 }
 /// An adapter for [`struct@syn::BoundLifetimes`].
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize)]
+#[derive(Default)]
 #[serde(transparent)]
 pub struct BoundLifetimes {
     pub(crate) lifetimes: Punctuated<LifetimeDef>,
@@ -746,7 +747,8 @@ pub struct Label {
     pub(crate) name: Lifetime,
 }
 /// An adapter for [`struct@syn::Lifetime`].
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize)]
+#[derive(Clone)]
 #[serde(transparent)]
 pub struct Lifetime {
     pub(crate) ident: Ident,
