@@ -3,10 +3,8 @@
 use std::{
     env, fs,
     io::{self, BufWriter, Write},
-    process::{Command, Stdio},
 };
 
-use quote::ToTokens;
 use syn_serde::json;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -22,23 +20,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let json = fs::read_to_string(&input_path)?;
     let syntax: syn::File = json::from_str(&json)?;
+    let out = prettyplease::unparse(&syntax);
 
-    let tmpdir = tempfile::tempdir()?;
-    let outfile_path = tmpdir.path().join("expanded");
-    fs::write(&outfile_path, syntax.into_token_stream().to_string())?;
-
-    // Run rustfmt
-    let rustfmt_config_path = tmpdir.path().join(".rustfmt.toml");
-    fs::write(rustfmt_config_path, "normalize_doc_attributes = true\n")?;
-    // Ignore any errors.
-    let _ = Command::new("rustfmt").arg(&outfile_path).stderr(Stdio::null()).status();
-
-    let buf = fs::read(&outfile_path)?;
     if let Some(output_path) = output_path {
-        fs::write(output_path, buf)?;
+        fs::write(output_path, out)?;
     } else {
         let mut writer = BufWriter::new(io::stdout().lock());
-        writer.write_all(&buf)?;
+        writer.write_all(out.as_bytes())?;
         writer.flush()?;
     }
     Ok(())
