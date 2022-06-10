@@ -63,35 +63,8 @@
                       ]
                     }
                   }
-                },
-                {
-                  "path": {
-                    "ident": "process",
-                    "tree": {
-                      "group": [
-                        {
-                          "ident": "Command"
-                        },
-                        {
-                          "ident": "Stdio"
-                        }
-                      ]
-                    }
-                  }
                 }
               ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "use": {
-        "tree": {
-          "path": {
-            "ident": "quote",
-            "tree": {
-              "ident": "ToTokens"
             }
           }
         }
@@ -553,320 +526,38 @@
             "let": {
               "pat": {
                 "ident": {
-                  "ident": "tmpdir"
+                  "ident": "out"
                 }
               },
               "init": {
-                "try": {
-                  "expr": {
-                    "call": {
-                      "func": {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "tempfile"
-                            },
-                            {
-                              "ident": "tempdir"
-                            }
-                          ]
-                        }
-                      },
-                      "args": []
-                    }
-                  }
-                }
-              }
-            }
-          },
-          {
-            "let": {
-              "pat": {
-                "ident": {
-                  "ident": "outfile_path"
-                }
-              },
-              "init": {
-                "method_call": {
-                  "receiver": {
-                    "method_call": {
-                      "receiver": {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "tmpdir"
-                            }
-                          ]
-                        }
-                      },
-                      "method": "path",
-                      "args": []
-                    }
-                  },
-                  "method": "join",
-                  "args": [
-                    {
-                      "lit": {
-                        "str": "\"expanded\""
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          {
-            "semi": {
-              "try": {
-                "expr": {
-                  "call": {
-                    "func": {
-                      "path": {
-                        "segments": [
-                          {
-                            "ident": "fs"
-                          },
-                          {
-                            "ident": "write"
-                          }
-                        ]
-                      }
-                    },
-                    "args": [
-                      {
-                        "reference": {
-                          "expr": {
-                            "path": {
-                              "segments": [
-                                {
-                                  "ident": "outfile_path"
-                                }
-                              ]
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "method_call": {
-                          "receiver": {
-                            "method_call": {
-                              "receiver": {
-                                "path": {
-                                  "segments": [
-                                    {
-                                      "ident": "syntax"
-                                    }
-                                  ]
-                                }
-                              },
-                              "method": "into_token_stream",
-                              "args": []
-                            }
-                          },
-                          "method": "to_string",
-                          "args": []
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          {
-            "let": {
-              "pat": {
-                "ident": {
-                  "ident": "rustfmt_config_path"
-                }
-              },
-              "init": {
-                "method_call": {
-                  "receiver": {
-                    "method_call": {
-                      "receiver": {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "tmpdir"
-                            }
-                          ]
-                        }
-                      },
-                      "method": "path",
-                      "args": []
-                    }
-                  },
-                  "method": "join",
-                  "args": [
-                    {
-                      "lit": {
-                        "str": "\".rustfmt.toml\""
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          {
-            "semi": {
-              "try": {
-                "expr": {
-                  "call": {
-                    "func": {
-                      "path": {
-                        "segments": [
-                          {
-                            "ident": "fs"
-                          },
-                          {
-                            "ident": "write"
-                          }
-                        ]
-                      }
-                    },
-                    "args": [
-                      {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "rustfmt_config_path"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "lit": {
-                          "str": "\"normalize_doc_attributes = true\\n\""
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          {
-            "let": {
-              "pat": {
-                "_": {}
-              },
-              "init": {
-                "method_call": {
-                  "receiver": {
-                    "method_call": {
-                      "receiver": {
-                        "method_call": {
-                          "receiver": {
-                            "call": {
-                              "func": {
-                                "path": {
-                                  "segments": [
-                                    {
-                                      "ident": "Command"
-                                    },
-                                    {
-                                      "ident": "new"
-                                    }
-                                  ]
-                                }
-                              },
-                              "args": [
-                                {
-                                  "lit": {
-                                    "str": "\"rustfmt\""
-                                  }
-                                }
-                              ]
-                            }
-                          },
-                          "method": "arg",
-                          "args": [
-                            {
-                              "reference": {
-                                "expr": {
-                                  "path": {
-                                    "segments": [
-                                      {
-                                        "ident": "outfile_path"
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      },
-                      "method": "stderr",
-                      "args": [
+                "call": {
+                  "func": {
+                    "path": {
+                      "segments": [
                         {
-                          "call": {
-                            "func": {
-                              "path": {
-                                "segments": [
-                                  {
-                                    "ident": "Stdio"
-                                  },
-                                  {
-                                    "ident": "null"
-                                  }
-                                ]
-                              }
-                            },
-                            "args": []
-                          }
+                          "ident": "prettyplease"
+                        },
+                        {
+                          "ident": "unparse"
                         }
                       ]
                     }
                   },
-                  "method": "status",
-                  "args": []
-                }
-              }
-            }
-          },
-          {
-            "let": {
-              "pat": {
-                "ident": {
-                  "ident": "buf"
-                }
-              },
-              "init": {
-                "try": {
-                  "expr": {
-                    "call": {
-                      "func": {
-                        "path": {
-                          "segments": [
-                            {
-                              "ident": "fs"
-                            },
-                            {
-                              "ident": "read"
-                            }
-                          ]
-                        }
-                      },
-                      "args": [
-                        {
-                          "reference": {
-                            "expr": {
-                              "path": {
-                                "segments": [
-                                  {
-                                    "ident": "outfile_path"
-                                  }
-                                ]
+                  "args": [
+                    {
+                      "reference": {
+                        "expr": {
+                          "path": {
+                            "segments": [
+                              {
+                                "ident": "syntax"
                               }
-                            }
+                            ]
                           }
                         }
-                      ]
+                      }
                     }
-                  }
+                  ]
                 }
               }
             }
@@ -939,7 +630,7 @@
                                 "path": {
                                   "segments": [
                                     {
-                                      "ident": "buf"
+                                      "ident": "out"
                                     }
                                   ]
                                 }
@@ -1022,16 +713,18 @@
                                 "method": "write_all",
                                 "args": [
                                   {
-                                    "reference": {
-                                      "expr": {
+                                    "method_call": {
+                                      "receiver": {
                                         "path": {
                                           "segments": [
                                             {
-                                              "ident": "buf"
+                                              "ident": "out"
                                             }
                                           ]
                                         }
-                                      }
+                                      },
+                                      "method": "as_bytes",
+                                      "args": []
                                     }
                                   }
                                 ]
