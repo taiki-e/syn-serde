@@ -54,7 +54,7 @@ mod convert {
             .enumerate()
             .map(|(i, other)| {
                 let body = other.body.map_into();
-                if i < last && requires_terminator(&*body) {
+                if i < last && requires_terminator(&body) {
                     assert!(other.comma.is_some(), "expected `,`");
                 }
 
@@ -93,7 +93,7 @@ mod convert {
     impl From<&syn::Arm> for Arm {
         fn from(other: &syn::Arm) -> Self {
             let body = other.body.map_into();
-            if requires_terminator(&*body) {
+            if requires_terminator(&body) {
                 assert!(other.comma.is_some(), "expected `,`");
             }
 
@@ -113,7 +113,7 @@ mod convert {
                 guard: other.guard.ref_map(|x| (default(), x.map_into())),
                 fat_arrow_token: default(),
                 body: other.body.map_into(),
-                comma: default_or_none(requires_terminator(&*other.body)),
+                comma: default_or_none(requires_terminator(&other.body)),
             }
         }
     }

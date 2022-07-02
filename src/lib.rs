@@ -412,6 +412,6 @@ impl<T, U> MapInto<U, Box<U>> for Box<T> {
     where
         F: FnMut(&'a Self::T) -> U,
     {
-        Box::new(f(&**self))
+        Box::new(f(self))
     }
 }
