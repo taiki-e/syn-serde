@@ -26,8 +26,9 @@ ast_struct! {
     }
 }
 
+// https://github.com/dtolnay/syn/blob/1.0.98/src/expr.rs#L1076-L1090
 pub(crate) fn requires_terminator(expr: &Expr) -> bool {
-    // see https://github.com/rust-lang/rust/blob/eb8f2586e/src/libsyntax/parse/classify.rs#L17-L37
+    // see https://github.com/rust-lang/rust/blob/2679c38fc/src/librustc_ast/util/classify.rs#L7-L25
     match expr {
         Expr::Unsafe(..)
         | Expr::Block(..)

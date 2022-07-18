@@ -574,8 +574,8 @@ impl From<&syn::ExprClosure> for ExprClosure {
     fn from(node: &syn::ExprClosure) -> Self {
         Self {
             attrs: node.attrs.map_into(),
-            asyncness: node.asyncness.is_some(),
             movability: node.movability.is_some(),
+            asyncness: node.asyncness.is_some(),
             capture: node.capture.is_some(),
             inputs: node.inputs.map_into(),
             output: node.output.ref_into(),
@@ -587,8 +587,8 @@ impl From<&ExprClosure> for syn::ExprClosure {
     fn from(node: &ExprClosure) -> Self {
         Self {
             attrs: node.attrs.map_into(),
-            asyncness: default_or_none(node.asyncness),
             movability: default_or_none(node.movability),
+            asyncness: default_or_none(node.asyncness),
             capture: default_or_none(node.capture),
             or1_token: default(),
             inputs: node.inputs.map_into(),

@@ -168,12 +168,12 @@ pub struct ExprCast {
 pub struct ExprClosure {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub(crate) attrs: Vec<Attribute>,
-    #[serde(rename = "async")]
-    #[serde(default, skip_serializing_if = "not")]
-    pub(crate) asyncness: bool,
     #[serde(rename = "static")]
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) movability: bool,
+    #[serde(rename = "async")]
+    #[serde(default, skip_serializing_if = "not")]
+    pub(crate) asyncness: bool,
     #[serde(rename = "move")]
     #[serde(default, skip_serializing_if = "not")]
     pub(crate) capture: bool,
