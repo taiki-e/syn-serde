@@ -70,6 +70,8 @@ where
 /// serde_json::to_vec(&serializable_file).unwrap()
 /// # }
 /// ```
+// All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
+#[allow(clippy::missing_panics_doc)]
 pub fn to_vec<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
@@ -90,6 +92,8 @@ where
 /// serde_json::to_vec_pretty(&serializable_file).unwrap()
 /// # }
 /// ```
+// All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
+#[allow(clippy::missing_panics_doc)]
 pub fn to_vec_pretty<S>(syn: &S) -> Vec<u8>
 where
     S: Syn,
@@ -110,6 +114,8 @@ where
 /// serde_json::to_string(&serializable_file).unwrap()
 /// # }
 /// ```
+// All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
+#[allow(clippy::missing_panics_doc)]
 pub fn to_string<S>(syn: &S) -> String
 where
     S: Syn,
@@ -130,6 +136,8 @@ where
 /// serde_json::to_string_pretty(&serializable_file).unwrap()
 /// # }
 /// ```
+// All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
+#[allow(clippy::missing_panics_doc)]
 pub fn to_string_pretty<S>(syn: &S) -> String
 where
     S: Syn,

@@ -89,9 +89,15 @@
 #![warn(rust_2018_idioms, unreachable_pub)]
 // It cannot be included in the published code because these lints have false positives in the minimum required version.
 #![cfg_attr(test, warn(single_use_lifetimes))]
-#![warn(clippy::default_trait_access)]
-#![allow(clippy::needless_doctest_main)]
-#![allow(clippy::used_underscore_binding, clippy::wildcard_imports)]
+#![warn(clippy::pedantic)]
+#![allow(
+    clippy::enum_glob_use,
+    clippy::missing_errors_doc,
+    clippy::module_name_repetitions,
+    clippy::needless_doctest_main,
+    clippy::used_underscore_binding,
+    clippy::wildcard_imports
+)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[macro_use]
