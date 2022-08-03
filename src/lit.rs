@@ -66,7 +66,7 @@ ast_enum! {
 }
 
 mod value {
-    use std::{
+    use core::{
         char,
         ops::{Index, RangeFrom},
     };

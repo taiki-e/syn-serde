@@ -1,4 +1,4 @@
-use std::fmt::{self, Write};
+use core::fmt::{self, Write};
 
 use super::*;
 

@@ -89,7 +89,15 @@
 #![warn(rust_2018_idioms, unreachable_pub)]
 // It cannot be included in the published code because these lints have false positives in the minimum required version.
 #![cfg_attr(test, warn(single_use_lifetimes))]
-#![warn(clippy::pedantic)]
+#![warn(
+    clippy::pedantic,
+    // lints for public library
+    clippy::alloc_instead_of_core,
+    // clippy::exhaustive_enums, // TODO
+    // clippy::exhaustive_structs, // TODO
+    clippy::std_instead_of_alloc,
+    clippy::std_instead_of_core,
+)]
 #![allow(
     clippy::enum_glob_use,
     clippy::missing_errors_doc,
@@ -300,7 +308,7 @@ pub trait Syn: Sized + sealed::Sealed {
 
 // =============================================================================
 
-use std::ops;
+use core::ops;
 
 use proc_macro2::Span;
 use serde::{Deserialize, Serialize};
