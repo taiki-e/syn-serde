@@ -111,15 +111,12 @@
 #[macro_use]
 mod macros;
 
-#[rustfmt::skip]
 #[path = "gen/ast_struct.rs"]
 mod ast_struct;
 
-#[rustfmt::skip]
 #[path = "gen/ast_enum.rs"]
 mod ast_enum;
 
-#[rustfmt::skip]
 #[path = "gen/convert.rs"]
 mod convert;
 
