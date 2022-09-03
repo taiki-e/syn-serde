@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let json = fs::read_to_string(&input_path)?;
+    let json = fs::read_to_string(input_path)?;
     let syntax: syn::File = json::from_str(&json)?;
     let out = prettyplease::unparse(&syntax);
 

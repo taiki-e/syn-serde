@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let code = fs::read_to_string(&input_path)?;
+    let code = fs::read_to_string(input_path)?;
     let syntax = syn::parse_file(&code)?;
 
     let buf = pickle::to_vec(&syntax);
