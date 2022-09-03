@@ -437,16 +437,12 @@
                       },
                       "args": [
                         {
-                          "reference": {
-                            "expr": {
-                              "path": {
-                                "segments": [
-                                  {
-                                    "ident": "input_path"
-                                  }
-                                ]
+                          "path": {
+                            "segments": [
+                              {
+                                "ident": "input_path"
                               }
-                            }
+                            ]
                           }
                         }
                       ]
