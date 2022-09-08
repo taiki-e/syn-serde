@@ -122,10 +122,8 @@ fn skip_serializing_if(ident: &str, field: &str, ty: &Type) -> Option<String> {
     match (ident, field) {
         (_, "attrs")
         | ("Attribute", "tokens")
-        | ("TypeParam", "bounds")
-        | ("LifetimeDef", "bounds")
-        | ("ItemTrait", "supertraits")
-        | ("TraitItemType", "bounds") => Some(format!("{}::is_empty", outer_ty(ty))),
+        | ("TypeParam" | "LifetimeDef" | "TraitItemType", "bounds")
+        | ("ItemTrait", "supertraits") => Some(format!("{}::is_empty", outer_ty(ty))),
         _ => None,
     }
 }
