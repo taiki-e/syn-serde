@@ -4,6 +4,7 @@
 // the syntax tree description.
 
 #![warn(rust_2018_idioms, single_use_lifetimes)]
+#![allow(clippy::uninlined_format_args)] // https://github.com/rust-lang/rust-clippy/pull/9605
 
 mod ast_enum;
 mod ast_struct;
