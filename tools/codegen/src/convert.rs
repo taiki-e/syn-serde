@@ -205,9 +205,9 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 
             for (field, ty) in fields {
                 let field = format_ident!("{field}");
-                let ref_toks = quote!(node.#field);
+                let ref_tokens = quote!(node.#field);
 
-                let (from, into) = visit(ty, &ref_toks, defs);
+                let (from, into) = visit(ty, &ref_tokens, defs);
 
                 if from.is_some() {
                     from_fields.extend(quote!(#field: #from,));

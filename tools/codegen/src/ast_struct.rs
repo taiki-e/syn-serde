@@ -7,7 +7,7 @@ use crate::{convert::EMPTY_STRUCTS, file, gen};
 
 const AST_ENUM_SRC: &str = "src/gen/ast_struct.rs";
 
-const SKIPED: &[&str] = &[
+const SKIPPED: &[&str] = &[
     // data.rs
     "Field", // TODO
     // expr.rs
@@ -205,7 +205,7 @@ fn format_ty(ty: &Type) -> Option<TokenStream> {
 }
 
 fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
-    if SKIPED.contains(&&*node.ident) || EMPTY_STRUCTS.contains(&&*node.ident) {
+    if SKIPPED.contains(&&*node.ident) || EMPTY_STRUCTS.contains(&&*node.ident) {
         return;
     }
 
