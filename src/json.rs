@@ -1,6 +1,4 @@
 //! A module to provide functions for JSON <-> Rust serialize and deserialize.
-//!
-//! *This module is available if syn-serde is built with the `"json"` feature.*
 
 use std::io;
 
