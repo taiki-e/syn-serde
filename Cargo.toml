@@ -26,6 +26,9 @@ members = [
     "tools/codegen",
 ]
 
+[lib]
+doc-scrape-examples = false
+
 [features]
 json = ["serde_json"]
 
