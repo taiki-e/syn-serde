@@ -4,12 +4,13 @@
 // the syntax tree description.
 
 #![warn(rust_2018_idioms, single_use_lifetimes)]
-#![allow(clippy::uninlined_format_args)] // TODO: remove once https://github.com/rust-lang/rust-clippy/pull/10055 released
+
+#[macro_use]
+mod file;
 
 mod ast_enum;
 mod ast_struct;
 mod convert;
-mod file;
 mod gen;
 
 use std::path::Path;

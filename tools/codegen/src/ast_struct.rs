@@ -261,7 +261,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let impls = gen::traverse(defs, node);
     let path = &file::workspace_root().join(AST_ENUM_SRC);
-    file::write(path, quote! {
+    file::write(function_name!(), path, quote! {
         use crate::*;
 
         #impls

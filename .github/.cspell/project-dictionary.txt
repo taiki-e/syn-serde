@@ -13,6 +13,5 @@ qself
 stmts
 subpat
 turbofish
-uninlined
 unparse
 unsized
