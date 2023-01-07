@@ -12,7 +12,6 @@ paren
 qself
 stmts
 subpat
-supertraits
 turbofish
 uninlined
 unparse
