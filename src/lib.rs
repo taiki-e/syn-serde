@@ -1,7 +1,7 @@
 /*!
 Library to serialize and deserialize [Syn] syntax trees.
 
-# Examples
+## Examples
 
 ```toml
 [dependencies]
@@ -19,6 +19,7 @@ let syn_file: syn::File = syn::parse_quote! {
         println!("Hello, world!");
     }
 };
+
 println!("{}", json::to_string_pretty(&syn_file));
 # }
 ```
@@ -60,22 +61,32 @@ This prints the following JSON:
 }
 ```
 
-## Rust source file -> JSON representation of the syntax tree
+### Rust source file -> JSON representation of the syntax tree
 
 The [`rust2json`] example parse a Rust source file into a `syn_serde::File`
 and print out a JSON representation of the syntax tree.
 
-## JSON file -> Rust syntax tree
+### JSON file -> Rust syntax tree
 
 The [`json2rust`] example parse a JSON file into a `syn_serde::File` and
 print out a Rust syntax tree.
 
-# Optional features
+## Optional features
 
 - **`json`** — Provides functions for JSON <-> Rust serializing and
   deserializing.
 
+## Relationship to Syn
+
+syn-serde is a fork of [Syn], and syn-serde provides a set of data structures
+similar but not identical to [Syn]. All data structures provided by syn-serde
+can be converted to the data structures of [Syn] and [proc-macro2].
+
+The data structures of syn-serde 0.2 is compatible with the data structures of
+[Syn] 1.0.
+
 [Syn]: https://github.com/dtolnay/syn
+[proc-macro2]: https://github.com/alexcrichton/proc-macro2
 [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
 [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
 */
