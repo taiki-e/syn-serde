@@ -1,82 +1,84 @@
-//! Library to serialize and deserialize [Syn] syntax trees.
-//!
-//! # Examples
-//!
-//! ```toml
-//! [dependencies]
-//! syn-serde = { version = "0.2", features = ["json"] }
-//! syn = { version = "1", features = ["full"] }
-//! ```
-//!
-//! ```rust
-//! # #[cfg(feature = "json")]
-//! # fn dox() {
-//! use syn_serde::json;
-//!
-//! let syn_file: syn::File = syn::parse_quote! {
-//!     fn main() {
-//!         println!("Hello, world!");
-//!     }
-//! };
-//! println!("{}", json::to_string_pretty(&syn_file));
-//! # }
-//! ```
-//!
-//! This prints the following JSON:
-//!
-//! ```json
-//! {
-//!   "items": [
-//!     {
-//!       "fn": {
-//!         "ident": "main",
-//!         "inputs": [],
-//!         "output": null,
-//!         "stmts": [
-//!           {
-//!             "semi": {
-//!               "macro": {
-//!                 "path": {
-//!                   "segments": [
-//!                     {
-//!                       "ident": "println"
-//!                     }
-//!                   ]
-//!                 },
-//!                 "delimiter": "paren",
-//!                 "tokens": [
-//!                   {
-//!                     "lit": "\"Hello, world!\""
-//!                   }
-//!                 ]
-//!               }
-//!             }
-//!           }
-//!         ]
-//!       }
-//!     }
-//!   ]
-//! }
-//! ```
-//!
-//! ## Rust source file -> JSON representation of the syntax tree
-//!
-//! The [`rust2json`] example parse a Rust source file into a `syn_serde::File`
-//! and print out a JSON representation of the syntax tree.
-//!
-//! ## JSON file -> Rust syntax tree
-//!
-//! The [`json2rust`] example parse a JSON file into a `syn_serde::File` and
-//! print out a Rust syntax tree.
-//!
-//! # Optional features
-//!
-//! - **`json`** — Provides functions for JSON <-> Rust serializing and
-//!   deserializing.
-//!
-//! [Syn]: https://github.com/dtolnay/syn
-//! [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
-//! [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
+/*!
+Library to serialize and deserialize [Syn] syntax trees.
+
+# Examples
+
+```toml
+[dependencies]
+syn-serde = { version = "0.2", features = ["json"] }
+syn = { version = "1", features = ["full"] }
+```
+
+```rust
+# #[cfg(feature = "json")]
+# fn dox() {
+use syn_serde::json;
+
+let syn_file: syn::File = syn::parse_quote! {
+    fn main() {
+        println!("Hello, world!");
+    }
+};
+println!("{}", json::to_string_pretty(&syn_file));
+# }
+```
+
+This prints the following JSON:
+
+```json
+{
+  "items": [
+    {
+      "fn": {
+        "ident": "main",
+        "inputs": [],
+        "output": null,
+        "stmts": [
+          {
+            "semi": {
+              "macro": {
+                "path": {
+                  "segments": [
+                    {
+                      "ident": "println"
+                    }
+                  ]
+                },
+                "delimiter": "paren",
+                "tokens": [
+                  {
+                    "lit": "\"Hello, world!\""
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+## Rust source file -> JSON representation of the syntax tree
+
+The [`rust2json`] example parse a Rust source file into a `syn_serde::File`
+and print out a JSON representation of the syntax tree.
+
+## JSON file -> Rust syntax tree
+
+The [`json2rust`] example parse a JSON file into a `syn_serde::File` and
+print out a Rust syntax tree.
+
+# Optional features
+
+- **`json`** — Provides functions for JSON <-> Rust serializing and
+  deserializing.
+
+[Syn]: https://github.com/dtolnay/syn
+[`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
+[`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
+*/
 
 #![doc(test(
     no_crate_inject,
