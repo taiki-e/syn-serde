@@ -5,7 +5,6 @@ constness
 defaultness
 docsrs
 elems
-impls
 multicharacter
 paren
 qself
@@ -13,4 +12,3 @@ stmts
 subpat
 turbofish
 unparse
-unsized
