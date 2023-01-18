@@ -118,7 +118,7 @@ pub enum Expr {
     While(ExprWhile),
     Yield(ExprYield),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::Fields`].
 #[derive(Serialize, Deserialize)]
@@ -145,7 +145,7 @@ pub enum ForeignItem {
     Macro(ForeignItemMacro),
     Verbatim(TokenStream),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::GenericArgument`].
 #[derive(Serialize, Deserialize)]
@@ -182,7 +182,7 @@ pub enum ImplItem {
     Macro(ImplItemMacro),
     Verbatim(TokenStream),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::Item`].
 #[derive(Serialize, Deserialize)]
@@ -206,7 +206,7 @@ pub enum Item {
     Use(ItemUse),
     Verbatim(TokenStream),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::Lit`].
 #[derive(Serialize, Deserialize)]
@@ -275,7 +275,7 @@ pub enum Pat {
     #[serde(rename = "_")]
     Wild(PatWild),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::PathArguments`].
 #[derive(Serialize, Deserialize)]
@@ -321,7 +321,7 @@ pub enum TraitItem {
     Macro(TraitItemMacro),
     Verbatim(TokenStream),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::Type`].
 #[derive(Serialize, Deserialize)]
@@ -345,7 +345,7 @@ pub enum Type {
     Tuple(TypeTuple),
     Verbatim(TokenStream),
     #[doc(hidden)]
-    __Nonexhaustive,
+    __NonExhaustive,
 }
 /// An adapter for [`enum@syn::TypeParamBound`].
 #[derive(Serialize, Deserialize)]

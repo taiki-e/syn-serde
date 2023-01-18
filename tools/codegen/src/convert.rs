@@ -183,19 +183,19 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                 }
             }
 
-            let nonexhaustive =
+            let non_exhaustive =
                 if node.exhaustive { None } else { Some(quote!(_ => unreachable!())) };
 
             from_impl.extend(quote! {
                 match node {
                     #from_variants
-                    #nonexhaustive
+                    #non_exhaustive
                 }
             });
             into_impl.extend(quote! {
                 match node {
                     #into_variants
-                    #nonexhaustive
+                    #non_exhaustive
                 }
             });
         }

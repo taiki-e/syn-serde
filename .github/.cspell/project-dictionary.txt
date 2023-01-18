@@ -7,7 +7,6 @@ docsrs
 elems
 impls
 multicharacter
-nonexhaustive
 paren
 qself
 stmts

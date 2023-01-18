@@ -65,7 +65,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
         if !node.exhaustive {
             body.extend(quote! {
                 #[doc(hidden)]
-                __Nonexhaustive,
+                __NonExhaustive,
             });
         }
 
