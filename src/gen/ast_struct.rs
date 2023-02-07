@@ -3,7 +3,6 @@
 // It is not intended for manual editing.
 
 #![cfg_attr(rustfmt, rustfmt::skip)]
-
 use crate::*;
 /// An adapter for [`struct@syn::Abi`].
 #[derive(Serialize, Deserialize)]

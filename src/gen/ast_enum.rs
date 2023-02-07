@@ -3,7 +3,6 @@
 // It is not intended for manual editing.
 
 #![cfg_attr(rustfmt, rustfmt::skip)]
-
 use crate::*;
 /// An adapter for [`enum@syn::AttrStyle`].
 #[derive(Serialize, Deserialize)]

@@ -3,7 +3,6 @@
 // It is not intended for manual editing.
 
 #![cfg_attr(rustfmt, rustfmt::skip)]
-
 #![allow(unused_parens)]
 #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
 use crate::*;
