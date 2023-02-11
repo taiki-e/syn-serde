@@ -113,6 +113,7 @@ The data structures of syn-serde 0.2 is compatible with the data structures of
 )]
 #![allow(
     clippy::enum_glob_use,
+    clippy::match_wildcard_for_single_variants,
     clippy::missing_errors_doc,
     clippy::module_name_repetitions,
     clippy::needless_doctest_main,
