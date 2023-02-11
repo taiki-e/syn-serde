@@ -348,9 +348,7 @@ mod value {
     }
 
     fn backslash_u(mut s: &str) -> (char, &str) {
-        if byte(s, 0) != b'{' {
-            panic!("{}", "expected { after \\u");
-        }
+        assert_eq!(byte(s, 0), b'{', "{}", "expected { after \\u");
         s = &s[1..];
 
         let mut ch = 0;
