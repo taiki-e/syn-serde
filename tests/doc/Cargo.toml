@@ -9,4 +9,4 @@ path = "lib.rs"
 
 [dev-dependencies]
 syn-serde = { path = "../..", features = ["json"] }
-syn = { version = "1", features = ["full"] }
+syn = { version = "2", features = ["full"] }
