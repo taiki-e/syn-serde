@@ -3,12 +3,10 @@ codepoint
 cond
 constness
 defaultness
-docsrs
 elems
 multicharacter
 paren
 qself
 stmts
 subpat
-turbofish
 unparse
