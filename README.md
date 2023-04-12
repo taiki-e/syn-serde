@@ -6,6 +6,7 @@
 [![rustc](https://img.shields.io/badge/rustc-1.56+-blue?style=flat-square&logo=rust)](https://www.rust-lang.org)
 [![build status](https://img.shields.io/github/actions/workflow/status/taiki-e/syn-serde/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/taiki-e/syn-serde/actions)
 
+<!-- tidy:crate-doc:start -->
 Library to serialize and deserialize [Syn] syntax trees.
 
 ## Usage
@@ -104,6 +105,8 @@ The data structures of syn-serde 0.2 is compatible with the data structures of
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2
 [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
 [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
+
+<!-- tidy:crate-doc:end -->
 
 ## License
 

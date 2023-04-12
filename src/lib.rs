@@ -1,5 +1,17 @@
 /*!
+<!-- tidy:crate-doc:start -->
 Library to serialize and deserialize [Syn] syntax trees.
+
+## Usage
+
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+syn-serde = "0.2"
+```
+
+*Compiler support: requires rustc 1.56+*
 
 ## Examples
 
@@ -10,8 +22,6 @@ syn = { version = "1", features = ["full"] }
 ```
 
 ```rust
-# #[cfg(feature = "json")]
-# fn dox() {
 use syn_serde::json;
 
 let syn_file: syn::File = syn::parse_quote! {
@@ -21,7 +31,6 @@ let syn_file: syn::File = syn::parse_quote! {
 };
 
 println!("{}", json::to_string_pretty(&syn_file));
-# }
 ```
 
 This prints the following JSON:
@@ -89,6 +98,8 @@ The data structures of syn-serde 0.2 is compatible with the data structures of
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2
 [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
 [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
+
+<!-- tidy:crate-doc:end -->
 */
 
 #![doc(test(
