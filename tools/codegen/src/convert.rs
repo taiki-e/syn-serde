@@ -63,13 +63,6 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
                 let into = quote!(#var.ref_map(MapInto::map_into));
                 (from, into)
             }
-            Type::Std(t) if t == "String" => {
-                // `From<&String> for String` requires Rust 1.36:
-                // https://github.com/rust-lang/rust/pull/59825
-                let from = Some(quote!(#var.ref_map(ToString::to_string)));
-                let into = quote!(#var.ref_map(ToString::to_string));
-                (from, into)
-            }
             _ => {
                 let from = Some(quote!(#var.map_into()));
                 let into = quote!(#var.map_into());

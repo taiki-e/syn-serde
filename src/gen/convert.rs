@@ -1236,7 +1236,7 @@ syn_trait_impl!(syn::File);
 impl From<&syn::File> for File {
     fn from(node: &syn::File) -> Self {
         Self {
-            shebang: node.shebang.ref_map(ToString::to_string),
+            shebang: node.shebang.map_into(),
             attrs: node.attrs.map_into(),
             items: node.items.map_into(),
         }
@@ -1245,7 +1245,7 @@ impl From<&syn::File> for File {
 impl From<&File> for syn::File {
     fn from(node: &File) -> Self {
         Self {
-            shebang: node.shebang.ref_map(ToString::to_string),
+            shebang: node.shebang.map_into(),
             attrs: node.attrs.map_into(),
             items: node.items.map_into(),
         }
