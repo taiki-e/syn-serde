@@ -18,7 +18,7 @@ const SKIPPED: &[&str] = &[
     // item.rs
     "ItemMod", // TODO
     "ItemStruct",
-    "TraitItemMethod",
+    "TraitItemFn",
     "Receiver",
     // pat.rs
     "PatOr", // TODO
@@ -87,6 +87,14 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
             "Visibility" => {
                 assert_eq!(field, "vis");
                 return quote!(#[serde(default, skip_serializing_if = "Visibility::is_inherited")]);
+            }
+            "StaticMutability" | "FieldMutability" => {
+                assert_eq!(field, "mutability");
+                let is_none = format!("{ty}::is_none");
+                return quote! {
+                    #[serde(rename = "mut")]
+                    #[serde(default, skip_serializing_if = #is_none)]
+                };
             }
             "Generics" => {
                 assert_eq!(field, "generics");

@@ -2,6 +2,10 @@
 
 use syn::*;
 
+fn print_actual(actual: &impl syn_serde::Syn) {
+    println!("actual:\n```\n{}\n", syn_serde::json::to_string_pretty(actual));
+}
+
 #[test]
 fn test_unit() {
     let raw = "struct Unit;";
@@ -16,6 +20,7 @@ fn test_unit() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let ser: syn_serde::Item = serde_json::from_str(json).unwrap();
     let ser = Item::from(&ser);
     assert_eq!(ser, actual);
@@ -37,34 +42,32 @@ fn test_struct() {
         "attrs": [
           {
             "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "derive"
-                }
-              ]
-            },
-            "tokens": [
-              {
-                "group": {
-                  "delimiter": "parenthesis",
-                  "stream": [
+            "meta": {
+              "list": {
+                "path": {
+                  "segments": [
                     {
-                      "ident": "Debug"
-                    },
-                    {
-                      "punct": {
-                        "op": ",",
-                        "spacing": "alone"
-                      }
-                    },
-                    {
-                      "ident": "Clone"
+                      "ident": "derive"
                     }
                   ]
-                }
+                },
+                "delimiter": "paren",
+                "tokens": [
+                  {
+                    "ident": "Debug"
+                  },
+                  {
+                    "punct": {
+                      "op": ",",
+                      "spacing": "alone"
+                    }
+                  },
+                  {
+                    "ident": "Clone"
+                  }
+                ]
               }
-            ]
+            }
           }
         ],
         "vis": "pub",
@@ -123,6 +126,7 @@ fn test_struct() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -179,6 +183,7 @@ fn test_union() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -206,33 +211,33 @@ fn test_enum() {
         "attrs": [
           {
             "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "doc"
+            "meta": {
+              "name_value": {
+                "path": {
+                  "segments": [
+                    {
+                      "ident": "doc"
+                    }
+                  ]
+                },
+                "value": {
+                  "lit": {
+                    "str": "\" See the std::result module documentation for details.\""
+                  }
                 }
-              ]
-            },
-            "tokens": [
-              {
-                "punct": {
-                  "op": "=",
-                  "spacing": "alone"
-                }
-              },
-              {
-                "lit": "\" See the std::result module documentation for details.\""
               }
-            ]
+            }
           },
           {
             "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "must_use"
-                }
-              ]
+            "meta": {
+              "path": {
+                "segments": [
+                  {
+                    "ident": "must_use"
+                  }
+                ]
+              }
             }
           }
         ],
@@ -329,194 +334,7 @@ fn test_enum() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
-    let json = Item::from(&json);
-    assert_eq!(json, actual);
-}
-
-#[test]
-fn test_attr_with_path() {
-    let raw = r#"
-        #[::attr_args::identity
-            fn main() { assert_eq!(foo(), "Hello, world!"); }]
-        struct Dummy;
-    "#;
-
-    let json = r#"
-    {
-      "struct": {
-        "attrs": [
-          {
-            "style": "outer",
-            "path": {
-              "leading_colon": true,
-              "segments": [
-                {
-                  "ident": "attr_args"
-                },
-                {
-                  "ident": "identity"
-                }
-              ]
-            },
-            "tokens": [
-              {
-                "ident": "fn"
-              },
-              {
-                "ident": "main"
-              },
-              {
-                "group": {
-                  "delimiter": "parenthesis",
-                  "stream": []
-                }
-              },
-              {
-                "group": {
-                  "delimiter": "brace",
-                  "stream": [
-                    {
-                      "ident": "assert_eq"
-                    },
-                    {
-                      "punct": {
-                        "op": "!",
-                        "spacing": "alone"
-                      }
-                    },
-                    {
-                      "group": {
-                        "delimiter": "parenthesis",
-                        "stream": [
-                          {
-                            "ident": "foo"
-                          },
-                          {
-                            "group": {
-                              "delimiter": "parenthesis",
-                              "stream": []
-                            }
-                          },
-                          {
-                            "punct": {
-                              "op": ",",
-                              "spacing": "alone"
-                            }
-                          },
-                          {
-                            "lit": "\"Hello, world!\""
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "punct": {
-                        "op": ";",
-                        "spacing": "alone"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        ],
-        "ident": "Dummy",
-        "fields": "unit"
-      }
-    }
-    "#;
-
-    let actual = syn::parse_str(raw).unwrap();
-    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
-    let json = Item::from(&json);
-    assert_eq!(json, actual);
-}
-
-#[test]
-fn test_attr_with_non_mod_style_path() {
-    let raw = r#"
-        #[inert <T>]
-        struct S;
-    "#;
-
-    let json = r#"
-    {
-      "struct": {
-        "attrs": [
-          {
-            "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "inert"
-                }
-              ]
-            },
-            "tokens": [
-              {
-                "punct": {
-                  "op": "<",
-                  "spacing": "alone"
-                }
-              },
-              {
-                "ident": "T"
-              },
-              {
-                "punct": {
-                  "op": ">",
-                  "spacing": "alone"
-                }
-              }
-            ]
-          }
-        ],
-        "ident": "S",
-        "fields": "unit"
-      }
-    }
-    "#;
-
-    let actual = syn::parse_str(raw).unwrap();
-    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
-    let json = Item::from(&json);
-    assert_eq!(json, actual);
-}
-
-#[test]
-fn test_attr_with_mod_style_path_with_self() {
-    let raw = r#"
-        #[foo::self]
-        struct S;
-    "#;
-
-    let json = r#"
-    {
-      "struct": {
-        "attrs": [
-          {
-            "style": "outer",
-            "path": {
-              "segments": [
-                {
-                  "ident": "foo"
-                },
-                {
-                  "ident": "self"
-                }
-              ]
-            }
-          }
-        ],
-        "ident": "S",
-        "fields": "unit"
-      }
-    }
-    "#;
-
-    let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -580,28 +398,7 @@ fn test_pub_restricted() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
-    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
-    let json = Item::from(&json);
-    assert_eq!(json, actual);
-}
-
-#[test]
-fn test_vis_crate() {
-    let raw = r#"
-        crate struct S;
-    "#;
-
-    let json = r#"
-    {
-      "struct": {
-        "vis": "crate",
-        "ident": "S",
-        "fields": "unit"
-      }
-    }
-    "#;
-
-    let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -634,6 +431,7 @@ fn test_pub_restricted_crate() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -666,6 +464,7 @@ fn test_pub_restricted_super() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -699,6 +498,7 @@ fn test_pub_restricted_in_super() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);
@@ -736,6 +536,43 @@ fn test_ambiguous_crate() {
     "#;
 
     let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
+    let json: syn_serde::Item = serde_json::from_str(json).unwrap();
+    let json = Item::from(&json);
+    assert_eq!(json, actual);
+}
+
+#[test]
+fn test_static_mut() {
+    let raw = r#"
+        static mut A: u8 = 0;
+    "#;
+
+    let json = r#"
+    {
+      "static": {
+        "mut": "mut",
+        "ident": "A",
+        "ty": {
+          "path": {
+            "segments": [
+              {
+                "ident": "u8"
+              }
+            ]
+          }
+        },
+        "expr": {
+          "lit": {
+            "int": "0"
+          }
+        }
+      }
+    }
+    "#;
+
+    let actual = syn::parse_str(raw).unwrap();
+    print_actual(&actual);
     let json: syn_serde::Item = serde_json::from_str(json).unwrap();
     let json = Item::from(&json);
     assert_eq!(json, actual);

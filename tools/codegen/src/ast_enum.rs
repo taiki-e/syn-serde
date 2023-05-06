@@ -10,6 +10,11 @@ use crate::{
 
 const AST_ENUM_SRC: &str = "src/gen/ast_enum.rs";
 
+const SKIPPED: &[&str] = &[
+    // stmt.rs
+    "Stmt", // TODO
+];
+
 fn rename(ident: &str, variant: &str) -> Option<&'static str> {
     match (ident, variant) {
         ("Pat", "Wild") | ("Type", "Infer") => Some("_"),
@@ -21,12 +26,13 @@ fn rename(ident: &str, variant: &str) -> Option<&'static str> {
         ("RangeLimits", "HalfOpen") => Some(".."),
         ("RangeLimits", "Closed") => Some("..="),
         ("Visibility", "Public") => Some("pub"),
+        ("StaticMutability", "Mut") => Some("mut"),
         _ => None,
     }
 }
 
 fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
-    if IGNORED_TYPES.contains(&&*node.ident) {
+    if SKIPPED.contains(&&*node.ident) || IGNORED_TYPES.contains(&&*node.ident) {
         return;
     }
 

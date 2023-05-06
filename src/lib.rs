@@ -8,7 +8,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-syn-serde = "0.2"
+syn-serde = "0.3"
 ```
 
 *Compiler support: requires rustc 1.56+*
@@ -17,8 +17,8 @@ syn-serde = "0.2"
 
 ```toml
 [dependencies]
-syn-serde = { version = "0.2", features = ["json"] }
-syn = { version = "1", features = ["full"] }
+syn-serde = { version = "0.3", features = ["json"] }
+syn = { version = "2", features = ["full"] }
 ```
 
 ```rust
@@ -91,8 +91,8 @@ syn-serde is a fork of [Syn], and syn-serde provides a set of data structures
 similar but not identical to [Syn]. All data structures provided by syn-serde
 can be converted to the data structures of [Syn] and [proc-macro2].
 
-The data structures of syn-serde 0.2 is compatible with the data structures of
-[Syn] 1.0.
+The data structures of syn-serde 0.3 is compatible with the data structures of
+[Syn] 2.x.
 
 [Syn]: https://github.com/dtolnay/syn
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2
@@ -124,10 +124,10 @@ The data structures of syn-serde 0.2 is compatible with the data structures of
 )]
 #![allow(
     clippy::enum_glob_use,
-    clippy::match_like_matches_macro,
     clippy::missing_errors_doc,
     clippy::module_name_repetitions,
     clippy::needless_doctest_main,
+    clippy::struct_excessive_bools,
     clippy::used_underscore_binding,
     clippy::wildcard_imports
 )]
@@ -148,48 +148,27 @@ mod convert;
 mod attr {
     #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
     pub use crate::{
-        ast_enum::{AttrStyle, Meta, NestedMeta},
+        ast_enum::{AttrStyle, Meta},
         ast_struct::{Attribute, MetaList, MetaNameValue},
     };
 }
 #[doc(hidden)]
-pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue, NestedMeta};
+pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue};
 
 mod data;
 pub(crate) use crate::data::assert_struct_semi;
 #[doc(hidden)]
-pub use crate::data::{
-    Field, Fields, FieldsNamed, FieldsUnnamed, Variant, VisRestricted, Visibility,
-};
+pub use crate::data::{Field, Fields, FieldsNamed, FieldsUnnamed, Variant};
 
 mod expr;
 #[doc(hidden)]
 pub use crate::expr::{
-    Arm, Expr, ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprAwait, ExprBinary, ExprBlock,
-    ExprBox, ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop,
-    ExprGroup, ExprIf, ExprIndex, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
+    Arm, Expr, ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak,
+    ExprCall, ExprCast, ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprGroup,
+    ExprIf, ExprIndex, ExprInfer, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
     ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
-    ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue,
-    GenericMethodArgument, Index, Label, Member, MethodTurbofish, RangeLimits,
-};
-
-mod generics;
-#[doc(hidden)]
-pub use crate::generics::{
-    BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeDef, PredicateEq,
-    PredicateLifetime, PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound,
-    WhereClause, WherePredicate,
-};
-
-mod item;
-#[doc(hidden)]
-pub use crate::item::{
-    FnArg, ForeignItem, ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType,
-    ImplItem, ImplItemConst, ImplItemMacro, ImplItemMethod, ImplItemType, Item, ItemConst,
-    ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro, ItemMacro2, ItemMod,
-    ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Receiver,
-    Signature, TraitItem, TraitItemConst, TraitItemMacro, TraitItemMethod, TraitItemType, UseGroup,
-    UseName, UsePath, UseRename, UseTree,
+    ExprTryBlock, ExprTuple, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue, Index, Label,
+    Member, RangeLimits,
 };
 
 mod file {
@@ -198,6 +177,25 @@ mod file {
 }
 #[doc(hidden)]
 pub use crate::file::File;
+
+mod generics;
+#[doc(hidden)]
+pub use crate::generics::{
+    BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeParam, PredicateLifetime,
+    PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound, WhereClause,
+    WherePredicate,
+};
+
+mod item;
+#[doc(hidden)]
+pub use crate::item::{
+    FnArg, ForeignItem, ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType,
+    ImplItem, ImplItemConst, ImplItemFn, ImplItemMacro, ImplItemType, ImplRestriction, Item,
+    ItemConst, ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro, ItemMod,
+    ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Receiver,
+    Signature, StaticMutability, TraitItem, TraitItemConst, TraitItemFn, TraitItemMacro,
+    TraitItemType, UseGroup, UseName, UsePath, UseRename, UseTree, Variadic,
+};
 
 mod lifetime {
     #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
@@ -226,36 +224,40 @@ mod op {
 #[doc(hidden)]
 pub use crate::op::{BinOp, UnOp};
 
-mod ty;
-#[doc(hidden)]
-pub use crate::ty::{
-    Abi, BareFnArg, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro,
-    TypeParen, TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple, Variadic,
-};
-
 mod pat;
 #[doc(hidden)]
+pub use crate::expr::{
+    ExprConst as PatConst, ExprLit as PatLit, ExprMacro as PatMacro, ExprPath as PatPath,
+    ExprRange as PatRange,
+};
+#[doc(hidden)]
 pub use crate::pat::{
-    FieldPat, Pat, PatBox, PatIdent, PatLit, PatMacro, PatOr, PatPath, PatRange, PatReference,
-    PatRest, PatSlice, PatStruct, PatTuple, PatTupleStruct, PatType, PatWild,
+    FieldPat, Pat, PatIdent, PatOr, PatParen, PatReference, PatRest, PatSlice, PatStruct, PatTuple,
+    PatTupleStruct, PatType, PatWild,
 };
 
 mod path;
 #[doc(hidden)]
 pub use crate::path::{
-    AngleBracketedGenericArguments, Binding, Constraint, GenericArgument,
+    AngleBracketedGenericArguments, AssocConst, AssocType, Constraint, GenericArgument,
     ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
 };
 
-mod stmt {
-    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
-    pub use crate::{
-        ast_enum::Stmt,
-        ast_struct::{Block, Local},
-    };
-}
+mod restriction;
 #[doc(hidden)]
-pub use crate::stmt::{Block, Local, Stmt};
+pub use crate::restriction::{FieldMutability, VisRestricted, Visibility};
+
+mod stmt;
+#[doc(hidden)]
+pub use crate::stmt::{Block, Local, LocalInit, Stmt, StmtMacro};
+
+mod ty;
+#[doc(hidden)]
+pub use crate::ty::{
+    Abi, BareFnArg, BareVariadic, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
+    TypeImplTrait, TypeMacro, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
+    TypeTraitObject, TypeTuple,
+};
 
 mod token_stream;
 #[doc(hidden)]

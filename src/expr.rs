@@ -1,14 +1,14 @@
 use super::*;
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
 pub use crate::{
-    ast_enum::{Expr, GenericMethodArgument, Member, RangeLimits},
+    ast_enum::{Expr, GenericArgument, Member, RangeLimits},
     ast_struct::{
-        ExprArray, ExprAssign, ExprAssignOp, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBox,
-        ExprBreak, ExprCall, ExprCast, ExprClosure, ExprContinue, ExprField, ExprForLoop,
-        ExprGroup, ExprIf, ExprIndex, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch,
-        ExprMethodCall, ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn,
-        ExprStruct, ExprTry, ExprTryBlock, ExprTuple, ExprType, ExprUnary, ExprUnsafe, ExprWhile,
-        ExprYield, FieldValue, Index, Label, MethodTurbofish,
+        ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak, ExprCall,
+        ExprCast, ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprGroup, ExprIf,
+        ExprIndex, ExprInfer, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
+        ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
+        ExprTryBlock, ExprTuple, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue, Index,
+        Label,
     },
 };
 
@@ -26,20 +26,48 @@ ast_struct! {
     }
 }
 
-// https://github.com/dtolnay/syn/blob/1.0.98/src/expr.rs#L1076-L1090
+// https://github.com/dtolnay/syn/blob/2.0.15/src/expr.rs#L913
 pub(crate) fn requires_terminator(expr: &Expr) -> bool {
-    // see https://github.com/rust-lang/rust/blob/2679c38fc/src/librustc_ast/util/classify.rs#L7-L25
+    // see https://github.com/rust-lang/rust/blob/9a19e7604/compiler/rustc_ast/src/util/classify.rs#L7-L26
     match expr {
-        Expr::Unsafe(..)
-        | Expr::Block(..)
-        | Expr::If(..)
-        | Expr::Match(..)
-        | Expr::While(..)
-        | Expr::Loop(..)
-        | Expr::ForLoop(..)
-        | Expr::Async(..)
-        | Expr::TryBlock(..) => false,
-        _ => true,
+        Expr::If(_)
+        | Expr::Match(_)
+        | Expr::Block(_) | Expr::Unsafe(_) // both under ExprKind::Block in rustc
+        | Expr::While(_)
+        | Expr::Loop(_)
+        | Expr::ForLoop(_)
+        | Expr::TryBlock(_)
+        | Expr::Const(_) => false,
+        Expr::Array(_)
+        | Expr::Assign(_)
+        | Expr::Async(_)
+        | Expr::Await(_)
+        | Expr::Binary(_)
+        | Expr::Break(_)
+        | Expr::Call(_)
+        | Expr::Cast(_)
+        | Expr::Closure(_)
+        | Expr::Continue(_)
+        | Expr::Field(_)
+        | Expr::Group(_)
+        | Expr::Index(_)
+        | Expr::Infer(_)
+        | Expr::Let(_)
+        | Expr::Lit(_)
+        | Expr::Macro(_)
+        | Expr::MethodCall(_)
+        | Expr::Paren(_)
+        | Expr::Path(_)
+        | Expr::Range(_)
+        | Expr::Reference(_)
+        | Expr::Repeat(_)
+        | Expr::Return(_)
+        | Expr::Struct(_)
+        | Expr::Try(_)
+        | Expr::Tuple(_)
+        | Expr::Unary(_)
+        | Expr::Yield(_)
+        | Expr::Verbatim(_) => true
     }
 }
 

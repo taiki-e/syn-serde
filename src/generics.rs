@@ -3,8 +3,8 @@ use super::*;
 pub use crate::{
     ast_enum::{GenericParam, TraitBoundModifier, TypeParamBound, WherePredicate},
     ast_struct::{
-        BoundLifetimes, ConstParam, LifetimeDef, PredicateEq, PredicateLifetime, TraitBound,
-        TypeParam, WhereClause,
+        BoundLifetimes, ConstParam, LifetimeParam, PredicateLifetime, TraitBound, TypeParam,
+        WhereClause,
     },
 };
 

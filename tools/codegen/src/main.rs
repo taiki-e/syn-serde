@@ -20,6 +20,7 @@ use anyhow::Result;
 use fs_err as fs;
 
 fn main() -> Result<()> {
+    // TODO: auto-update syn.json on new release?
     let syn_json = Path::new(env!("CARGO_MANIFEST_DIR")).join("syn.json");
     let defs = fs::read_to_string(syn_json)?;
     let defs = serde_json::from_str(&defs)?;
