@@ -176,7 +176,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                 }
             }
 
-            let non_exhaustive =
+            let mut non_exhaustive =
                 if node.exhaustive { None } else { Some(quote!(_ => unreachable!())) };
 
             from_impl.extend(quote! {
@@ -185,6 +185,9 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                     #non_exhaustive
                 }
             });
+            if !variants.is_empty() {
+                non_exhaustive = None;
+            }
             into_impl.extend(quote! {
                 match node {
                     #into_variants
@@ -241,7 +244,11 @@ pub(crate) fn generate(defs: &Definitions) -> Result<()> {
     let path = &file::workspace_root().join(CONVERT_SRC);
     file::write(function_name!(), path, quote! {
         #![allow(unused_parens)]
-        #![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
+        #![allow(
+            clippy::double_parens,
+            clippy::just_underscores_and_digits,
+            clippy::match_single_binding,
+        )]
 
         use crate::*;
 

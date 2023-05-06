@@ -62,12 +62,11 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             }
         }
 
-        if !node.exhaustive {
-            body.extend(quote! {
-                #[doc(hidden)]
-                __NonExhaustive,
-            });
-        }
+        let non_exhaustive = if node.exhaustive {
+            quote! {}
+        } else {
+            quote! { #[non_exhaustive] }
+        };
 
         let ident = format_ident!("{}", node.ident);
         let doc = format!(" An adapter for [`enum@syn::{}`].", node.ident);
@@ -75,6 +74,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             #[doc = #doc]
             #[derive(Serialize, Deserialize)]
             #[serde(rename_all = "snake_case")]
+            #non_exhaustive
             pub enum #ident {
                 #body
             }

@@ -4,7 +4,11 @@
 
 #![cfg_attr(rustfmt, rustfmt::skip)]
 #![allow(unused_parens)]
-#![allow(clippy::double_parens, clippy::just_underscores_and_digits)]
+#![allow(
+    clippy::double_parens,
+    clippy::just_underscores_and_digits,
+    clippy::match_single_binding,
+)]
 use crate::*;
 syn_trait_impl!(syn::Abi);
 impl From<&syn::Abi> for Abi {
@@ -351,7 +355,6 @@ impl From<&Expr> for syn::Expr {
             Expr::Verbatim(_0) => syn::Expr::Verbatim((*_0).ref_into()),
             Expr::While(_0) => syn::Expr::While((*_0).ref_into()),
             Expr::Yield(_0) => syn::Expr::Yield((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
@@ -1289,7 +1292,6 @@ impl From<&ForeignItem> for syn::ForeignItem {
             ForeignItem::Type(_0) => syn::ForeignItem::Type((*_0).ref_into()),
             ForeignItem::Macro(_0) => syn::ForeignItem::Macro((*_0).ref_into()),
             ForeignItem::Verbatim(_0) => syn::ForeignItem::Verbatim((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
@@ -1479,7 +1481,6 @@ impl From<&ImplItem> for syn::ImplItem {
             ImplItem::Type(_0) => syn::ImplItem::Type((*_0).ref_into()),
             ImplItem::Macro(_0) => syn::ImplItem::Macro((*_0).ref_into()),
             ImplItem::Verbatim(_0) => syn::ImplItem::Verbatim((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
@@ -1641,7 +1642,6 @@ impl From<&Item> for syn::Item {
             Item::Union(_0) => syn::Item::Union((*_0).ref_into()),
             Item::Use(_0) => syn::Item::Use((*_0).ref_into()),
             Item::Verbatim(_0) => syn::Item::Verbatim((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
@@ -2347,7 +2347,6 @@ impl From<&Pat> for syn::Pat {
             Pat::Type(_0) => syn::Pat::Type((*_0).ref_into()),
             Pat::Verbatim(_0) => syn::Pat::Verbatim((*_0).ref_into()),
             Pat::Wild(_0) => syn::Pat::Wild((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
@@ -2902,7 +2901,6 @@ impl From<&TraitItem> for syn::TraitItem {
             TraitItem::Type(_0) => syn::TraitItem::Type((*_0).ref_into()),
             TraitItem::Macro(_0) => syn::TraitItem::Macro((*_0).ref_into()),
             TraitItem::Verbatim(_0) => syn::TraitItem::Verbatim((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
@@ -3025,7 +3023,6 @@ impl From<&Type> for syn::Type {
             Type::TraitObject(_0) => syn::Type::TraitObject((*_0).ref_into()),
             Type::Tuple(_0) => syn::Type::Tuple((*_0).ref_into()),
             Type::Verbatim(_0) => syn::Type::Verbatim((*_0).ref_into()),
-            _ => unreachable!(),
         }
     }
 }
