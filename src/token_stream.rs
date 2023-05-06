@@ -3,10 +3,7 @@ use core::fmt::{self, Write};
 use super::*;
 
 ast_struct! {
-    /// An abstract stream of tokens, or more concretely a sequence of token trees.
-    ///
-    /// This type provides interfaces for iterating over token trees and for
-    /// collecting token trees into one stream.
+    /// An adapter for [`struct@proc_macro2::TokenStream`].
     #[derive(Clone, Default)]
     #[serde(transparent)]
     pub struct TokenStream {
@@ -25,26 +22,19 @@ impl TokenStream {
 }
 
 ast_enum! {
-    /// A single token or a delimited sequence of token trees (e.g. `[1, (), ..]`).
+    /// An adapter for [`enum@proc_macro2::TokenTree`].
     #[derive(Clone)]
     pub enum TokenTree {
-        /// A token stream surrounded by bracket delimiters.
         Group(Group),
-        /// An identifier.
         Ident(Ident),
-        /// A single punctuation character (`+`, `,`, `$`, etc.).
         Punct(Punct),
-        /// A literal character (`'a'`), string (`"hello"`), number (`2.3`), etc.
         #[serde(rename = "lit")]
         Literal(Literal),
     }
 }
 
 ast_struct! {
-    /// A delimited token stream.
-    ///
-    /// A `Group` internally contains a `TokenStream` which is surrounded by
-    /// `Delimiter`s.
+    /// An adapter for [`struct@proc_macro2::Group`].
     #[derive(Clone)]
     pub struct Group {
         delimiter: Delimiter,
@@ -53,31 +43,18 @@ ast_struct! {
 }
 
 ast_enum! {
-    /// Describes how a sequence of token trees is delimited.
+    /// An adapter for [`enum@proc_macro2::Delimiter`].
     #[derive(Clone, Copy)]
     pub enum Delimiter {
-        /// `( ... )`
         Parenthesis,
-        /// `{ ... }`
         Brace,
-        /// `[ ... ]`
         Bracket,
-        /// `Ø ... Ø`
-        ///
-        /// An implicit delimiter, that may, for example, appear around tokens
-        /// coming from a "macro variable" `$var`. It is important to preserve
-        /// operator priorities in cases like `$var * 3` where `$var` is `1 + 2`.
-        /// Implicit delimiters may not survive roundtrip of a token stream through
-        /// a string.
         None,
     }
 }
 
 ast_struct! {
-    /// An `Punct` is an single punctuation character like `+`, `-` or `#`.
-    ///
-    /// Multicharacter operators like `+=` are represented as two instances of
-    /// `Punct` with different forms of `Spacing` returned.
+    /// An adapter for [`struct@proc_macro2::Punct`].
     #[derive(Clone, Copy)]
     pub struct Punct {
         op: char,
@@ -86,29 +63,16 @@ ast_struct! {
 }
 
 ast_enum! {
-    /// Whether an `Punct` is followed immediately by another `Punct` or followed by
-    /// another token or whitespace.
+    /// An adapter for [`enum@proc_macro2::Spacing`].
     #[derive(Clone, Copy)]
     pub enum Spacing {
-        /// E.g. `+` is `Alone` in `+ =`, `+ident` or `+()`.
         Alone,
-        /// E.g. `+` is `Joint` in `+=` or `'#`.
-        ///
-        /// Additionally, single quote `'` can join with identifiers to form
-        /// lifetimes `'ident`.
         Joint,
     }
 }
 
 ast_struct! {
-    /// A word of Rust code, which may be a keyword or legal variable name.
-    ///
-    /// An identifier consists of at least one Unicode code point, the first of
-    /// which has the XID_Start property and the rest of which have the XID_Continue
-    /// property.
-    ///
-    /// - The empty string is not an identifier. Use `Option<Ident>`.
-    /// - A lifetime is not an identifier. Use `syn::Lifetime` instead.
+    /// An adapter for [`struct@proc_macro2::Ident`].
     #[derive(Clone, Eq, PartialEq)]
     #[serde(transparent)]
     pub struct Ident {
@@ -117,12 +81,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A literal string (`"hello"`), byte string (`b"hello"`), character (`'a'`),
-    /// byte character (`b'a'`), an integer or floating point number with or without
-    /// a suffix (`1`, `1u8`, `2.3`, `2.3f32`).
-    ///
-    /// Boolean literals like `true` and `false` do not belong here, they are
-    /// `Ident`s.
+    /// An adapter for [`struct@proc_macro2::Literal`].
     #[derive(Clone)]
     #[serde(transparent)]
     pub struct Literal {

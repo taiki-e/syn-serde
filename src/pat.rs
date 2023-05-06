@@ -9,7 +9,7 @@ pub use crate::{
 };
 
 ast_struct! {
-    /// A pattern that matches any one of a set of cases.
+    /// An adapter for [`struct@syn::PatOr`].
     pub struct PatOr {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,

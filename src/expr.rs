@@ -13,7 +13,7 @@ pub use crate::{
 };
 
 ast_struct! {
-    /// One arm of a `match` expression: `0...10 => { return true; }`.
+    /// An adapter for [`struct@syn::Arm`].
     pub struct Arm {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,

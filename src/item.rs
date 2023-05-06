@@ -12,7 +12,7 @@ pub use crate::{
 };
 
 ast_struct! {
-    /// A module or module declaration: `mod m` or `mod m { ... }`.
+    /// An adapter for [`struct@syn::ItemMod`].
     pub struct ItemMod {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,
@@ -29,7 +29,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A struct definition: `struct Foo<A> { x: A }`.
+    /// An adapter for [`struct@syn::ItemStruct`].
     pub struct ItemStruct {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,
@@ -45,7 +45,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A trait method within the definition of a trait.
+    /// An adapter for [`struct@syn::TraitItemMethod`].
     pub struct TraitItemMethod {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,
@@ -59,8 +59,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// The `self` argument of an associated method, whether taken by value
-    /// or by reference.
+    /// An adapter for [`struct@syn::Receiver`].
     pub struct Receiver {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,

@@ -34,27 +34,17 @@ pub(crate) fn assert_struct_semi(fields: &Fields, semi_token: bool) {
 }
 
 ast_struct! {
-    /// A field of a struct or enum variant.
+    /// An adapter for [`struct@syn::Field`].
     pub struct Field {
-        /// Attributes tagged on the field.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,
-
-        /// Visibility of the field.
         #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
         pub(crate) vis: Visibility,
-
-        /// Name of the field, if any.
-        ///
-        /// Fields of tuple structs have no names.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) ident: Option<Ident>,
-
         // TODO: can remove?
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) colon_token: bool,
-
-        /// Type of the field.
         pub(crate) ty: Type,
     }
 }

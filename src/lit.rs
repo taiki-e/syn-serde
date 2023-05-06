@@ -3,7 +3,7 @@ use super::*;
 pub use crate::{ast_enum::Lit, ast_struct::LitBool};
 
 ast_struct! {
-    /// A UTF-8 string literal: `"foo"`.
+    /// An adapter for [`struct@syn::LitStr`].
     #[serde(transparent)]
     pub struct LitStr {
         token: Literal,
@@ -11,7 +11,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A byte string literal: `b"foo"`.
+    /// An adapter for [`struct@syn::LitByteStr`].
     #[serde(transparent)]
     pub struct LitByteStr {
         token: Literal,
@@ -19,7 +19,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A byte literal: `b'f'`.
+    /// An adapter for [`struct@syn::LitByte`].
     #[serde(transparent)]
     pub struct LitByte {
         token: Literal,
@@ -27,7 +27,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A character literal: `'a'`.
+    /// An adapter for [`struct@syn::LitChar`].
     #[serde(transparent)]
     pub struct LitChar {
         token: Literal,
@@ -35,7 +35,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// An integer literal: `1` or `1u16`.
+    /// An adapter for [`struct@syn::LitInt`].
     #[serde(transparent)]
     pub struct LitInt {
         token: Literal,
@@ -43,9 +43,7 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// A floating point literal: `1f64` or `1.0e10f64`.
-    ///
-    /// Must be finite. May not be infinite or NaN.
+    /// An adapter for [`struct@syn::LitFloat`].
     #[serde(transparent)]
     pub struct LitFloat {
         token: Literal,
@@ -53,14 +51,9 @@ ast_struct! {
 }
 
 ast_enum! {
-    /// The style of a string literal, either plain quoted or a raw string like
-    /// `r##"data"##`.
+    /// An adapter for [`enum@syn::StrStyle`].
     pub enum StrStyle {
-        /// An ordinary string like `"data"`.
         Cooked,
-        /// A raw string like `r##"data"##`.
-        ///
-        /// The unsigned integer is the number of `#` symbols used.
         Raw(usize),
     }
 }

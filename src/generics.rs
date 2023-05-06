@@ -9,8 +9,7 @@ pub use crate::{
 };
 
 ast_struct! {
-    /// Lifetimes and type parameters attached to a declaration of a function,
-    /// enum, trait, etc.
+    /// An adapter for [`struct@syn::Generics`].
     #[derive(Default)]
     pub struct Generics {
         // #[serde(default, skip_serializing_if = "not")]
@@ -46,14 +45,11 @@ impl Default for TraitBoundModifier {
 }
 
 ast_struct! {
-    /// A type predicate in a `where` clause: `for<'c> Foo<'c>: Trait<'c>`.
+    /// An adapter for [`struct@syn::PredicateType`].
     pub struct PredicateType {
-        /// Any lifetimes from a `for` binding
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) lifetimes: Option<BoundLifetimes>,
-        /// The type being bounded
         pub(crate) bounded_ty: Type,
-        /// Trait and lifetime bounds (`Clone+Send+'static`)
         // TODO: should allow default?
         // #[serde(default, skip_serializing_if = "Punctuated::is_empty")]
         pub(crate) bounds: Punctuated<TypeParamBound>,

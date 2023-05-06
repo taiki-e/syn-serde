@@ -9,7 +9,7 @@ pub use crate::{
 };
 
 ast_struct! {
-    /// Return type of a function signature.
+    /// An adapter for [`enum@syn::ReturnType`].
     #[derive(Default)]
     #[serde(transparent)]
     pub struct ReturnType {
