@@ -1,7 +1,7 @@
 use super::*;
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
 pub use crate::{
-    ast_enum::{Fields, Visibility},
+    ast_enum::Fields,
     ast_struct::{FieldsNamed, FieldsUnnamed, Variant, VisRestricted},
 };
 
@@ -40,26 +40,14 @@ ast_struct! {
         pub(crate) attrs: Vec<Attribute>,
         #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
         pub(crate) vis: Visibility,
+        #[serde(rename = "mut")]
+        #[serde(default, skip_serializing_if = "FieldMutability::is_none")]
+        pub(crate) mutability: FieldMutability,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) ident: Option<Ident>,
         // TODO: can remove?
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) colon_token: bool,
         pub(crate) ty: Type,
-    }
-}
-
-impl Visibility {
-    pub(crate) fn is_inherited(&self) -> bool {
-        match self {
-            Visibility::Inherited => true,
-            _ => false,
-        }
-    }
-}
-
-impl Default for Visibility {
-    fn default() -> Self {
-        Visibility::Inherited
     }
 }

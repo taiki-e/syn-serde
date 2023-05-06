@@ -1,13 +1,15 @@
 use super::*;
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
 pub use crate::{
-    ast_enum::{FnArg, ForeignItem, ImplItem, Item, TraitItem, UseTree},
+    ast_enum::{
+        FnArg, ForeignItem, ImplItem, ImplRestriction, Item, StaticMutability, TraitItem, UseTree,
+    },
     ast_struct::{
         ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType, ImplItemConst,
-        ImplItemMacro, ImplItemMethod, ImplItemType, ItemConst, ItemEnum, ItemExternCrate, ItemFn,
-        ItemForeignMod, ItemImpl, ItemMacro, ItemMacro2, ItemStatic, ItemTrait, ItemTraitAlias,
-        ItemType, ItemUnion, ItemUse, Signature, TraitItemConst, TraitItemMacro, TraitItemType,
-        UseGroup, UseName, UsePath, UseRename,
+        ImplItemFn, ImplItemMacro, ImplItemType, ItemConst, ItemEnum, ItemExternCrate, ItemFn,
+        ItemForeignMod, ItemImpl, ItemMacro, ItemStatic, ItemTrait, ItemTraitAlias, ItemType,
+        ItemUnion, ItemUse, Signature, TraitItemConst, TraitItemMacro, TraitItemType, UseGroup,
+        UseName, UsePath, UseRename, Variadic,
     },
 };
 
@@ -18,6 +20,9 @@ ast_struct! {
         pub(crate) attrs: Vec<Attribute>,
         #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
         pub(crate) vis: Visibility,
+        #[serde(rename = "unsafe")]
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) unsafety: bool,
         pub(crate) ident: Ident,
         // TODO: should not skip_serializing_if
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -45,8 +50,8 @@ ast_struct! {
 }
 
 ast_struct! {
-    /// An adapter for [`struct@syn::TraitItemMethod`].
-    pub struct TraitItemMethod {
+    /// An adapter for [`struct@syn::TraitItemFn`].
+    pub struct TraitItemFn {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,
         #[serde(flatten)]
@@ -71,6 +76,21 @@ ast_struct! {
         #[serde(rename = "mut")]
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) mutability: bool,
+        #[serde(default, skip_serializing_if = "not")]
+        pub(crate) colon_token: bool,
+        // TODO: skip if colon_token=false?
+        pub(crate) ty: Box<Type>,
+    }
+}
+
+impl StaticMutability {
+    pub(crate) fn is_none(&self) -> bool {
+        matches!(self, Self::None)
+    }
+}
+impl Default for StaticMutability {
+    fn default() -> Self {
+        Self::None
     }
 }
 
@@ -107,10 +127,10 @@ mod convert {
         }
     }
 
-    // TraitItemMethod
-    syn_trait_impl!(syn::TraitItemMethod);
-    impl From<&syn::TraitItemMethod> for TraitItemMethod {
-        fn from(other: &syn::TraitItemMethod) -> Self {
+    // TraitItemFn
+    syn_trait_impl!(syn::TraitItemFn);
+    impl From<&syn::TraitItemFn> for TraitItemFn {
+        fn from(other: &syn::TraitItemFn) -> Self {
             if other.default.is_some() {
                 // `fn foo() -> bool {};`
                 assert!(other.semi_token.is_none(), "unexpected token: `;`");
@@ -126,8 +146,8 @@ mod convert {
             }
         }
     }
-    impl From<&TraitItemMethod> for syn::TraitItemMethod {
-        fn from(other: &TraitItemMethod) -> Self {
+    impl From<&TraitItemFn> for syn::TraitItemFn {
+        fn from(other: &TraitItemFn) -> Self {
             Self {
                 attrs: other.attrs.map_into(),
                 sig: other.sig.ref_into(),
@@ -146,6 +166,8 @@ mod convert {
                 reference: node.reference.is_some(),
                 lifetime: node.reference.as_ref().and_then(|(_0, _1)| _1.map_into()),
                 mutability: node.mutability.is_some(),
+                colon_token: node.colon_token.is_some(),
+                ty: node.ty.map_into(),
             }
         }
     }
@@ -160,6 +182,8 @@ mod convert {
                 },
                 mutability: default_or_none(node.mutability),
                 self_token: default(),
+                colon_token: default_or_none(node.colon_token),
+                ty: node.ty.map_into(),
             }
         }
     }

@@ -3,8 +3,8 @@ use super::*;
 pub use crate::{
     ast_enum::Pat,
     ast_struct::{
-        FieldPat, PatBox, PatIdent, PatLit, PatMacro, PatPath, PatRange, PatReference, PatRest,
-        PatSlice, PatStruct, PatTuple, PatTupleStruct, PatType, PatWild,
+        FieldPat, PatIdent, PatParen, PatReference, PatRest, PatSlice, PatStruct, PatTuple,
+        PatTupleStruct, PatType, PatWild,
     },
 };
 

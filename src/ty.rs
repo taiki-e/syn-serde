@@ -3,8 +3,9 @@ use super::*;
 pub use crate::{
     ast_enum::Type,
     ast_struct::{
-        Abi, BareFnArg, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro, TypeParen,
-        TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple, Variadic,
+        Abi, BareFnArg, BareVariadic, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro,
+        TypeParen, TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple,
+        Variadic,
     },
 };
 

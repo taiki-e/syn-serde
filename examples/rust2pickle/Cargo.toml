@@ -6,5 +6,5 @@ publish = false
 
 [dependencies]
 syn-serde = { path = "../.." }
-syn = { version = "1", features = ["full"] }
+syn = { version = "2", features = ["full"] }
 serde-pickle = "1"

@@ -15,10 +15,6 @@ impl TokenStream {
     fn _new(inner: Vec<TokenTree>) -> Self {
         Self { inner }
     }
-
-    pub(crate) fn is_empty(&self) -> bool {
-        self.inner.is_empty()
-    }
 }
 
 ast_enum! {

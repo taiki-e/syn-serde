@@ -20,8 +20,8 @@ use super::*;
 /// # {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_writer(writer, &serializable_file)
+/// let adapter = syn_file.to_adapter();
+/// serde_json::to_writer(writer, &adapter)
 /// # }
 /// ```
 pub fn to_writer<S, W>(writer: W, syn: &S) -> Result<()>
@@ -43,8 +43,8 @@ where
 /// # fn to_writer_pretty<W: io::Write>(writer: W, syn_file: &syn::File) -> serde_json::Result<()> {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_writer_pretty(writer, &serializable_file)
+/// let adapter = syn_file.to_adapter();
+/// serde_json::to_writer_pretty(writer, &adapter)
 /// # }
 /// ```
 pub fn to_writer_pretty<S, W>(writer: W, syn: &S) -> Result<()>
@@ -64,8 +64,8 @@ where
 /// # fn to_vec(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_vec(&serializable_file).unwrap()
+/// let adapter = syn_file.to_adapter();
+/// serde_json::to_vec(&adapter).unwrap()
 /// # }
 /// ```
 // All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
@@ -86,8 +86,8 @@ where
 /// # fn to_vec_pretty(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_vec_pretty(&serializable_file).unwrap()
+/// let adapter = syn_file.to_adapter();
+/// serde_json::to_vec_pretty(&adapter).unwrap()
 /// # }
 /// ```
 // All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
@@ -108,8 +108,8 @@ where
 /// # fn to_string(syn_file: &syn::File) -> String {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_string(&serializable_file).unwrap()
+/// let adapter = syn_file.to_adapter();
+/// serde_json::to_string(&adapter).unwrap()
 /// # }
 /// ```
 // All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
@@ -130,8 +130,8 @@ where
 /// # fn to_string_pretty(syn_file: &syn::File) -> String {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file = syn_file.to_adapter();
-/// serde_json::to_string_pretty(&serializable_file).unwrap()
+/// let adapter = syn_file.to_adapter();
+/// serde_json::to_string_pretty(&adapter).unwrap()
 /// # }
 /// ```
 // All of the data structures in syn-serde are compatible with JSON so unwrap will never fail.
@@ -152,20 +152,20 @@ where
 ///
 /// ```rust
 /// # use std::io;
-/// # fn from_reader<R: io::Read>(rdr: R) -> serde_json::Result<syn::File> {
+/// # fn from_reader<R: io::Read>(reader: R) -> serde_json::Result<syn::File> {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_reader(rdr)?;
-/// let syn_file = syn::File::from_adapter(&serializable_file);
+/// let adapter: <syn::File as Syn>::Adapter = serde_json::from_reader(reader)?;
+/// let syn_file = syn::File::from_adapter(&adapter);
 /// Ok(syn_file)
 /// # }
 /// ```
-pub fn from_reader<S, R>(rdr: R) -> Result<S>
+pub fn from_reader<S, R>(reader: R) -> Result<S>
 where
     S: Syn,
     R: io::Read,
 {
-    let adapter: S::Adapter = serde_json::from_reader(rdr)?;
+    let adapter: S::Adapter = serde_json::from_reader(reader)?;
     Ok(S::from_adapter(&adapter))
 }
 
@@ -177,8 +177,8 @@ where
 /// # fn from_reader(v: &[u8]) -> serde_json::Result<syn::File> {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_slice(v)?;
-/// let syn_file = syn::File::from_adapter(&serializable_file);
+/// let adapter: <syn::File as Syn>::Adapter = serde_json::from_slice(v)?;
+/// let syn_file = syn::File::from_adapter(&adapter);
 /// Ok(syn_file)
 /// # }
 /// ```
@@ -198,8 +198,8 @@ where
 /// # fn from_str(s: &str) -> serde_json::Result<syn::File> {
 /// use syn_serde::Syn;
 ///
-/// let serializable_file: <syn::File as Syn>::Adapter = serde_json::from_str(s)?;
-/// let syn_file = syn::File::from_adapter(&serializable_file);
+/// let adapter: <syn::File as Syn>::Adapter = serde_json::from_str(s)?;
+/// let syn_file = syn::File::from_adapter(&adapter);
 /// Ok(syn_file)
 /// # }
 /// ```

@@ -2,8 +2,8 @@
 pub use crate::{
     ast_enum::{GenericArgument, PathArguments},
     ast_struct::{
-        AngleBracketedGenericArguments, Binding, Constraint, ParenthesizedGenericArguments, Path,
-        PathSegment, QSelf,
+        AngleBracketedGenericArguments, AssocConst, AssocType, Constraint,
+        ParenthesizedGenericArguments, Path, PathSegment, QSelf,
     },
 };
 

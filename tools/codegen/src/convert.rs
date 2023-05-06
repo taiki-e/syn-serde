@@ -9,7 +9,7 @@ const CONVERT_SRC: &str = "src/gen/convert.rs";
 
 // optimize
 pub(crate) const IGNORED_TYPES: &[&str] =
-    &["Arm", "ExprMatch", "Generics", "ItemStruct", "Receiver", "ReturnType", "TraitItemMethod"];
+    &["Arm", "ExprMatch", "Generics", "ItemStruct", "Receiver", "ReturnType", "TraitItemFn"];
 
 pub(crate) const EMPTY_STRUCTS: &[&str] =
     &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
