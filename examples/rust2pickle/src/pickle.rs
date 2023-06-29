@@ -28,7 +28,7 @@ where
 
 // Deserialize JSON data to [`Syn`] type.
 
-/// Deserialize an instance of [`Syn`] type from an IO stream of JSON.
+/// Deserialize an instance of [`Syn`] type from an I/O stream of JSON.
 ///
 /// This function is equivalent to the following code:
 ///
