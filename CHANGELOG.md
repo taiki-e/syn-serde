@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [0.2.4] - 2023-06-29
+
 - Increase the minimum supported Rust version from Rust 1.31 to Rust 1.56.
 
 - Fix build error from dependency when built with `-Z minimal-versions`.
@@ -34,7 +36,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/syn-serde/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/taiki-e/syn-serde/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/taiki-e/syn-serde/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/taiki-e/syn-serde/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/taiki-e/syn-serde/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/taiki-e/syn-serde/compare/v0.2.0...v0.2.1
