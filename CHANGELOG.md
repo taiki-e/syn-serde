@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Increase the minimum supported Rust version from Rust 1.31 to Rust 1.56.
+
 - Fix build error from dependency when built with `-Z minimal-versions`.
 
 ## [0.2.3] - 2021-04-06
