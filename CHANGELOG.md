@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix build error from dependency when built with `-Z minimal-versions`.
+
 ## [0.2.3] - 2021-04-06
 
 - [Apply `doc(cfg(...))` on feature gated APIs.](https://github.com/taiki-e/syn-serde/pull/20)

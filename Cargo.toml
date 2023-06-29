@@ -34,7 +34,7 @@ json = ["serde_json"]
 
 # Note: proc-macro2, serde, serde_json, and syn are public dependencies.
 [dependencies]
-proc-macro2 = { version = "1", default-features = false }
+proc-macro2 = { version = "1.0.60", default-features = false }
 serde = { version = "1.0.103", features = ["derive"] }
 syn = { version = "1.0.98", default-features = false, features = ["full"] }
 
