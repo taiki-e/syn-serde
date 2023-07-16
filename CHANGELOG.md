@@ -10,6 +10,15 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Update to syn 2.0. ([#29](https://github.com/taiki-e/syn-serde/pull/29))
+
+  Major changes:
+  - Rename/Remove/Add various types/variants/fields, e.g., removal of `box` syntax.
+  - Attribute changes related to removal of `NestedMeta`.
+  - `"mut": true` -> `"mut": "mut"` in `{,Foreign}ItemStatic` for [restrictions](https://rust-lang.github.io/rfcs/3323-restrictions.html) support.
+
+  See also [syn 2.0.0 release note](https://github.com/dtolnay/syn/releases/tag/2.0.0).
+
 ## [0.2.4] - 2023-06-29
 
 - Increase the minimum supported Rust version from Rust 1.31 to Rust 1.56.
@@ -18,7 +27,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.2.3] - 2021-04-06
 
-- [Apply `doc(cfg(...))` on feature gated APIs.](https://github.com/taiki-e/syn-serde/pull/20)
+- Apply `doc(cfg(...))` on feature gated APIs. ([#20](https://github.com/taiki-e/syn-serde/pull/20))
 
 ## [0.2.2] - 2021-01-05
 
