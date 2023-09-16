@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 macro_rules! ast_struct {
     (
         $(#[$attrs:meta])*

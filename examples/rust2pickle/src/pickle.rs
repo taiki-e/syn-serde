@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 //! A module to provide functions for Pickle <-> Rust serialize and deserialize.
 
 use std::io;

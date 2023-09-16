@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 // Based on https://github.com/dtolnay/syn/tree/1.0.5/codegen.
 //
 // This crate generates the Syn trait in syn-serde programmatically from

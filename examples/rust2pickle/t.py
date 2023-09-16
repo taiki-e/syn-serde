@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
 # Load the dictionary back from the pickle file.
 import pickle
 import pprint
