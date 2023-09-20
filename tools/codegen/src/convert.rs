@@ -213,8 +213,8 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                 into_fields.extend(quote!(#field: #into,));
             }
 
-            assert!(!fields.is_empty(), "fields.is_empty: {}", ident);
-            assert!(!from_fields.is_empty(), "from_fields.is_empty(): {}", ident);
+            assert!(!fields.is_empty(), "fields.is_empty: {ident}");
+            assert!(!from_fields.is_empty(), "from_fields.is_empty(): {ident}");
 
             from_impl.extend(quote! {
                 Self { #from_fields }
