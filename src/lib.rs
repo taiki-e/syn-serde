@@ -112,15 +112,19 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
     )
 ))]
 #![forbid(unsafe_code)]
-#![warn(rust_2018_idioms, unreachable_pub)]
-// It cannot be included in the published code because these lints have false positives in the minimum required version.
-#![cfg_attr(test, warn(single_use_lifetimes))]
 #![warn(
+    rust_2018_idioms,
+    single_use_lifetimes,
+    unreachable_pub,
     clippy::pedantic,
-    // lints for public library
+    // Lints that may help when writing public library.
+    // missing_debug_implementations,
+    // missing_docs,
     clippy::alloc_instead_of_core,
     // clippy::exhaustive_enums, // TODO
     // clippy::exhaustive_structs, // TODO
+    clippy::impl_trait_in_params,
+    // clippy::missing_inline_in_public_items,
     // clippy::std_instead_of_alloc,
     clippy::std_instead_of_core,
 )]
