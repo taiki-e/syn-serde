@@ -1,3 +1,5 @@
+# json2rust
+
 Parse a JSON file into a `syn_serde::File` and print out a Rust syntax tree.
 
 ```text

@@ -1,3 +1,5 @@
+# rust2pickle
+
 Parse a Rust source file into a `syn_serde::File` and print out a Pickle
 representation of the syntax tree.
 
