@@ -341,7 +341,8 @@ pub trait Syn: Sized + sealed::Sealed {
 use core::ops;
 
 use proc_macro2::Span;
-use serde::{Deserialize, Serialize};
+use serde::{de::Deserialize, ser::Serialize};
+use serde_derive::{Deserialize, Serialize};
 
 type Punctuated<T> = Vec<T>;
 

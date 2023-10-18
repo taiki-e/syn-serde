@@ -5,7 +5,7 @@ macro_rules! ast_struct {
         $(#[$attrs:meta])*
         pub struct $name:ident $($rest:tt)*
     ) => {
-        #[derive(serde::Serialize, serde::Deserialize)]
+        #[derive(serde_derive::Serialize, serde_derive::Deserialize)]
         $(#[$attrs])*
         pub struct $name $($rest)*
     };
@@ -16,7 +16,7 @@ macro_rules! ast_enum {
         $(#[$attrs:meta])*
         pub enum $name:ident $($rest:tt)*
     ) => (
-        #[derive(serde::Serialize, serde::Deserialize)]
+        #[derive(serde_derive::Serialize, serde_derive::Deserialize)]
         #[serde(rename_all = "snake_case")]
         $(#[$attrs])*
         pub enum $name $($rest)*
