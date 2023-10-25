@@ -3,7 +3,7 @@
 use super::*;
 #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
 pub use crate::{
-    ast_enum::{Expr, GenericArgument, Member, RangeLimits},
+    ast_enum::{Expr, Member, RangeLimits},
     ast_struct::{
         ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak, ExprCall,
         ExprCast, ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprGroup, ExprIf,

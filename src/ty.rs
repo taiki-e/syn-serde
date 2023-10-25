@@ -7,7 +7,6 @@ pub use crate::{
     ast_struct::{
         Abi, BareFnArg, BareVariadic, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro,
         TypeParen, TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple,
-        Variadic,
     },
 };
 
