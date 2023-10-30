@@ -1,35 +1,4 @@
 {
-  "attrs": [
-    {
-      "style": "inner",
-      "meta": {
-        "list": {
-          "path": {
-            "segments": [
-              {
-                "ident": "warn"
-              }
-            ]
-          },
-          "delimiter": "paren",
-          "tokens": [
-            {
-              "ident": "rust_2018_idioms"
-            },
-            {
-              "punct": {
-                "op": ",",
-                "spacing": "alone"
-              }
-            },
-            {
-              "ident": "single_use_lifetimes"
-            }
-          ]
-        }
-      }
-    }
-  ],
   "items": [
     {
       "use": {

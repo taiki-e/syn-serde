@@ -113,10 +113,6 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 ))]
 #![forbid(unsafe_code)]
 #![warn(
-    rust_2018_idioms,
-    single_use_lifetimes,
-    unreachable_pub,
-    clippy::pedantic,
     // Lints that may help when writing public library.
     // missing_debug_implementations,
     // missing_docs,
@@ -130,10 +126,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 )]
 #![allow(
     clippy::enum_glob_use,
-    clippy::missing_errors_doc,
-    clippy::module_name_repetitions,
     clippy::needless_doctest_main,
-    clippy::struct_excessive_bools,
     clippy::used_underscore_binding,
     clippy::wildcard_imports
 )]
@@ -152,7 +145,6 @@ mod ast_enum;
 mod convert;
 
 mod attr {
-    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
     pub use crate::{
         ast_enum::{AttrStyle, Meta},
         ast_struct::{Attribute, MetaList, MetaNameValue},
@@ -178,7 +170,6 @@ pub use crate::expr::{
 };
 
 mod file {
-    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
     pub use crate::ast_struct::File;
 }
 #[doc(hidden)]
@@ -204,7 +195,6 @@ pub use crate::item::{
 };
 
 mod lifetime {
-    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
     pub use crate::ast_struct::Lifetime;
 }
 #[doc(hidden)]
@@ -217,14 +207,12 @@ pub use crate::lit::{
 };
 
 mod mac {
-    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
     pub use crate::{ast_enum::MacroDelimiter, ast_struct::Macro};
 }
 #[doc(hidden)]
 pub use crate::mac::{Macro, MacroDelimiter};
 
 mod op {
-    #[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
     pub use crate::ast_enum::{BinOp, UnOp};
 }
 #[doc(hidden)]
@@ -286,7 +274,6 @@ mod sealed {
 ///
 /// [Syn]: https://github.com/dtolnay/syn
 /// [proc-macro2]: https://github.com/alexcrichton/proc-macro2
-#[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
 pub trait Syn: Sized + sealed::Sealed {
     type Adapter: Serialize + for<'de> Deserialize<'de>;
 

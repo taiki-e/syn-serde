@@ -9,3 +9,6 @@ syn-serde = { path = "../..", features = ["json"] }
 syn = { version = "2", features = ["full"] }
 prettyplease = "0.2"
 quote = "1"
+
+[lints]
+workspace = true

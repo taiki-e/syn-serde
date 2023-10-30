@@ -8,3 +8,6 @@ publish = false
 syn-serde = { path = "../.." }
 syn = { version = "2", features = ["full"] }
 serde-pickle = "1"
+
+[lints]
+workspace = true

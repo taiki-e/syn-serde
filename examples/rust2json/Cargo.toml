@@ -7,3 +7,6 @@ publish = false
 [dependencies]
 syn-serde = { path = "../..", features = ["json"] }
 syn = { version = "2", features = ["full"] }
+
+[lints]
+workspace = true

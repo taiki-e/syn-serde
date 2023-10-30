@@ -2,6 +2,8 @@
 
 //! A module to provide functions for Pickle <-> Rust serialize and deserialize.
 
+#![allow(unreachable_pub, clippy::default_trait_access)]
+
 use std::io;
 
 use serde_pickle::Result;

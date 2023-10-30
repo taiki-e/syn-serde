@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use super::*;
-#[allow(unreachable_pub)] // https://github.com/rust-lang/rust/issues/57411
 pub use crate::{
     ast_enum::Fields,
     ast_struct::{FieldsNamed, FieldsUnnamed, Variant},
