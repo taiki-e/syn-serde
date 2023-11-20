@@ -130,7 +130,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
     clippy::used_underscore_binding,
     clippy::wildcard_imports
 )]
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(syn_serde_doc_cfg, feature(doc_cfg))]
 
 #[macro_use]
 mod macros;
@@ -260,7 +260,7 @@ pub use crate::token_stream::{
 };
 
 #[cfg(feature = "json")]
-#[cfg_attr(docsrs, doc(cfg(feature = "json")))]
+#[cfg_attr(syn_serde_doc_cfg, doc(cfg(feature = "json")))]
 pub mod json;
 
 mod sealed {
