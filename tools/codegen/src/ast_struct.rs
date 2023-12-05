@@ -220,7 +220,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
     }
 
     if let Data::Struct(fields) = &node.data {
-        let mut body = Vec::new();
+        let mut body = vec![];
         let mut last = "";
         for (field, ty) in fields {
             if let Some(t) = format_ty(ty) {

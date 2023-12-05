@@ -30,10 +30,10 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
                 (from, into)
             }
             Type::Tuple(t) => {
-                let mut from_expr = Vec::new();
-                let mut from_pat = Vec::new();
-                let mut into_expr = Vec::new();
-                let mut into_pat = Vec::new();
+                let mut from_expr = Vec::with_capacity(t.len());
+                let mut from_pat = Vec::with_capacity(t.len());
+                let mut into_expr = Vec::with_capacity(t.len());
+                let mut into_pat = Vec::with_capacity(t.len());
 
                 for (i, t) in t.iter().enumerate() {
                     let id = format_ident!("_{i}",);
@@ -144,10 +144,10 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                     continue;
                 }
 
-                let mut from_expr = Vec::new();
-                let mut from_pat = Vec::new();
-                let mut into_expr = Vec::new();
-                let mut into_pat = Vec::new();
+                let mut from_expr = Vec::with_capacity(fields.len());
+                let mut from_pat = Vec::with_capacity(fields.len());
+                let mut into_expr = Vec::with_capacity(fields.len());
+                let mut into_pat = Vec::with_capacity(fields.len());
 
                 for (i, t) in fields.iter().enumerate() {
                     let id = format_ident!("_{i}");

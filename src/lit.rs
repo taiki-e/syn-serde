@@ -190,7 +190,7 @@ mod value {
         // We're going to want to have slices which don't respect codepoint boundaries.
         let mut s = s.as_bytes();
 
-        let mut out = Vec::new();
+        let mut out = vec![];
         'outer: loop {
             let byte = match byte(s, 0) {
                 b'"' => break,
