@@ -14,7 +14,7 @@ use super::*;
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # use std::io;
 /// # fn to_writer<W>(writer: W, syn_file: &syn::File) -> serde_json::Result<()>
 /// # where
@@ -40,7 +40,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # use std::io;
 /// # fn to_writer_pretty<W: io::Write>(writer: W, syn_file: &syn::File) -> serde_json::Result<()> {
 /// use syn_serde::Syn;
@@ -62,7 +62,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn to_vec(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
@@ -84,7 +84,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn to_vec_pretty(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
@@ -106,7 +106,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn to_string(syn_file: &syn::File) -> String {
 /// use syn_serde::Syn;
 ///
@@ -128,7 +128,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn to_string_pretty(syn_file: &syn::File) -> String {
 /// use syn_serde::Syn;
 ///
@@ -152,7 +152,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # use std::io;
 /// # fn from_reader<R: io::Read>(reader: R) -> serde_json::Result<syn::File> {
 /// use syn_serde::Syn;
@@ -175,7 +175,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn from_reader(v: &[u8]) -> serde_json::Result<syn::File> {
 /// use syn_serde::Syn;
 ///
@@ -196,7 +196,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn from_str(s: &str) -> serde_json::Result<syn::File> {
 /// use syn_serde::Syn;
 ///

@@ -14,7 +14,7 @@ use syn_serde::Syn;
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn to_vec(syn_file: &syn::File) -> Vec<u8> {
 /// use syn_serde::Syn;
 ///
@@ -36,7 +36,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # use std::io;
 /// # fn from_reader<R: io::Read>(rdr: R) -> serde_pickle::Result<syn::File> {
 /// use syn_serde::Syn;
@@ -60,7 +60,7 @@ where
 ///
 /// This function is equivalent to the following code:
 ///
-/// ```rust
+/// ```
 /// # fn from_reader(v: &[u8]) -> serde_pickle::Result<syn::File> {
 /// use syn_serde::Syn;
 ///

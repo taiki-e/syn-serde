@@ -281,7 +281,7 @@ pub trait Syn: Sized + sealed::Sealed {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```
     /// # #[cfg(feature = "json")]
     /// # fn dox() {
     /// use syn_serde::Syn;
@@ -302,7 +302,7 @@ pub trait Syn: Sized + sealed::Sealed {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```
     /// # #[cfg(feature = "json")]
     /// # fn dox() -> Result<(), Box<dyn std::error::Error>> {
     /// use syn_serde::Syn;
