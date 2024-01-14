@@ -36,7 +36,7 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
                 let mut into_pat = Vec::with_capacity(t.len());
 
                 for (i, t) in t.iter().enumerate() {
-                    let id = format_ident!("_{i}",);
+                    let id = format_ident!("_{i}");
                     let (from, into) = visit(t, &quote!((*#id)), defs);
 
                     from_pat.push(id.clone());
