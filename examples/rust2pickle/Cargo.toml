@@ -1,8 +1,6 @@
 [package]
 name = "rust2pickle"
-version = "0.0.0"
 edition = "2021"
-publish = false
 
 [dependencies]
 syn-serde = { path = "../.." }

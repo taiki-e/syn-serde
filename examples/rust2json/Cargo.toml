@@ -1,8 +1,6 @@
 [package]
 name = "rust2json"
-version = "0.0.0"
 edition = "2021"
-publish = false
 
 [dependencies]
 syn-serde = { path = "../..", features = ["json"] }
