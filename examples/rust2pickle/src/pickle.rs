@@ -2,11 +2,11 @@
 
 //! A module to provide functions for Pickle <-> Rust serialize and deserialize.
 
-#![allow(unreachable_pub, clippy::default_trait_access)]
+#![allow(unreachable_pub)]
 
 use std::io;
 
-use serde_pickle::Result;
+use serde_pickle::{DeOptions, Result, SerOptions};
 use syn_serde::Syn;
 
 // Serialize [`Syn`] type into Pickle data.
@@ -27,7 +27,7 @@ where
     S: Syn,
 {
     let adapter = syn.to_adapter();
-    serde_pickle::to_vec(&adapter, Default::default()).unwrap()
+    serde_pickle::to_vec(&adapter, SerOptions::default()).unwrap()
 }
 
 // Deserialize JSON data to [`Syn`] type.
@@ -52,7 +52,7 @@ where
     S: Syn,
     R: io::Read,
 {
-    let adapter: S::Adapter = serde_pickle::from_reader(rdr, Default::default())?;
+    let adapter: S::Adapter = serde_pickle::from_reader(rdr, DeOptions::default())?;
     Ok(S::from_adapter(&adapter))
 }
 
@@ -74,6 +74,6 @@ pub fn from_slice<S>(v: &[u8]) -> Result<S>
 where
     S: Syn,
 {
-    let adapter: S::Adapter = serde_pickle::from_slice(v, Default::default())?;
+    let adapter: S::Adapter = serde_pickle::from_slice(v, DeOptions::default())?;
     Ok(S::from_adapter(&adapter))
 }

@@ -114,6 +114,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 #![forbid(unsafe_code)]
 #![warn(
     // Lints that may help when writing public library.
+    // missing_debug_implementations,
     // missing_docs,
     clippy::alloc_instead_of_core,
     // clippy::exhaustive_enums, // TODO
@@ -124,7 +125,6 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
     clippy::std_instead_of_core,
 )]
 #![allow(
-    missing_debug_implementations,
     clippy::enum_glob_use,
     clippy::needless_doctest_main,
     clippy::used_underscore_binding,
