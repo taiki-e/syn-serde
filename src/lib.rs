@@ -130,6 +130,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
     clippy::used_underscore_binding,
     clippy::wildcard_imports
 )]
+// docs.rs only (cfg is enabled via [package.metadata.docs.rs] in Cargo.toml, not build script)
 #![cfg_attr(syn_serde_doc_cfg, feature(doc_cfg))]
 
 #[macro_use]
