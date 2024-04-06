@@ -5,7 +5,7 @@
 // This crate generates the Syn trait in syn-serde programmatically from
 // the syntax tree description.
 
-#![allow(clippy::match_on_vec_items, clippy::needless_pass_by_value)]
+#![allow(clippy::needless_pass_by_value)]
 
 #[macro_use]
 mod file;
