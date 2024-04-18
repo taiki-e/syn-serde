@@ -13,8 +13,6 @@ Add this to your `Cargo.toml`:
 syn-serde = "0.3"
 ```
 
-*Compiler support: requires rustc 1.56+*
-
 ## Examples
 
 ```toml
