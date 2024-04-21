@@ -109,7 +109,7 @@ impl Literal {
 
     #[allow(clippy::match_overlapping_arm)]
     pub(crate) fn byte_string(bytes: &[u8]) -> Self {
-        let mut escaped = "b\"".to_string();
+        let mut escaped = "b\"".to_owned();
         for b in bytes {
             match *b {
                 b'\0' => escaped.push_str(r"\0"),
