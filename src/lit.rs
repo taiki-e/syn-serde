@@ -71,7 +71,7 @@ mod value {
 
     /// Get the byte at offset idx, or a default of `b'\0'` if we're looking
     /// past the end of the input buffer.
-    pub(crate) fn byte<S: AsRef<[u8]> + ?Sized>(s: &S, idx: usize) -> u8 {
+    pub(crate) fn byte<S: ?Sized + AsRef<[u8]>>(s: &S, idx: usize) -> u8 {
         let s = s.as_ref();
         if idx < s.len() {
             s[idx]
@@ -320,7 +320,7 @@ mod value {
 
     fn backslash_x<S>(s: &S) -> (u8, &S)
     where
-        S: Index<RangeFrom<usize>, Output = S> + AsRef<[u8]> + ?Sized,
+        S: ?Sized + Index<RangeFrom<usize>, Output = S> + AsRef<[u8]>,
     {
         let mut ch = 0;
         let b0 = byte(s, 0);
