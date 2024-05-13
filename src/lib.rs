@@ -130,7 +130,6 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 )]
 // docs.rs only (cfg is enabled by docs.rs, not build script)
 #![cfg_attr(docsrs, feature(doc_cfg))]
-#![allow(unknown_lints, unexpected_cfgs)] // https://github.com/rust-lang/rust/issues/124735
 
 #[macro_use]
 mod macros;
