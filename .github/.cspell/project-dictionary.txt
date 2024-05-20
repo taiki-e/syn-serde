@@ -1,10 +1,8 @@
 asyncness
 codepoint
-cond
 constness
 defaultness
 elems
-paren
 qself
 stmts
 subpat
