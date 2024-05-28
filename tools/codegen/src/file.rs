@@ -2,7 +2,7 @@
 
 use std::{
     path::{Path, PathBuf},
-    sync::OnceLock,
+    sync::LazyLock,
 };
 
 use anyhow::{format_err, Result};
@@ -128,8 +128,7 @@ pub(crate) fn write_raw(
     path: &Path,
     contents: impl AsRef<[u8]>,
 ) -> Result<()> {
-    static LINGUIST_GENERATED: OnceLock<Vec<globset::GlobMatcher>> = OnceLock::new();
-    let linguist_generated = LINGUIST_GENERATED.get_or_init(|| {
+    static LINGUIST_GENERATED: LazyLock<Vec<globset::GlobMatcher>> = LazyLock::new(|| {
         let gitattributes = fs::read_to_string(workspace_root().join(".gitattributes")).unwrap();
         let mut linguist_generated = vec![];
         for line in gitattributes.lines() {
@@ -142,7 +141,7 @@ pub(crate) fn write_raw(
         linguist_generated
     });
     let p = path.strip_prefix(workspace_root()).unwrap();
-    if !linguist_generated.iter().any(|m| m.is_match(p)) {
+    if !LINGUIST_GENERATED.iter().any(|m| m.is_match(p)) {
         eprintln!("warning: you may want to mark {} linguist-generated", p.display());
     }
 
