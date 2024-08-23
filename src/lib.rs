@@ -294,6 +294,7 @@ pub trait Syn: Sized + sealed::Sealed {
     /// let serializable_file = syn_file.to_adapter();
     /// println!("{}", serde_json::to_string_pretty(&serializable_file).unwrap());
     /// # }
+    /// # fn main() {} // rustdoc bug: since nightly-2024-08-15, they see the string "fn main" inside the syn::parse_quote! and mistakenly assume that its own main function is defined in this example.
     /// ```
     fn to_adapter(&self) -> Self::Adapter;
 
