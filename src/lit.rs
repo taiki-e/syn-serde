@@ -109,7 +109,7 @@ mod value {
                             let (byte, rest) = backslash_x(s);
                             s = rest;
                             assert!(byte <= 0x80, "Invalid \\x byte in string literal");
-                            char::from_u32(u32::from(byte)).unwrap()
+                            char::from_u32(byte as u32).unwrap()
                         }
                         b'u' => {
                             let (chr, rest) = backslash_u(s);
@@ -212,7 +212,7 @@ mod value {
                         b'"' => b'"',
                         b'\r' | b'\n' => loop {
                             let byte = byte(s, 0);
-                            let ch = char::from_u32(u32::from(byte)).unwrap();
+                            let ch = char::from_u32(byte as u32).unwrap();
                             if ch.is_whitespace() {
                                 s = &s[1..];
                             } else {
@@ -293,7 +293,7 @@ mod value {
                     let (byte, rest) = backslash_x(s);
                     s = rest;
                     assert!(byte <= 0x80, "Invalid \\x byte in string literal");
-                    char::from_u32(u32::from(byte)).unwrap()
+                    char::from_u32(byte as u32).unwrap()
                 }
                 b'u' => {
                     let (chr, rest) = backslash_u(s);
@@ -351,17 +351,17 @@ mod value {
             match b {
                 b'0'..=b'9' => {
                     ch *= 0x10;
-                    ch += u32::from(b - b'0');
+                    ch += (b - b'0') as u32;
                     s = &s[1..];
                 }
                 b'a'..=b'f' => {
                     ch *= 0x10;
-                    ch += u32::from(10 + b - b'a');
+                    ch += (10 + b - b'a') as u32;
                     s = &s[1..];
                 }
                 b'A'..=b'F' => {
                     ch *= 0x10;
-                    ch += u32::from(10 + b - b'A');
+                    ch += (10 + b - b'A') as u32;
                     s = &s[1..];
                 }
                 b'}' => break,
