@@ -17,17 +17,15 @@ mod gen;
 
 use std::path::Path;
 
-use anyhow::Result;
 use fs_err as fs;
 
-fn main() -> Result<()> {
+fn main() {
     // TODO: auto-update syn.json on new release?
     let syn_json = Path::new(env!("CARGO_MANIFEST_DIR")).join("syn.json");
-    let defs = fs::read_to_string(syn_json)?;
-    let defs = serde_json::from_str(&defs)?;
+    let defs = fs::read_to_string(syn_json).unwrap();
+    let defs = serde_json::from_str(&defs).unwrap();
 
-    ast_struct::generate(&defs)?;
-    ast_enum::generate(&defs)?;
-    convert::generate(&defs)?;
-    Ok(())
+    ast_struct::generate(&defs);
+    ast_enum::generate(&defs);
+    convert::generate(&defs);
 }

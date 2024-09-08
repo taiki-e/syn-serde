@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use anyhow::Result;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
@@ -90,13 +89,13 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
     }
 }
 
-pub(crate) fn generate(defs: &Definitions) -> Result<()> {
+pub(crate) fn generate(defs: &Definitions) {
     let impls = gen::traverse(defs, node);
     let path = &file::workspace_root().join(AST_ENUM_SRC);
     file::write(function_name!(), path, quote! {
         use crate::*;
 
         #impls
-    })?;
-    Ok(())
+    })
+    .unwrap();
 }
