@@ -25,7 +25,10 @@
                           "ident": "BufWriter"
                         },
                         {
-                          "ident": "Write"
+                          "rename": {
+                            "ident": "Write",
+                            "rename": "_"
+                          }
                         }
                       ]
                     }

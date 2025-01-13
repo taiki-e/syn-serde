@@ -2,7 +2,7 @@
 
 use std::{
     env, fs,
-    io::{self, BufWriter, Write},
+    io::{self, BufWriter, Write as _},
 };
 
 use syn_serde::json;

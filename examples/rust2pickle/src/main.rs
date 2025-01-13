@@ -4,7 +4,7 @@ mod pickle;
 
 use std::{
     env, fs,
-    io::{self, BufWriter, Write},
+    io::{self, BufWriter, Write as _},
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

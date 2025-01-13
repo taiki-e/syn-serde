@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use core::fmt::{self, Write};
+use core::fmt::{self, Write as _};
 
 use super::*;
 
