@@ -6,7 +6,7 @@ use syn_codegen::{Data, Definitions, Node, Type};
 
 use crate::{
     convert::{EMPTY_STRUCTS, IGNORED_TYPES},
-    file, gen,
+    file, traverse,
 };
 
 const AST_ENUM_SRC: &str = "src/gen/ast_enum.rs";
@@ -90,7 +90,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 }
 
 pub(crate) fn generate(defs: &Definitions) {
-    let impls = gen::traverse(defs, node);
+    let impls = traverse::traverse(defs, node);
     let path = &file::workspace_root().join(AST_ENUM_SRC);
     file::write(function_name!(), path, quote! {
         use crate::*;

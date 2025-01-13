@@ -13,7 +13,7 @@ mod file;
 mod ast_enum;
 mod ast_struct;
 mod convert;
-mod gen;
+mod traverse;
 
 use std::path::Path;
 
