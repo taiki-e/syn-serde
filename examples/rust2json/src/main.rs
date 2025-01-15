@@ -9,7 +9,7 @@ use syn_serde::json;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<_> = env::args_os().skip(1).collect();
-    let (input_path, output_path) = match &args[..] {
+    let (input_path, output_path) = match &*args {
         [input] => (input, None),
         [input, output] => (input, Some(output)),
         _ => {

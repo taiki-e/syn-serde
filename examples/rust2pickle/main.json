@@ -208,7 +208,8 @@
                     "expr": {
                       "reference": {
                         "expr": {
-                          "index": {
+                          "unary": {
+                            "op": "*",
                             "expr": {
                               "path": {
                                 "segments": [
@@ -216,11 +217,6 @@
                                     "ident": "args"
                                   }
                                 ]
-                              }
-                            },
-                            "index": {
-                              "range": {
-                                "limits": ".."
                               }
                             }
                           }
