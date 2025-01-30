@@ -249,7 +249,7 @@ mod value {
         assert_eq!(byte(s, 1), b'\'');
 
         // We're going to want to have slices which don't respect codepoint boundaries.
-        let mut s = s[2..].as_bytes();
+        let mut s = &s.as_bytes()[2..];
 
         let b = match byte(s, 0) {
             b'\\' => {
