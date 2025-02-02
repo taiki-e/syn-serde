@@ -6,7 +6,8 @@
 [![msrv](https://img.shields.io/badge/msrv-1.56-blue?style=flat-square&logo=rust)](https://www.rust-lang.org)
 [![github actions](https://img.shields.io/github/actions/workflow/status/taiki-e/syn-serde/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/taiki-e/syn-serde/actions)
 
-<!-- tidy:crate-doc:start -->
+<!-- tidy:sync-markdown-to-rustdoc:start:src/lib.rs -->
+
 Library to serialize and deserialize [Syn] syntax trees.
 
 ## Usage
@@ -104,7 +105,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
 [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
 
-<!-- tidy:crate-doc:end -->
+<!-- tidy:sync-markdown-to-rustdoc:end -->
 
 ## License
 

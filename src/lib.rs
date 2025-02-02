@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 /*!
-<!-- tidy:crate-doc:start -->
+<!-- Note: Document from sync-markdown-to-rustdoc:start through sync-markdown-to-rustdoc:end
+     is synchronized from README.md. Any changes to that range are not preserved. -->
+<!-- tidy:sync-markdown-to-rustdoc:start -->
+
 Library to serialize and deserialize [Syn] syntax trees.
 
 ## Usage
@@ -21,7 +24,7 @@ syn-serde = { version = "0.3", features = ["json"] }
 syn = { version = "2", features = ["full"] }
 ```
 
-```rust
+```
 use syn_serde::json;
 
 let syn_file: syn::File = syn::parse_quote! {
@@ -99,7 +102,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 [`rust2json`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/rust2json
 [`json2rust`]: https://github.com/taiki-e/syn-serde/tree/HEAD/examples/json2rust
 
-<!-- tidy:crate-doc:end -->
+<!-- tidy:sync-markdown-to-rustdoc:end -->
 */
 
 #![doc(test(
