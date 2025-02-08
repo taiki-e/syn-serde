@@ -4,7 +4,7 @@ mod pickle;
 
 use std::{
     env, fs,
-    io::{self, BufWriter, Write as _},
+    io::{self, Write as _},
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -25,9 +25,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Some(output_path) = output_path {
         fs::write(output_path, buf)?;
     } else {
-        let mut writer = BufWriter::new(io::stdout().lock());
-        writer.write_all(&buf)?;
-        writer.flush()?;
+        let mut stdout = io::stdout().lock(); // Not buffered because it is written at once.
+        stdout.write_all(&buf)?;
+        stdout.flush()?;
     }
     Ok(())
 }

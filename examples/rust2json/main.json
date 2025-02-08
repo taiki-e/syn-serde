@@ -610,7 +610,7 @@
                             "pat": {
                               "ident": {
                                 "mut": true,
-                                "ident": "writer"
+                                "ident": "stdout"
                               }
                             },
                             "init": {
@@ -684,7 +684,7 @@
                                             "path": {
                                               "segments": [
                                                 {
-                                                  "ident": "writer"
+                                                  "ident": "stdout"
                                                 }
                                               ]
                                             }
@@ -722,7 +722,7 @@
                                       "path": {
                                         "segments": [
                                           {
-                                            "ident": "writer"
+                                            "ident": "stdout"
                                           }
                                         ]
                                       }

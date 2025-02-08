@@ -28,9 +28,6 @@
                           "ident": "self"
                         },
                         {
-                          "ident": "BufWriter"
-                        },
-                        {
                           "rename": {
                             "ident": "Write",
                             "rename": "_"
@@ -604,49 +601,31 @@
                             "pat": {
                               "ident": {
                                 "mut": true,
-                                "ident": "writer"
+                                "ident": "stdout"
                               }
                             },
                             "init": {
                               "expr": {
-                                "call": {
-                                  "func": {
-                                    "path": {
-                                      "segments": [
-                                        {
-                                          "ident": "BufWriter"
-                                        },
-                                        {
-                                          "ident": "new"
+                                "method_call": {
+                                  "receiver": {
+                                    "call": {
+                                      "func": {
+                                        "path": {
+                                          "segments": [
+                                            {
+                                              "ident": "io"
+                                            },
+                                            {
+                                              "ident": "stdout"
+                                            }
+                                          ]
                                         }
-                                      ]
+                                      },
+                                      "args": []
                                     }
                                   },
-                                  "args": [
-                                    {
-                                      "method_call": {
-                                        "receiver": {
-                                          "call": {
-                                            "func": {
-                                              "path": {
-                                                "segments": [
-                                                  {
-                                                    "ident": "io"
-                                                  },
-                                                  {
-                                                    "ident": "stdout"
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            "args": []
-                                          }
-                                        },
-                                        "method": "lock",
-                                        "args": []
-                                      }
-                                    }
-                                  ]
+                                  "method": "lock",
+                                  "args": []
                                 }
                               }
                             }
@@ -662,7 +641,7 @@
                                       "path": {
                                         "segments": [
                                           {
-                                            "ident": "writer"
+                                            "ident": "stdout"
                                           }
                                         ]
                                       }
@@ -700,7 +679,7 @@
                                       "path": {
                                         "segments": [
                                           {
-                                            "ident": "writer"
+                                            "ident": "stdout"
                                           }
                                         ]
                                       }
