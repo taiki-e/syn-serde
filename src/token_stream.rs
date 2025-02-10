@@ -97,28 +97,58 @@ impl Literal {
     }
 
     pub(crate) fn string(t: &str) -> Self {
-        let mut s = t.chars().flat_map(char::escape_default).collect::<String>();
-        s.push('"');
-        s.insert(0, '"');
-        Self::_new(s)
+        let mut repr = String::with_capacity(t.len() + 2);
+        repr.push('"');
+        let mut chars = t.chars();
+        while let Some(ch) = chars.next() {
+            if ch == '\0' {
+                repr.push_str(if chars.as_str().starts_with(|next| '0' <= next && next <= '7') {
+                    // circumvent clippy::octal_escapes lint
+                    "\\x00"
+                } else {
+                    "\\0"
+                });
+            } else if ch == '\'' {
+                // escape_debug turns this into "\'" which is unnecessary.
+                repr.push(ch);
+            } else {
+                repr.extend(ch.escape_debug());
+            }
+        }
+        repr.push('"');
+        Self::_new(repr)
     }
 
     pub(crate) fn character(t: char) -> Self {
-        Self::_new(format!("'{}'", t.escape_default().collect::<String>()))
+        let mut repr = String::new();
+        repr.push('\'');
+        if t == '"' {
+            // escape_debug turns this into '\"' which is unnecessary.
+            repr.push(t);
+        } else {
+            repr.extend(t.escape_debug());
+        }
+        repr.push('\'');
+        Self::_new(repr)
     }
 
-    #[allow(clippy::match_overlapping_arm)]
     pub(crate) fn byte_string(bytes: &[u8]) -> Self {
         let mut escaped = "b\"".to_owned();
-        for b in bytes {
-            match *b {
-                b'\0' => escaped.push_str(r"\0"),
+        let mut bytes = bytes.iter();
+        while let Some(&b) = bytes.next() {
+            #[allow(clippy::match_overlapping_arm)]
+            match b {
+                b'\0' => escaped.push_str(match bytes.as_slice().first() {
+                    // circumvent clippy::octal_escapes lint
+                    Some(b'0'..=b'7') => r"\x00",
+                    _ => r"\0",
+                }),
                 b'\t' => escaped.push_str(r"\t"),
                 b'\n' => escaped.push_str(r"\n"),
                 b'\r' => escaped.push_str(r"\r"),
                 b'"' => escaped.push_str("\\\""),
                 b'\\' => escaped.push_str("\\\\"),
-                b'\x20'..=b'\x7E' => escaped.push(*b as char),
+                b'\x20'..=b'\x7E' => escaped.push(b as char),
                 _ => {
                     let _ = write!(escaped, "\\x{:02X}", b);
                 }

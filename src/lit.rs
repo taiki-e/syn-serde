@@ -3,6 +3,8 @@
 use super::*;
 pub use crate::{ast_enum::Lit, ast_struct::LitBool};
 
+// TODO: cstr https://github.com/dtolnay/syn/pull/1622
+
 ast_struct! {
     /// An adapter for [`struct@syn::LitStr`].
     #[serde(transparent)]
