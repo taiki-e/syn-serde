@@ -127,7 +127,7 @@ mod value {
                                 continue 'outer;
                             }
                         },
-                        b => panic!("unexpected byte {:?} after \\ character in byte literal", b),
+                        b => panic!("unexpected byte {b:?} after \\ character in byte literal"),
                     }
                 }
                 b'\r' => {
@@ -215,7 +215,7 @@ mod value {
                                 continue 'outer;
                             }
                         },
-                        b => panic!("unexpected byte {:?} after \\ character in byte literal", b),
+                        b => panic!("unexpected byte {b:?} after \\ character in byte literal"),
                     }
                 }
                 b'\r' => {
@@ -264,7 +264,7 @@ mod value {
                     b'0' => b'\0',
                     b'\'' => b'\'',
                     b'"' => b'"',
-                    b => panic!("unexpected byte {:?} after \\ character in byte literal", b),
+                    b => panic!("unexpected byte {b:?} after \\ character in byte literal"),
                 }
             }
             b => {
@@ -303,7 +303,7 @@ mod value {
                 b'0' => '\0',
                 b'\'' => '\'',
                 b'"' => '"',
-                b => panic!("unexpected byte {:?} after \\ character in byte literal", b),
+                b => panic!("unexpected byte {b:?} after \\ character in byte literal"),
             }
         } else {
             let ch = next_chr(s);
@@ -370,7 +370,7 @@ mod value {
         if let Some(ch) = char::from_u32(ch) {
             (ch, s)
         } else {
-            panic!("character code {:x} is not a valid unicode character", ch);
+            panic!("character code {ch:x} is not a valid unicode character");
         }
     }
 
