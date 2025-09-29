@@ -153,16 +153,16 @@ mod attr {
     };
 }
 #[doc(hidden)]
-pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue};
+pub use self::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue};
 
 mod data;
-pub(crate) use crate::data::assert_struct_semi;
+pub(crate) use self::data::assert_struct_semi;
 #[doc(hidden)]
-pub use crate::data::{Field, Fields, FieldsNamed, FieldsUnnamed, Variant};
+pub use self::data::{Field, Fields, FieldsNamed, FieldsUnnamed, Variant};
 
 mod expr;
 #[doc(hidden)]
-pub use crate::expr::{
+pub use self::expr::{
     Arm, Expr, ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak,
     ExprCall, ExprCast, ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprGroup,
     ExprIf, ExprIndex, ExprInfer, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
@@ -175,11 +175,11 @@ mod file {
     pub use crate::ast_struct::File;
 }
 #[doc(hidden)]
-pub use crate::file::File;
+pub use self::file::File;
 
 mod generics;
 #[doc(hidden)]
-pub use crate::generics::{
+pub use self::generics::{
     BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeParam, PredicateLifetime,
     PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound, WhereClause,
     WherePredicate,
@@ -187,7 +187,7 @@ pub use crate::generics::{
 
 mod item;
 #[doc(hidden)]
-pub use crate::item::{
+pub use self::item::{
     FnArg, ForeignItem, ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType,
     ImplItem, ImplItemConst, ImplItemFn, ImplItemMacro, ImplItemType, ImplRestriction, Item,
     ItemConst, ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro, ItemMod,
@@ -200,11 +200,11 @@ mod lifetime {
     pub use crate::ast_struct::Lifetime;
 }
 #[doc(hidden)]
-pub use crate::lifetime::Lifetime;
+pub use self::lifetime::Lifetime;
 
 mod lit;
 #[doc(hidden)]
-pub use crate::lit::{
+pub use self::lit::{
     Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr, StrStyle,
 };
 
@@ -212,44 +212,44 @@ mod mac {
     pub use crate::{ast_enum::MacroDelimiter, ast_struct::Macro};
 }
 #[doc(hidden)]
-pub use crate::mac::{Macro, MacroDelimiter};
+pub use self::mac::{Macro, MacroDelimiter};
 
 mod op {
     pub use crate::ast_enum::{BinOp, UnOp};
 }
 #[doc(hidden)]
-pub use crate::op::{BinOp, UnOp};
+pub use self::op::{BinOp, UnOp};
 
 mod pat;
 #[doc(hidden)]
-pub use crate::expr::{
+pub use self::expr::{
     ExprConst as PatConst, ExprLit as PatLit, ExprMacro as PatMacro, ExprPath as PatPath,
     ExprRange as PatRange,
 };
 #[doc(hidden)]
-pub use crate::pat::{
+pub use self::pat::{
     FieldPat, Pat, PatIdent, PatOr, PatParen, PatReference, PatRest, PatSlice, PatStruct, PatTuple,
     PatTupleStruct, PatType, PatWild,
 };
 
 mod path;
 #[doc(hidden)]
-pub use crate::path::{
+pub use self::path::{
     AngleBracketedGenericArguments, AssocConst, AssocType, Constraint, GenericArgument,
     ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
 };
 
 mod restriction;
 #[doc(hidden)]
-pub use crate::restriction::{FieldMutability, VisRestricted, Visibility};
+pub use self::restriction::{FieldMutability, VisRestricted, Visibility};
 
 mod stmt;
 #[doc(hidden)]
-pub use crate::stmt::{Block, Local, LocalInit, Stmt, StmtMacro};
+pub use self::stmt::{Block, Local, LocalInit, Stmt, StmtMacro};
 
 mod ty;
 #[doc(hidden)]
-pub use crate::ty::{
+pub use self::ty::{
     Abi, BareFnArg, BareVariadic, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
     TypeImplTrait, TypeMacro, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
     TypeTraitObject, TypeTuple,
@@ -257,7 +257,7 @@ pub use crate::ty::{
 
 mod token_stream;
 #[doc(hidden)]
-pub use crate::token_stream::{
+pub use self::token_stream::{
     Delimiter, Group, Ident, Literal, Punct, Spacing, TokenStream, TokenTree,
 };
 
