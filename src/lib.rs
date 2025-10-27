@@ -126,6 +126,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
     clippy::std_instead_of_core,
 )]
 #![allow(
+    clippy::derivable_impls,
     clippy::enum_glob_use,
     clippy::needless_doctest_main,
     clippy::used_underscore_binding,
