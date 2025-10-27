@@ -28,6 +28,7 @@ macro_rules! syn_trait_impl {
         impl crate::sealed::Sealed for $path::$ty {}
         impl crate::Syn for $path::$ty {
             type Adapter = $ty;
+            #[allow(unreachable_code)] // For syn::ImplRestriction
             fn to_adapter(&self) -> Self::Adapter {
                 Self::Adapter::from(self)
             }
