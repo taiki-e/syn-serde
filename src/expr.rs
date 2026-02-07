@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use alloc::{boxed::Box, vec::Vec};
+
 use super::*;
 pub use crate::{
     ast_enum::{Expr, Member, RangeLimits},

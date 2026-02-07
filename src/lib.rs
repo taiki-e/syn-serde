@@ -105,6 +105,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 <!-- tidy:sync-markdown-to-rustdoc:end -->
 */
 
+#![no_std]
 #![doc(test(
     no_crate_inject,
     attr(allow(
@@ -136,6 +137,9 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
 )]
 // docs.rs only (cfg is enabled by docs.rs, not build script)
 #![cfg_attr(docsrs, feature(doc_cfg))]
+
+extern crate alloc;
+extern crate std;
 
 #[macro_use]
 mod macros;
@@ -331,6 +335,7 @@ pub trait Syn: Sized + sealed::Sealed {
 
 // -----------------------------------------------------------------------------
 
+use alloc::{boxed::Box, string::String, vec::Vec};
 use core::ops;
 
 use proc_macro2::Span;

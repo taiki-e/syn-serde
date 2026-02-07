@@ -1,5 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use alloc::{
+    borrow::ToOwned as _,
+    boxed::Box,
+    string::{String, ToString as _},
+    vec,
+    vec::Vec,
+};
+
 use super::*;
 pub use crate::{ast_enum::Lit, ast_struct::LitBool};
 

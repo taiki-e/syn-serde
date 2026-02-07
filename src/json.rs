@@ -2,6 +2,7 @@
 
 //! A module to provide functions for JSON <-> Rust serialize and deserialize.
 
+use alloc::{string::String, vec::Vec};
 use std::io;
 
 use serde_json::Result;
