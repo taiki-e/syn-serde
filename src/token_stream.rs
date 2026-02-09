@@ -135,7 +135,7 @@ impl Literal {
     }
 }
 
-// TODO: when release the next minor version, remove this.
+// TODO(semver): when release the next breaking release, remove this.
 impl fmt::Display for Literal {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(&self.text, f)
