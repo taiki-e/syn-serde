@@ -3,8 +3,9 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
+use test_helper::{bin_name, codegen::file, function_name};
 
-use crate::{file, traverse};
+use crate::{traverse, workspace_root};
 
 const CONVERT_SRC: &str = "src/gen/convert.rs";
 
@@ -241,9 +242,10 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 }
 
 pub(crate) fn generate(defs: &Definitions) {
+    let workspace_root = workspace_root();
     let impls = traverse::traverse(defs, node);
-    let path = &file::workspace_root().join(CONVERT_SRC);
-    file::write(function_name!(), path, quote! {
+    let path = &workspace_root.join(CONVERT_SRC);
+    file::write(function_name!(), bin_name!(), workspace_root, path, quote! {
         #![allow(unused_parens)]
         #![allow(
             clippy::double_parens,
@@ -254,6 +256,5 @@ pub(crate) fn generate(defs: &Definitions) {
         use crate::*;
 
         #impls
-    })
-    .unwrap();
+    });
 }

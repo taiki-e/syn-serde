@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use std::assert_matches;
+
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Punctuated, Type};
+use test_helper::{bin_name, codegen::file, function_name};
 
-use crate::{convert::EMPTY_STRUCTS, file, traverse};
+use crate::{convert::EMPTY_STRUCTS, traverse, workspace_root};
 
 const AST_ENUM_SRC: &str = "src/gen/ast_struct.rs";
 
@@ -59,7 +62,7 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
             Type::Token(ty) | Type::Group(ty) => {
                 let attr = quote!(#[serde(default, skip_serializing_if = "not")]);
                 return if is_keyword(ty) {
-                    assert!(matches!(
+                    assert_matches!(
                         field,
                         "mutability"
                             | "by_ref"
@@ -72,7 +75,7 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
                             | "movability"
                             | "capture"
                             | "auto_token"
-                    ));
+                    );
                     let s = &defs.tokens[ty];
                     quote! {
                         #[serde(rename = #s)]
@@ -118,7 +121,7 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
                     return quote!(#[serde(rename = "stmts")]);
                 }
                 // TODO: should we rename "body" to "stmts"?
-                assert!(matches!(field, "body" | "then_branch"));
+                assert_matches!(field, "body" | "then_branch");
             }
             _ => {}
         },
@@ -268,12 +271,12 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 }
 
 pub(crate) fn generate(defs: &Definitions) {
+    let workspace_root = workspace_root();
     let impls = traverse::traverse(defs, node);
-    let path = &file::workspace_root().join(AST_ENUM_SRC);
-    file::write(function_name!(), path, quote! {
+    let path = &workspace_root.join(AST_ENUM_SRC);
+    file::write(function_name!(), bin_name!(), workspace_root, path, quote! {
         use crate::*;
 
         #impls
-    })
-    .unwrap();
+    });
 }

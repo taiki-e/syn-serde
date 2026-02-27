@@ -3,10 +3,11 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
+use test_helper::{bin_name, codegen::file, function_name};
 
 use crate::{
     convert::{EMPTY_STRUCTS, IGNORED_TYPES},
-    file, traverse,
+    traverse, workspace_root,
 };
 
 const AST_ENUM_SRC: &str = "src/gen/ast_enum.rs";
@@ -90,12 +91,12 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
 }
 
 pub(crate) fn generate(defs: &Definitions) {
+    let workspace_root = workspace_root();
     let impls = traverse::traverse(defs, node);
-    let path = &file::workspace_root().join(AST_ENUM_SRC);
-    file::write(function_name!(), path, quote! {
+    let path = &workspace_root.join(AST_ENUM_SRC);
+    file::write(function_name!(), bin_name!(), workspace_root, path, quote! {
         use crate::*;
 
         #impls
-    })
-    .unwrap();
+    });
 }
