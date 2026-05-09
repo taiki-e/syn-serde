@@ -372,7 +372,7 @@ mod value {
                 _ => panic!("unexpected non-hex character after \\u"),
             }
         }
-        assert!(byte(s, 0) == b'}');
+        assert_eq!(byte(s, 0), b'}');
         s = &s[1..];
 
         if let Some(ch) = char::from_u32(ch) {
