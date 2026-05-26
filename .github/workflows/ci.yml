@@ -17,30 +17,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  codegen:
-    needs: tidy
-    uses: taiki-e/github-actions/.github/workflows/gen.yml@931686d4e4cf88b13e790040727ccde2dba8ec62 # main
+  tidy:
+    uses: taiki-e/github-actions/.github/workflows/tidy.yml@1bb80ca038216cd1fb7b6ca6d76240b3772963ab # main
     permissions:
-      contents: write # unused (used when creating branch for pr)
-      pull-requests: write # unused (used in `codegen-automerge: true` case)
-  miri:
-    needs: tidy
-    uses: taiki-e/github-actions/.github/workflows/miri.yml@931686d4e4cf88b13e790040727ccde2dba8ec62 # main
-    with:
-      # NB: sync with test job's --exclude option
-      args: --exclude syn-serde-internal-codegen
-  msrv:
-    needs: tidy
-    uses: taiki-e/github-actions/.github/workflows/msrv.yml@931686d4e4cf88b13e790040727ccde2dba8ec62 # main
+      security-events: write # for github/codeql-action/*
   test:
     needs: tidy
-    uses: taiki-e/github-actions/.github/workflows/test.yml@931686d4e4cf88b13e790040727ccde2dba8ec62 # main
+    uses: taiki-e/github-actions/.github/workflows/rust-test.yml@1bb80ca038216cd1fb7b6ca6d76240b3772963ab # main
     with:
-      # NB: sync with miri job's --exclude option
       test-args: --exclude syn-serde-internal-codegen
       no-std: false
       optional-deps: ''
-  tidy:
-    uses: taiki-e/github-actions/.github/workflows/tidy.yml@931686d4e4cf88b13e790040727ccde2dba8ec62 # main
-    permissions:
-      security-events: write # for github/codeql-action/*
