@@ -4,7 +4,7 @@ edition = "2021"
 
 [dependencies]
 syn-serde = { path = "../.." }
-syn = { version = "2", features = ["full"] }
+syn = { version = "3", features = ["full"] }
 serde-pickle = "1"
 
 [lints]

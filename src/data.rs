@@ -43,14 +43,13 @@ ast_struct! {
         pub(crate) attrs: Vec<Attribute>,
         #[serde(default, skip_serializing_if = "Visibility::is_inherited")]
         pub(crate) vis: Visibility,
-        #[serde(rename = "mut")]
-        #[serde(default, skip_serializing_if = "FieldMutability::is_none")]
-        pub(crate) mutability: FieldMutability,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) ident: Option<Ident>,
         // TODO: can remove?
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) colon_token: bool,
         pub(crate) ty: Type,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub(crate) default: Option<Expr>,
     }
 }

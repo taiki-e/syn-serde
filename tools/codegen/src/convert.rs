@@ -10,11 +10,44 @@ use crate::{traverse, workspace_root};
 const CONVERT_SRC: &str = "src/gen/convert.rs";
 
 // optimize
-pub(crate) const IGNORED_TYPES: &[&str] =
-    &["Arm", "ExprMatch", "Generics", "ItemStruct", "Receiver", "ReturnType", "TraitItemFn"];
+pub(crate) const IGNORED_TYPES: &[&str] = &[
+    "Arm",
+    "ExprMatch",
+    "File",
+    "Generics",
+    "ItemImpl",
+    "ItemStruct",
+    "Receiver",
+    "ReturnType",
+    "TraitItemFn",
+];
 
-pub(crate) const EMPTY_STRUCTS: &[&str] =
-    &["TypeInfer", "TypeNever", "UseGlob", "VisCrate", "VisPublic"];
+pub(crate) const EMPTY_STRUCTS: &[&str] = &[
+    "BlockModifiers",
+    "ClosureModifiers",
+    "FieldModifiers",
+    "LocalModifiers",
+    "TraitBoundModifiers",
+    "TypeInfer",
+    "TypeNever",
+    "UseGlob",
+    "VisCrate",
+    "VisPublic",
+];
+
+// EMPTY_STRUCTS that are also #[non_exhaustive]: can't use struct literal, must use Default::default()
+const NON_EXHAUSTIVE_EMPTY_STRUCTS: &[&str] = &[
+    "BlockModifiers",
+    "ClosureModifiers",
+    "FieldModifiers",
+    "LocalModifiers",
+    "TraitBoundModifiers",
+];
+
+// Non-empty structs marked #[non_exhaustive] in syn: can't use struct literal at all,
+// must use Default::default() + field mutation
+const NON_EXHAUSTIVE_STRUCTS: &[&str] =
+    &["ConstModifiers", "FnModifiers", "ImplModifiers", "TraitModifiers", "TypeModifiers"];
 
 fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStream>, TokenStream) {
     match ty {
@@ -91,8 +124,12 @@ fn visit(ty: &Type, var: &TokenStream, defs: &Definitions) -> (Option<TokenStrea
             let ident = format_ident!("{}", node.ident);
             if let Data::Struct(fields) = &node.data {
                 let from = None;
-                let fields = fields.keys().map(|f| format_ident!("{f}"));
-                let into = quote!(syn::#ident { #(#fields: default(),)* });
+                let into = if NON_EXHAUSTIVE_EMPTY_STRUCTS.contains(&&**t) {
+                    quote!(<syn::#ident>::default())
+                } else {
+                    let fields = fields.keys().map(|f| format_ident!("{f}"));
+                    quote!(syn::#ident { #(#fields: default(),)* })
+                };
                 return (from, into);
             }
             unreachable!()
@@ -200,6 +237,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
         Data::Struct(fields) => {
             let mut from_fields = TokenStream::new();
             let mut into_fields = TokenStream::new();
+            let mut into_assignments = TokenStream::new();
 
             for (field, ty) in fields {
                 let field = format_ident!("{field}");
@@ -211,6 +249,7 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
                     from_fields.extend(quote!(#field: #from,));
                 }
                 into_fields.extend(quote!(#field: #into,));
+                into_assignments.extend(quote!(_r.#field = #into;));
             }
 
             assert!(!fields.is_empty(), "fields.is_empty: {ident}");
@@ -219,9 +258,18 @@ fn node(impls: &mut TokenStream, node: &Node, defs: &Definitions) {
             from_impl.extend(quote! {
                 Self { #from_fields }
             });
-            into_impl.extend(quote! {
-                Self { #into_fields }
-            });
+            if NON_EXHAUSTIVE_STRUCTS.contains(&&*node.ident) {
+                // #[non_exhaustive] structs: can't use struct literal at all, must mutate fields
+                into_impl.extend(quote! {
+                    let mut _r = <syn::#ident>::default();
+                    #into_assignments
+                    _r
+                });
+            } else {
+                into_impl.extend(quote! {
+                    Self { #into_fields }
+                });
+            }
         }
         Data::Private => return,
     }

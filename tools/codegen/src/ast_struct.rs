@@ -92,12 +92,17 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
                 assert_eq!(field, "vis");
                 return quote!(#[serde(default, skip_serializing_if = "Visibility::is_inherited")]);
             }
-            "StaticMutability" | "FieldMutability" => {
+            "StaticMutability" => {
                 assert_eq!(field, "mutability");
-                let is_none = format!("{ty}::is_none");
                 return quote! {
                     #[serde(rename = "mut")]
-                    #[serde(default, skip_serializing_if = #is_none)]
+                    #[serde(default, skip_serializing_if = "StaticMutability::is_none")]
+                };
+            }
+            "Safety" => {
+                assert_eq!(field, "safety");
+                return quote! {
+                    #[serde(default, skip_serializing_if = "Safety::is_default")]
                 };
             }
             "Generics" => {
@@ -107,10 +112,6 @@ fn field_attrs(field: &str, ty: &Type, defs: &Definitions) -> TokenStream {
             "PathArguments" => {
                 assert_eq!(field, "arguments");
                 return quote!(#[serde(default, skip_serializing_if = "PathArguments::is_none")]);
-            }
-            "TraitBoundModifier" => {
-                assert_eq!(field, "modifier");
-                return quote!(#[serde(default, skip_serializing_if = "TraitBoundModifier::is_none")]);
             }
             "ReturnType" => {
                 assert_eq!(field, "output");
@@ -134,7 +135,7 @@ fn skip_serializing_if(ident: &str, field: &str, ty: &Type) -> Option<String> {
     match (ident, field) {
         (_, "attrs")
         | ("Attribute", "tokens")
-        | ("TypeParam" | "LifetimeDef" | "TraitItemType", "bounds")
+        | ("TypeParam" | "LifetimeParam" | "TraitItemType", "bounds")
         | ("ItemTrait", "supertraits") => Some(format!("{}::is_empty", outer_ty(ty))),
         _ => None,
     }
