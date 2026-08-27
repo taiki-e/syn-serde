@@ -133,6 +133,7 @@ The data structures of syn-serde 0.3 is compatible with the data structures of
     clippy::enum_glob_use,
     clippy::needless_doctest_main,
     clippy::used_underscore_binding,
+    clippy::used_underscore_items,
     clippy::wildcard_imports
 )]
 // docs.rs only (cfg is enabled by docs.rs, not build script)
