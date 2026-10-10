@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Type};
-use test_helper::{bin_name, codegen::file, function_name};
+use test_helper::{
+    bin_name,
+    codegen::{
+        file,
+        proc_macro2::TokenStream,
+        quote::{format_ident, quote},
+    },
+    function_name,
+};
 
 use crate::{
     convert::{EMPTY_STRUCTS, IGNORED_TYPES},

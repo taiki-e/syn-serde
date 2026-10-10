@@ -2,10 +2,16 @@
 
 use std::assert_matches;
 
-use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
 use syn_codegen::{Data, Definitions, Node, Punctuated, Type};
-use test_helper::{bin_name, codegen::file, function_name};
+use test_helper::{
+    bin_name,
+    codegen::{
+        file,
+        proc_macro2::TokenStream,
+        quote::{format_ident, quote},
+    },
+    function_name,
+};
 
 use crate::{convert::EMPTY_STRUCTS, traverse, workspace_root};
 
