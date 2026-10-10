@@ -54,6 +54,7 @@
     },
     {
       "fn": {
+        "modifiers": {},
         "ident": "main",
         "inputs": [],
         "output": {

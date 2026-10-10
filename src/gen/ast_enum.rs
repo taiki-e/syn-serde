@@ -106,6 +106,7 @@ pub enum Expr {
     Paren(ExprParen),
     Path(ExprPath),
     Range(ExprRange),
+    RawAddr(ExprRawAddr),
     Reference(ExprReference),
     Repeat(ExprRepeat),
     Return(ExprReturn),
@@ -118,13 +119,6 @@ pub enum Expr {
     Verbatim(TokenStream),
     While(ExprWhile),
     Yield(ExprYield),
-}
-/// An adapter for [`enum@syn::FieldMutability`].
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-#[non_exhaustive]
-pub enum FieldMutability {
-    None,
 }
 /// An adapter for [`enum@syn::Fields`].
 #[derive(Serialize, Deserialize)]
@@ -183,11 +177,6 @@ pub enum ImplItem {
     Macro(ImplItemMacro),
     Verbatim(TokenStream),
 }
-/// An adapter for [`enum@syn::ImplRestriction`].
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-#[non_exhaustive]
-pub enum ImplRestriction {}
 /// An adapter for [`enum@syn::Item`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -281,6 +270,13 @@ pub enum PathArguments {
     AngleBracketed(AngleBracketedGenericArguments),
     Parenthesized(ParenthesizedGenericArguments),
 }
+/// An adapter for [`enum@syn::PointerMutability`].
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PointerMutability {
+    Const,
+    Mut,
+}
 /// An adapter for [`enum@syn::RangeLimits`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -290,6 +286,14 @@ pub enum RangeLimits {
     #[serde(rename = "..=")]
     Closed,
 }
+/// An adapter for [`enum@syn::Safety`].
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Safety {
+    Safe,
+    Unsafe,
+    Default,
+}
 /// An adapter for [`enum@syn::StaticMutability`].
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -298,13 +302,6 @@ pub enum StaticMutability {
     #[serde(rename = "mut")]
     Mut,
     None,
-}
-/// An adapter for [`enum@syn::TraitBoundModifier`].
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum TraitBoundModifier {
-    None,
-    Maybe,
 }
 /// An adapter for [`enum@syn::TraitItem`].
 #[derive(Serialize, Deserialize)]
@@ -323,7 +320,7 @@ pub enum TraitItem {
 #[non_exhaustive]
 pub enum Type {
     Array(TypeArray),
-    BareFn(TypeBareFn),
+    FnPtr(TypeFnPtr),
     Group(TypeGroup),
     ImplTrait(TypeImplTrait),
     #[serde(rename = "_")]
@@ -381,6 +378,13 @@ pub enum Visibility {
     Public,
     Restricted(VisRestricted),
     Inherited,
+}
+/// An adapter for [`enum@syn::WhereClausePlacement`].
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WhereClausePlacement {
+    Early,
+    Late,
 }
 /// An adapter for [`enum@syn::WherePredicate`].
 #[derive(Serialize, Deserialize)]

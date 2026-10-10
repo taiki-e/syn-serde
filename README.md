@@ -24,7 +24,7 @@ syn-serde = "0.3"
 ```toml
 [dependencies]
 syn-serde = { version = "0.3", features = ["json"] }
-syn = { version = "2", features = ["full"] }
+syn = { version = "3", features = ["full"] }
 ```
 
 ```rust
@@ -98,7 +98,7 @@ similar but not identical to [Syn]. All data structures provided by syn-serde
 can be converted to the data structures of [Syn] and [proc-macro2].
 
 The data structures of syn-serde 0.3 is compatible with the data structures of
-[Syn] 2.x.
+[Syn] 3.x.
 
 [Syn]: https://github.com/dtolnay/syn
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2

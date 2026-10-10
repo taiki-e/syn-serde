@@ -21,7 +21,7 @@ syn-serde = "0.3"
 ```toml
 [dependencies]
 syn-serde = { version = "0.3", features = ["json"] }
-syn = { version = "2", features = ["full"] }
+syn = { version = "3", features = ["full"] }
 ```
 
 ```
@@ -95,7 +95,7 @@ similar but not identical to [Syn]. All data structures provided by syn-serde
 can be converted to the data structures of [Syn] and [proc-macro2].
 
 The data structures of syn-serde 0.3 is compatible with the data structures of
-[Syn] 2.x.
+[Syn] 3.x.
 
 [Syn]: https://github.com/dtolnay/syn
 [proc-macro2]: https://github.com/alexcrichton/proc-macro2
@@ -174,14 +174,12 @@ pub use self::expr::{
     Arm, Expr, ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak,
     ExprCall, ExprCast, ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprGroup,
     ExprIf, ExprIndex, ExprInfer, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
-    ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
-    ExprTryBlock, ExprTuple, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue, Index, Label,
-    Member, RangeLimits,
+    ExprParen, ExprPath, ExprRange, ExprRawAddr, ExprReference, ExprRepeat, ExprReturn, ExprStruct,
+    ExprTry, ExprTryBlock, ExprTuple, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue,
+    Index, Label, Member, RangeLimits,
 };
 
-mod file {
-    pub use crate::ast_struct::File;
-}
+mod file;
 #[doc(hidden)]
 pub use self::file::File;
 
@@ -189,19 +187,19 @@ mod generics;
 #[doc(hidden)]
 pub use self::generics::{
     BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeParam, PredicateLifetime,
-    PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound, WhereClause,
-    WherePredicate,
+    PredicateType, TraitBound, TypeParam, TypeParamBound, WhereClause, WherePredicate,
 };
 
 mod item;
 #[doc(hidden)]
 pub use self::item::{
-    FnArg, ForeignItem, ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType,
-    ImplItem, ImplItemConst, ImplItemFn, ImplItemMacro, ImplItemType, ImplRestriction, Item,
-    ItemConst, ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro, ItemMod,
-    ItemStatic, ItemStruct, ItemTrait, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Receiver,
-    Signature, StaticMutability, TraitItem, TraitItemConst, TraitItemFn, TraitItemMacro,
-    TraitItemType, UseGroup, UseName, UsePath, UseRename, UseTree, Variadic,
+    ConstModifiers, FnArg, FnModifiers, ForeignItem, ForeignItemFn, ForeignItemMacro,
+    ForeignItemStatic, ForeignItemType, ImplItem, ImplItemConst, ImplItemFn, ImplItemMacro,
+    ImplItemType, ImplModifiers, Item, ItemConst, ItemEnum, ItemExternCrate, ItemFn,
+    ItemForeignMod, ItemImpl, ItemMacro, ItemMod, ItemStatic, ItemStruct, ItemTrait,
+    ItemTraitAlias, ItemType, ItemUnion, ItemUse, Receiver, Safety, Signature, StaticMutability,
+    TraitItem, TraitItemConst, TraitItemFn, TraitItemMacro, TraitItemType, TraitModifiers,
+    TypeModifiers, UseGroup, UseName, UsePath, UseRename, UseTree, Variadic, WhereClausePlacement,
 };
 
 mod lifetime {
@@ -212,9 +210,7 @@ pub use self::lifetime::Lifetime;
 
 mod lit;
 #[doc(hidden)]
-pub use self::lit::{
-    Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr, StrStyle,
-};
+pub use self::lit::{Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr};
 
 mod mac {
     pub use crate::{ast_enum::MacroDelimiter, ast_struct::Macro};
@@ -249,7 +245,7 @@ pub use self::path::{
 
 mod restriction;
 #[doc(hidden)]
-pub use self::restriction::{FieldMutability, VisRestricted, Visibility};
+pub use self::restriction::{VisRestricted, Visibility};
 
 mod stmt;
 #[doc(hidden)]
@@ -258,8 +254,8 @@ pub use self::stmt::{Block, Local, LocalInit, Stmt, StmtMacro};
 mod ty;
 #[doc(hidden)]
 pub use self::ty::{
-    Abi, BareFnArg, BareVariadic, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
-    TypeImplTrait, TypeMacro, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
+    Abi, FnPtrVariadic, NamedArg, PointerMutability, ReturnType, Type, TypeArray, TypeFnPtr,
+    TypeGroup, TypeImplTrait, TypeMacro, TypeParen, TypePath, TypePtr, TypeReference, TypeSlice,
     TypeTraitObject, TypeTuple,
 };
 

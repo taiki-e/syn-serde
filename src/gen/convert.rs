@@ -120,45 +120,6 @@ impl From<&Attribute> for syn::Attribute {
         }
     }
 }
-syn_trait_impl!(syn::BareFnArg);
-impl From<&syn::BareFnArg> for BareFnArg {
-    fn from(node: &syn::BareFnArg) -> Self {
-        Self {
-            attrs: node.attrs.map_into(),
-            name: node.name.ref_map(|(_0, _1)| (*_0).ref_into()),
-            ty: node.ty.ref_into(),
-        }
-    }
-}
-impl From<&BareFnArg> for syn::BareFnArg {
-    fn from(node: &BareFnArg) -> Self {
-        Self {
-            attrs: node.attrs.map_into(),
-            name: node.name.ref_map(|_0| ((*_0).ref_into(), default())),
-            ty: node.ty.ref_into(),
-        }
-    }
-}
-syn_trait_impl!(syn::BareVariadic);
-impl From<&syn::BareVariadic> for BareVariadic {
-    fn from(node: &syn::BareVariadic) -> Self {
-        Self {
-            attrs: node.attrs.map_into(),
-            name: node.name.ref_map(|(_0, _1)| (*_0).ref_into()),
-            comma: node.comma.is_some(),
-        }
-    }
-}
-impl From<&BareVariadic> for syn::BareVariadic {
-    fn from(node: &BareVariadic) -> Self {
-        Self {
-            attrs: node.attrs.map_into(),
-            name: node.name.ref_map(|_0| ((*_0).ref_into(), default())),
-            dots: default(),
-            comma: default_or_none(node.comma),
-        }
-    }
-}
 syn_trait_impl!(syn::BinOp);
 impl From<&syn::BinOp> for BinOp {
     fn from(node: &syn::BinOp) -> Self {
@@ -263,6 +224,21 @@ impl From<&BoundLifetimes> for syn::BoundLifetimes {
         }
     }
 }
+syn_trait_impl!(syn::ConstModifiers);
+impl From<&syn::ConstModifiers> for ConstModifiers {
+    fn from(node: &syn::ConstModifiers) -> Self {
+        Self {
+            defaultness: node.defaultness.is_some(),
+        }
+    }
+}
+impl From<&ConstModifiers> for syn::ConstModifiers {
+    fn from(node: &ConstModifiers) -> Self {
+        let mut _r = <syn::ConstModifiers>::default();
+        _r.defaultness = default_or_none(node.defaultness);
+        _r
+    }
+}
 syn_trait_impl!(syn::ConstParam);
 impl From<&syn::ConstParam> for ConstParam {
     fn from(node: &syn::ConstParam) -> Self {
@@ -270,8 +246,7 @@ impl From<&syn::ConstParam> for ConstParam {
             attrs: node.attrs.map_into(),
             ident: node.ident.ref_into(),
             ty: node.ty.ref_into(),
-            eq_token: node.eq_token.is_some(),
-            default: node.default.map_into(),
+            default: node.default.ref_map(|(_0, _1)| (*_1).ref_into()),
         }
     }
 }
@@ -283,8 +258,7 @@ impl From<&ConstParam> for syn::ConstParam {
             ident: node.ident.ref_into(),
             colon_token: default(),
             ty: node.ty.ref_into(),
-            eq_token: default_or_none(node.eq_token),
-            default: node.default.map_into(),
+            default: node.default.ref_map(|_1| (default(), (*_1).ref_into())),
         }
     }
 }
@@ -339,6 +313,7 @@ impl From<&syn::Expr> for Expr {
             syn::Expr::Paren(_0) => Expr::Paren((*_0).ref_into()),
             syn::Expr::Path(_0) => Expr::Path((*_0).ref_into()),
             syn::Expr::Range(_0) => Expr::Range((*_0).ref_into()),
+            syn::Expr::RawAddr(_0) => Expr::RawAddr((*_0).ref_into()),
             syn::Expr::Reference(_0) => Expr::Reference((*_0).ref_into()),
             syn::Expr::Repeat(_0) => Expr::Repeat((*_0).ref_into()),
             syn::Expr::Return(_0) => Expr::Return((*_0).ref_into()),
@@ -385,6 +360,7 @@ impl From<&Expr> for syn::Expr {
             Expr::Paren(_0) => syn::Expr::Paren((*_0).ref_into()),
             Expr::Path(_0) => syn::Expr::Path((*_0).ref_into()),
             Expr::Range(_0) => syn::Expr::Range((*_0).ref_into()),
+            Expr::RawAddr(_0) => syn::Expr::RawAddr((*_0).ref_into()),
             Expr::Reference(_0) => syn::Expr::Reference((*_0).ref_into()),
             Expr::Repeat(_0) => syn::Expr::Repeat((*_0).ref_into()),
             Expr::Return(_0) => syn::Expr::Return((*_0).ref_into()),
@@ -453,6 +429,7 @@ impl From<&ExprAsync> for syn::ExprAsync {
         Self {
             attrs: node.attrs.map_into(),
             async_token: default(),
+            modifiers: <syn::BlockModifiers>::default(),
             capture: default_or_none(node.capture),
             block: node.block.ref_into(),
         }
@@ -584,7 +561,6 @@ impl From<&syn::ExprClosure> for ExprClosure {
             attrs: node.attrs.map_into(),
             lifetimes: node.lifetimes.map_into(),
             constness: node.constness.is_some(),
-            movability: node.movability.is_some(),
             asyncness: node.asyncness.is_some(),
             capture: node.capture.is_some(),
             inputs: node.inputs.map_into(),
@@ -598,13 +574,13 @@ impl From<&ExprClosure> for syn::ExprClosure {
         Self {
             attrs: node.attrs.map_into(),
             lifetimes: node.lifetimes.map_into(),
+            modifiers: <syn::ClosureModifiers>::default(),
             constness: default_or_none(node.constness),
-            movability: default_or_none(node.movability),
             asyncness: default_or_none(node.asyncness),
             capture: default_or_none(node.capture),
-            or1_token: default(),
+            inputs_begin: default(),
             inputs: node.inputs.map_into(),
-            or2_token: default(),
+            inputs_end: default(),
             output: node.output.ref_into(),
             body: node.body.map_into(),
         }
@@ -624,6 +600,7 @@ impl From<&ExprConst> for syn::ExprConst {
         Self {
             attrs: node.attrs.map_into(),
             const_token: default(),
+            modifiers: <syn::BlockModifiers>::default(),
             block: node.block.ref_into(),
         }
     }
@@ -925,6 +902,27 @@ impl From<&ExprRange> for syn::ExprRange {
         }
     }
 }
+syn_trait_impl!(syn::ExprRawAddr);
+impl From<&syn::ExprRawAddr> for ExprRawAddr {
+    fn from(node: &syn::ExprRawAddr) -> Self {
+        Self {
+            attrs: node.attrs.map_into(),
+            mutability: node.mutability.ref_into(),
+            expr: node.expr.map_into(),
+        }
+    }
+}
+impl From<&ExprRawAddr> for syn::ExprRawAddr {
+    fn from(node: &ExprRawAddr) -> Self {
+        Self {
+            attrs: node.attrs.map_into(),
+            and_token: default(),
+            raw: default(),
+            mutability: node.mutability.ref_into(),
+            expr: node.expr.map_into(),
+        }
+    }
+}
 syn_trait_impl!(syn::ExprReference);
 impl From<&syn::ExprReference> for ExprReference {
     fn from(node: &syn::ExprReference) -> Self {
@@ -1042,6 +1040,7 @@ impl From<&ExprTryBlock> for syn::ExprTryBlock {
         Self {
             attrs: node.attrs.map_into(),
             try_token: default(),
+            modifiers: <syn::BlockModifiers>::default(),
             block: node.block.ref_into(),
         }
     }
@@ -1147,10 +1146,10 @@ impl From<&syn::Field> for Field {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            mutability: node.mutability.ref_into(),
             ident: node.ident.map_into(),
             colon_token: node.colon_token.is_some(),
             ty: node.ty.ref_into(),
+            default: node.default.ref_map(|(_0, _1)| (*_1).ref_into()),
         }
     }
 }
@@ -1159,26 +1158,11 @@ impl From<&Field> for syn::Field {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            mutability: node.mutability.ref_into(),
+            modifiers: <syn::FieldModifiers>::default(),
             ident: node.ident.map_into(),
             colon_token: default_or_none(node.colon_token),
             ty: node.ty.ref_into(),
-        }
-    }
-}
-syn_trait_impl!(syn::FieldMutability);
-impl From<&syn::FieldMutability> for FieldMutability {
-    fn from(node: &syn::FieldMutability) -> Self {
-        match node {
-            syn::FieldMutability::None => FieldMutability::None,
-            _ => unreachable!(),
-        }
-    }
-}
-impl From<&FieldMutability> for syn::FieldMutability {
-    fn from(node: &FieldMutability) -> Self {
-        match node {
-            FieldMutability::None => syn::FieldMutability::None,
+            default: node.default.ref_map(|_1| (default(), (*_1).ref_into())),
         }
     }
 }
@@ -1275,25 +1259,6 @@ impl From<&FieldsUnnamed> for syn::FieldsUnnamed {
         }
     }
 }
-syn_trait_impl!(syn::File);
-impl From<&syn::File> for File {
-    fn from(node: &syn::File) -> Self {
-        Self {
-            shebang: node.shebang.map_into(),
-            attrs: node.attrs.map_into(),
-            items: node.items.map_into(),
-        }
-    }
-}
-impl From<&File> for syn::File {
-    fn from(node: &File) -> Self {
-        Self {
-            shebang: node.shebang.map_into(),
-            attrs: node.attrs.map_into(),
-            items: node.items.map_into(),
-        }
-    }
-}
 syn_trait_impl!(syn::FnArg);
 impl From<&syn::FnArg> for FnArg {
     fn from(node: &syn::FnArg) -> Self {
@@ -1308,6 +1273,41 @@ impl From<&FnArg> for syn::FnArg {
         match node {
             FnArg::Receiver(_0) => syn::FnArg::Receiver((*_0).ref_into()),
             FnArg::Typed(_0) => syn::FnArg::Typed((*_0).ref_into()),
+        }
+    }
+}
+syn_trait_impl!(syn::FnModifiers);
+impl From<&syn::FnModifiers> for FnModifiers {
+    fn from(node: &syn::FnModifiers) -> Self {
+        Self {
+            defaultness: node.defaultness.is_some(),
+        }
+    }
+}
+impl From<&FnModifiers> for syn::FnModifiers {
+    fn from(node: &FnModifiers) -> Self {
+        let mut _r = <syn::FnModifiers>::default();
+        _r.defaultness = default_or_none(node.defaultness);
+        _r
+    }
+}
+syn_trait_impl!(syn::FnPtrVariadic);
+impl From<&syn::FnPtrVariadic> for FnPtrVariadic {
+    fn from(node: &syn::FnPtrVariadic) -> Self {
+        Self {
+            attrs: node.attrs.map_into(),
+            name: node.name.ref_map(|(_0, _1)| (*_0).ref_into()),
+            comma: node.comma.is_some(),
+        }
+    }
+}
+impl From<&FnPtrVariadic> for syn::FnPtrVariadic {
+    fn from(node: &FnPtrVariadic) -> Self {
+        Self {
+            attrs: node.attrs.map_into(),
+            name: node.name.ref_map(|_0| ((*_0).ref_into(), default())),
+            dots: default(),
+            comma: default_or_none(node.comma),
         }
     }
 }
@@ -1341,6 +1341,7 @@ impl From<&syn::ForeignItemFn> for ForeignItemFn {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             sig: node.sig.ref_into(),
         }
     }
@@ -1350,6 +1351,7 @@ impl From<&ForeignItemFn> for syn::ForeignItemFn {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             sig: node.sig.ref_into(),
             semi_token: default(),
         }
@@ -1380,6 +1382,7 @@ impl From<&syn::ForeignItemStatic> for ForeignItemStatic {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            safety: node.safety.ref_into(),
             mutability: node.mutability.ref_into(),
             ident: node.ident.ref_into(),
             ty: node.ty.map_into(),
@@ -1391,6 +1394,7 @@ impl From<&ForeignItemStatic> for syn::ForeignItemStatic {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            safety: node.safety.ref_into(),
             static_token: default(),
             mutability: node.mutability.ref_into(),
             ident: node.ident.ref_into(),
@@ -1406,6 +1410,7 @@ impl From<&syn::ForeignItemType> for ForeignItemType {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
         }
@@ -1416,6 +1421,7 @@ impl From<&ForeignItemType> for syn::ForeignItemType {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             type_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -1514,7 +1520,7 @@ impl From<&syn::ImplItemConst> for ImplItemConst {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            defaultness: node.defaultness.is_some(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             ty: node.ty.ref_into(),
@@ -1527,7 +1533,7 @@ impl From<&ImplItemConst> for syn::ImplItemConst {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            defaultness: default_or_none(node.defaultness),
+            modifiers: node.modifiers.ref_into(),
             const_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -1545,7 +1551,7 @@ impl From<&syn::ImplItemFn> for ImplItemFn {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            defaultness: node.defaultness.is_some(),
+            modifiers: node.modifiers.ref_into(),
             sig: node.sig.ref_into(),
             block: node.block.ref_into(),
         }
@@ -1556,7 +1562,7 @@ impl From<&ImplItemFn> for syn::ImplItemFn {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            defaultness: default_or_none(node.defaultness),
+            modifiers: node.modifiers.ref_into(),
             sig: node.sig.ref_into(),
             block: node.block.ref_into(),
         }
@@ -1587,7 +1593,7 @@ impl From<&syn::ImplItemType> for ImplItemType {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            defaultness: node.defaultness.is_some(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             ty: node.ty.ref_into(),
@@ -1599,7 +1605,7 @@ impl From<&ImplItemType> for syn::ImplItemType {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
-            defaultness: default_or_none(node.defaultness),
+            modifiers: node.modifiers.ref_into(),
             type_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -1609,19 +1615,21 @@ impl From<&ImplItemType> for syn::ImplItemType {
         }
     }
 }
-syn_trait_impl!(syn::ImplRestriction);
-impl From<&syn::ImplRestriction> for ImplRestriction {
-    fn from(node: &syn::ImplRestriction) -> Self {
-        match node {
-            _ => unreachable!(),
+syn_trait_impl!(syn::ImplModifiers);
+impl From<&syn::ImplModifiers> for ImplModifiers {
+    fn from(node: &syn::ImplModifiers) -> Self {
+        Self {
+            defaultness: node.defaultness.is_some(),
+            polarity: node.polarity.is_some(),
         }
     }
 }
-impl From<&ImplRestriction> for syn::ImplRestriction {
-    fn from(node: &ImplRestriction) -> Self {
-        match node {
-            _ => unreachable!(),
-        }
+impl From<&ImplModifiers> for syn::ImplModifiers {
+    fn from(node: &ImplModifiers) -> Self {
+        let mut _r = <syn::ImplModifiers>::default();
+        _r.defaultness = default_or_none(node.defaultness);
+        _r.polarity = default_or_none(node.polarity);
+        _r
     }
 }
 syn_trait_impl!(syn::Index);
@@ -1690,6 +1698,7 @@ impl From<&syn::ItemConst> for ItemConst {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             ty: node.ty.map_into(),
@@ -1702,6 +1711,7 @@ impl From<&ItemConst> for syn::ItemConst {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             const_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -1768,6 +1778,7 @@ impl From<&syn::ItemFn> for ItemFn {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             sig: node.sig.ref_into(),
             block: node.block.map_into(),
         }
@@ -1778,6 +1789,7 @@ impl From<&ItemFn> for syn::ItemFn {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             sig: node.sig.ref_into(),
             block: node.block.map_into(),
         }
@@ -1800,43 +1812,6 @@ impl From<&ItemForeignMod> for syn::ItemForeignMod {
             attrs: node.attrs.map_into(),
             unsafety: default_or_none(node.unsafety),
             abi: node.abi.ref_into(),
-            brace_token: default(),
-            items: node.items.map_into(),
-        }
-    }
-}
-syn_trait_impl!(syn::ItemImpl);
-impl From<&syn::ItemImpl> for ItemImpl {
-    fn from(node: &syn::ItemImpl) -> Self {
-        Self {
-            attrs: node.attrs.map_into(),
-            defaultness: node.defaultness.is_some(),
-            unsafety: node.unsafety.is_some(),
-            generics: node.generics.ref_into(),
-            trait_: node
-                .trait_
-                .ref_map(|(_0, _1, _2)| ((*_0).is_some(), (*_1).ref_into())),
-            self_ty: node.self_ty.map_into(),
-            items: node.items.map_into(),
-        }
-    }
-}
-impl From<&ItemImpl> for syn::ItemImpl {
-    fn from(node: &ItemImpl) -> Self {
-        Self {
-            attrs: node.attrs.map_into(),
-            defaultness: default_or_none(node.defaultness),
-            unsafety: default_or_none(node.unsafety),
-            impl_token: default(),
-            generics: node.generics.ref_into(),
-            trait_: node
-                .trait_
-                .ref_map(|(_0, _1)| (
-                    default_or_none((*_0)),
-                    (*_1).ref_into(),
-                    default(),
-                )),
-            self_ty: node.self_ty.map_into(),
             brace_token: default(),
             items: node.items.map_into(),
         }
@@ -1924,9 +1899,8 @@ impl From<&syn::ItemTrait> for ItemTrait {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             unsafety: node.unsafety.is_some(),
-            auto_token: node.auto_token.is_some(),
-            restriction: node.restriction.map_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             colon_token: node.colon_token.is_some(),
@@ -1940,9 +1914,8 @@ impl From<&ItemTrait> for syn::ItemTrait {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             unsafety: default_or_none(node.unsafety),
-            auto_token: default_or_none(node.auto_token),
-            restriction: node.restriction.map_into(),
             trait_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -1985,9 +1958,11 @@ impl From<&syn::ItemType> for ItemType {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             ty: node.ty.map_into(),
+            where_clause_placement: node.where_clause_placement.ref_into(),
         }
     }
 }
@@ -1996,12 +1971,14 @@ impl From<&ItemType> for syn::ItemType {
         Self {
             attrs: node.attrs.map_into(),
             vis: node.vis.ref_into(),
+            modifiers: node.modifiers.ref_into(),
             type_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             eq_token: default(),
             ty: node.ty.map_into(),
             semi_token: default(),
+            where_clause_placement: node.where_clause_placement.ref_into(),
         }
     }
 }
@@ -2162,6 +2139,7 @@ impl From<&Local> for syn::Local {
         Self {
             attrs: node.attrs.map_into(),
             let_token: default(),
+            modifiers: <syn::LocalModifiers>::default(),
             pat: node.pat.ref_into(),
             init: node.init.map_into(),
             semi_token: default(),
@@ -2295,6 +2273,25 @@ impl From<&MetaNameValue> for syn::MetaNameValue {
             path: node.path.ref_into(),
             eq_token: default(),
             value: node.value.ref_into(),
+        }
+    }
+}
+syn_trait_impl!(syn::NamedArg);
+impl From<&syn::NamedArg> for NamedArg {
+    fn from(node: &syn::NamedArg) -> Self {
+        Self {
+            attrs: node.attrs.map_into(),
+            name: node.name.ref_map(|(_0, _1)| (*_0).ref_into()),
+            ty: node.ty.ref_into(),
+        }
+    }
+}
+impl From<&NamedArg> for syn::NamedArg {
+    fn from(node: &NamedArg) -> Self {
+        Self {
+            attrs: node.attrs.map_into(),
+            name: node.name.ref_map(|_0| ((*_0).ref_into(), default())),
+            ty: node.ty.ref_into(),
         }
     }
 }
@@ -2639,10 +2636,28 @@ impl From<&PathSegment> for syn::PathSegment {
         }
     }
 }
+syn_trait_impl!(syn::PointerMutability);
+impl From<&syn::PointerMutability> for PointerMutability {
+    fn from(node: &syn::PointerMutability) -> Self {
+        match node {
+            syn::PointerMutability::Const(..) => PointerMutability::Const,
+            syn::PointerMutability::Mut(..) => PointerMutability::Mut,
+        }
+    }
+}
+impl From<&PointerMutability> for syn::PointerMutability {
+    fn from(node: &PointerMutability) -> Self {
+        match node {
+            PointerMutability::Const => syn::PointerMutability::Const(default()),
+            PointerMutability::Mut => syn::PointerMutability::Mut(default()),
+        }
+    }
+}
 syn_trait_impl!(syn::PredicateLifetime);
 impl From<&syn::PredicateLifetime> for PredicateLifetime {
     fn from(node: &syn::PredicateLifetime) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetime: node.lifetime.ref_into(),
             bounds: node.bounds.map_into(),
         }
@@ -2651,6 +2666,7 @@ impl From<&syn::PredicateLifetime> for PredicateLifetime {
 impl From<&PredicateLifetime> for syn::PredicateLifetime {
     fn from(node: &PredicateLifetime) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetime: node.lifetime.ref_into(),
             colon_token: default(),
             bounds: node.bounds.map_into(),
@@ -2661,6 +2677,7 @@ syn_trait_impl!(syn::PredicateType);
 impl From<&syn::PredicateType> for PredicateType {
     fn from(node: &syn::PredicateType) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetimes: node.lifetimes.map_into(),
             bounded_ty: node.bounded_ty.ref_into(),
             bounds: node.bounds.map_into(),
@@ -2670,6 +2687,7 @@ impl From<&syn::PredicateType> for PredicateType {
 impl From<&PredicateType> for syn::PredicateType {
     fn from(node: &PredicateType) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetimes: node.lifetimes.map_into(),
             bounded_ty: node.bounded_ty.ref_into(),
             colon_token: default(),
@@ -2715,13 +2733,32 @@ impl From<&RangeLimits> for syn::RangeLimits {
         }
     }
 }
+syn_trait_impl!(syn::Safety);
+impl From<&syn::Safety> for Safety {
+    fn from(node: &syn::Safety) -> Self {
+        match node {
+            syn::Safety::Safe(..) => Safety::Safe,
+            syn::Safety::Unsafe(..) => Safety::Unsafe,
+            syn::Safety::Default => Safety::Default,
+        }
+    }
+}
+impl From<&Safety> for syn::Safety {
+    fn from(node: &Safety) -> Self {
+        match node {
+            Safety::Safe => syn::Safety::Safe(default()),
+            Safety::Unsafe => syn::Safety::Unsafe(default()),
+            Safety::Default => syn::Safety::Default,
+        }
+    }
+}
 syn_trait_impl!(syn::Signature);
 impl From<&syn::Signature> for Signature {
     fn from(node: &syn::Signature) -> Self {
         Self {
             constness: node.constness.is_some(),
             asyncness: node.asyncness.is_some(),
-            unsafety: node.unsafety.is_some(),
+            safety: node.safety.ref_into(),
             abi: node.abi.map_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -2736,7 +2773,7 @@ impl From<&Signature> for syn::Signature {
         Self {
             constness: default_or_none(node.constness),
             asyncness: default_or_none(node.asyncness),
-            unsafety: default_or_none(node.unsafety),
+            safety: node.safety.ref_into(),
             abi: node.abi.map_into(),
             fn_token: default(),
             ident: node.ident.ref_into(),
@@ -2813,8 +2850,8 @@ impl From<&syn::TraitBound> for TraitBound {
     fn from(node: &syn::TraitBound) -> Self {
         Self {
             paren_token: node.paren_token.is_some(),
-            modifier: node.modifier.ref_into(),
             lifetimes: node.lifetimes.map_into(),
+            maybe: node.maybe.is_some(),
             path: node.path.ref_into(),
         }
     }
@@ -2823,26 +2860,10 @@ impl From<&TraitBound> for syn::TraitBound {
     fn from(node: &TraitBound) -> Self {
         Self {
             paren_token: default_or_none(node.paren_token),
-            modifier: node.modifier.ref_into(),
             lifetimes: node.lifetimes.map_into(),
+            modifiers: <syn::TraitBoundModifiers>::default(),
+            maybe: default_or_none(node.maybe),
             path: node.path.ref_into(),
-        }
-    }
-}
-syn_trait_impl!(syn::TraitBoundModifier);
-impl From<&syn::TraitBoundModifier> for TraitBoundModifier {
-    fn from(node: &syn::TraitBoundModifier) -> Self {
-        match node {
-            syn::TraitBoundModifier::None => TraitBoundModifier::None,
-            syn::TraitBoundModifier::Maybe(..) => TraitBoundModifier::Maybe,
-        }
-    }
-}
-impl From<&TraitBoundModifier> for syn::TraitBoundModifier {
-    fn from(node: &TraitBoundModifier) -> Self {
-        match node {
-            TraitBoundModifier::None => syn::TraitBoundModifier::None,
-            TraitBoundModifier::Maybe => syn::TraitBoundModifier::Maybe(default()),
         }
     }
 }
@@ -2875,6 +2896,7 @@ impl From<&syn::TraitItemConst> for TraitItemConst {
     fn from(node: &syn::TraitItemConst) -> Self {
         Self {
             attrs: node.attrs.map_into(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             ty: node.ty.ref_into(),
@@ -2886,6 +2908,7 @@ impl From<&TraitItemConst> for syn::TraitItemConst {
     fn from(node: &TraitItemConst) -> Self {
         Self {
             attrs: node.attrs.map_into(),
+            modifiers: node.modifiers.ref_into(),
             const_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -2920,6 +2943,7 @@ impl From<&syn::TraitItemType> for TraitItemType {
     fn from(node: &syn::TraitItemType) -> Self {
         Self {
             attrs: node.attrs.map_into(),
+            modifiers: node.modifiers.ref_into(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
             colon_token: node.colon_token.is_some(),
@@ -2932,6 +2956,7 @@ impl From<&TraitItemType> for syn::TraitItemType {
     fn from(node: &TraitItemType) -> Self {
         Self {
             attrs: node.attrs.map_into(),
+            modifiers: node.modifiers.ref_into(),
             type_token: default(),
             ident: node.ident.ref_into(),
             generics: node.generics.ref_into(),
@@ -2942,12 +2967,27 @@ impl From<&TraitItemType> for syn::TraitItemType {
         }
     }
 }
+syn_trait_impl!(syn::TraitModifiers);
+impl From<&syn::TraitModifiers> for TraitModifiers {
+    fn from(node: &syn::TraitModifiers) -> Self {
+        Self {
+            auto_token: node.auto_token.is_some(),
+        }
+    }
+}
+impl From<&TraitModifiers> for syn::TraitModifiers {
+    fn from(node: &TraitModifiers) -> Self {
+        let mut _r = <syn::TraitModifiers>::default();
+        _r.auto_token = default_or_none(node.auto_token);
+        _r
+    }
+}
 syn_trait_impl!(syn::Type);
 impl From<&syn::Type> for Type {
     fn from(node: &syn::Type) -> Self {
         match node {
             syn::Type::Array(_0) => Type::Array((*_0).ref_into()),
-            syn::Type::BareFn(_0) => Type::BareFn((*_0).ref_into()),
+            syn::Type::FnPtr(_0) => Type::FnPtr((*_0).ref_into()),
             syn::Type::Group(_0) => Type::Group((*_0).ref_into()),
             syn::Type::ImplTrait(_0) => Type::ImplTrait((*_0).ref_into()),
             syn::Type::Infer(..) => Type::Infer,
@@ -2969,17 +3009,19 @@ impl From<&Type> for syn::Type {
     fn from(node: &Type) -> Self {
         match node {
             Type::Array(_0) => syn::Type::Array((*_0).ref_into()),
-            Type::BareFn(_0) => syn::Type::BareFn((*_0).ref_into()),
+            Type::FnPtr(_0) => syn::Type::FnPtr((*_0).ref_into()),
             Type::Group(_0) => syn::Type::Group((*_0).ref_into()),
             Type::ImplTrait(_0) => syn::Type::ImplTrait((*_0).ref_into()),
             Type::Infer => {
                 syn::Type::Infer(syn::TypeInfer {
+                    attrs: default(),
                     underscore_token: default(),
                 })
             }
             Type::Macro(_0) => syn::Type::Macro((*_0).ref_into()),
             Type::Never => {
                 syn::Type::Never(syn::TypeNever {
+                    attrs: default(),
                     bang_token: default(),
                 })
             }
@@ -2998,6 +3040,7 @@ syn_trait_impl!(syn::TypeArray);
 impl From<&syn::TypeArray> for TypeArray {
     fn from(node: &syn::TypeArray) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             elem: node.elem.map_into(),
             len: node.len.ref_into(),
         }
@@ -3006,6 +3049,7 @@ impl From<&syn::TypeArray> for TypeArray {
 impl From<&TypeArray> for syn::TypeArray {
     fn from(node: &TypeArray) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             bracket_token: default(),
             elem: node.elem.map_into(),
             semi_token: default(),
@@ -3013,10 +3057,11 @@ impl From<&TypeArray> for syn::TypeArray {
         }
     }
 }
-syn_trait_impl!(syn::TypeBareFn);
-impl From<&syn::TypeBareFn> for TypeBareFn {
-    fn from(node: &syn::TypeBareFn) -> Self {
+syn_trait_impl!(syn::TypeFnPtr);
+impl From<&syn::TypeFnPtr> for TypeFnPtr {
+    fn from(node: &syn::TypeFnPtr) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetimes: node.lifetimes.map_into(),
             unsafety: node.unsafety.is_some(),
             abi: node.abi.map_into(),
@@ -3026,9 +3071,10 @@ impl From<&syn::TypeBareFn> for TypeBareFn {
         }
     }
 }
-impl From<&TypeBareFn> for syn::TypeBareFn {
-    fn from(node: &TypeBareFn) -> Self {
+impl From<&TypeFnPtr> for syn::TypeFnPtr {
+    fn from(node: &TypeFnPtr) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetimes: node.lifetimes.map_into(),
             unsafety: default_or_none(node.unsafety),
             abi: node.abi.map_into(),
@@ -3043,12 +3089,16 @@ impl From<&TypeBareFn> for syn::TypeBareFn {
 syn_trait_impl!(syn::TypeGroup);
 impl From<&syn::TypeGroup> for TypeGroup {
     fn from(node: &syn::TypeGroup) -> Self {
-        Self { elem: node.elem.map_into() }
+        Self {
+            attrs: node.attrs.map_into(),
+            elem: node.elem.map_into(),
+        }
     }
 }
 impl From<&TypeGroup> for syn::TypeGroup {
     fn from(node: &TypeGroup) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             group_token: default(),
             elem: node.elem.map_into(),
         }
@@ -3058,6 +3108,7 @@ syn_trait_impl!(syn::TypeImplTrait);
 impl From<&syn::TypeImplTrait> for TypeImplTrait {
     fn from(node: &syn::TypeImplTrait) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             bounds: node.bounds.map_into(),
         }
     }
@@ -3065,6 +3116,7 @@ impl From<&syn::TypeImplTrait> for TypeImplTrait {
 impl From<&TypeImplTrait> for syn::TypeImplTrait {
     fn from(node: &TypeImplTrait) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             impl_token: default(),
             bounds: node.bounds.map_into(),
         }
@@ -3073,12 +3125,33 @@ impl From<&TypeImplTrait> for syn::TypeImplTrait {
 syn_trait_impl!(syn::TypeMacro);
 impl From<&syn::TypeMacro> for TypeMacro {
     fn from(node: &syn::TypeMacro) -> Self {
-        Self { mac: node.mac.ref_into() }
+        Self {
+            attrs: node.attrs.map_into(),
+            mac: node.mac.ref_into(),
+        }
     }
 }
 impl From<&TypeMacro> for syn::TypeMacro {
     fn from(node: &TypeMacro) -> Self {
-        Self { mac: node.mac.ref_into() }
+        Self {
+            attrs: node.attrs.map_into(),
+            mac: node.mac.ref_into(),
+        }
+    }
+}
+syn_trait_impl!(syn::TypeModifiers);
+impl From<&syn::TypeModifiers> for TypeModifiers {
+    fn from(node: &syn::TypeModifiers) -> Self {
+        Self {
+            defaultness: node.defaultness.is_some(),
+        }
+    }
+}
+impl From<&TypeModifiers> for syn::TypeModifiers {
+    fn from(node: &TypeModifiers) -> Self {
+        let mut _r = <syn::TypeModifiers>::default();
+        _r.defaultness = default_or_none(node.defaultness);
+        _r
     }
 }
 syn_trait_impl!(syn::TypeParam);
@@ -3089,8 +3162,7 @@ impl From<&syn::TypeParam> for TypeParam {
             ident: node.ident.ref_into(),
             colon_token: node.colon_token.is_some(),
             bounds: node.bounds.map_into(),
-            eq_token: node.eq_token.is_some(),
-            default: node.default.map_into(),
+            default: node.default.ref_map(|(_0, _1)| (*_1).ref_into()),
         }
     }
 }
@@ -3101,8 +3173,7 @@ impl From<&TypeParam> for syn::TypeParam {
             ident: node.ident.ref_into(),
             colon_token: default_or_none(node.colon_token),
             bounds: node.bounds.map_into(),
-            eq_token: default_or_none(node.eq_token),
-            default: node.default.map_into(),
+            default: node.default.ref_map(|_1| (default(), (*_1).ref_into())),
         }
     }
 }
@@ -3137,12 +3208,16 @@ impl From<&TypeParamBound> for syn::TypeParamBound {
 syn_trait_impl!(syn::TypeParen);
 impl From<&syn::TypeParen> for TypeParen {
     fn from(node: &syn::TypeParen) -> Self {
-        Self { elem: node.elem.map_into() }
+        Self {
+            attrs: node.attrs.map_into(),
+            elem: node.elem.map_into(),
+        }
     }
 }
 impl From<&TypeParen> for syn::TypeParen {
     fn from(node: &TypeParen) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             paren_token: default(),
             elem: node.elem.map_into(),
         }
@@ -3152,6 +3227,7 @@ syn_trait_impl!(syn::TypePath);
 impl From<&syn::TypePath> for TypePath {
     fn from(node: &syn::TypePath) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             qself: node.qself.map_into(),
             path: node.path.ref_into(),
         }
@@ -3160,6 +3236,7 @@ impl From<&syn::TypePath> for TypePath {
 impl From<&TypePath> for syn::TypePath {
     fn from(node: &TypePath) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             qself: node.qself.map_into(),
             path: node.path.ref_into(),
         }
@@ -3169,8 +3246,8 @@ syn_trait_impl!(syn::TypePtr);
 impl From<&syn::TypePtr> for TypePtr {
     fn from(node: &syn::TypePtr) -> Self {
         Self {
-            const_token: node.const_token.is_some(),
-            mutability: node.mutability.is_some(),
+            attrs: node.attrs.map_into(),
+            mutability: node.mutability.ref_into(),
             elem: node.elem.map_into(),
         }
     }
@@ -3178,9 +3255,9 @@ impl From<&syn::TypePtr> for TypePtr {
 impl From<&TypePtr> for syn::TypePtr {
     fn from(node: &TypePtr) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             star_token: default(),
-            const_token: default_or_none(node.const_token),
-            mutability: default_or_none(node.mutability),
+            mutability: node.mutability.ref_into(),
             elem: node.elem.map_into(),
         }
     }
@@ -3189,6 +3266,7 @@ syn_trait_impl!(syn::TypeReference);
 impl From<&syn::TypeReference> for TypeReference {
     fn from(node: &syn::TypeReference) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             lifetime: node.lifetime.map_into(),
             mutability: node.mutability.is_some(),
             elem: node.elem.map_into(),
@@ -3198,6 +3276,7 @@ impl From<&syn::TypeReference> for TypeReference {
 impl From<&TypeReference> for syn::TypeReference {
     fn from(node: &TypeReference) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             and_token: default(),
             lifetime: node.lifetime.map_into(),
             mutability: default_or_none(node.mutability),
@@ -3208,12 +3287,16 @@ impl From<&TypeReference> for syn::TypeReference {
 syn_trait_impl!(syn::TypeSlice);
 impl From<&syn::TypeSlice> for TypeSlice {
     fn from(node: &syn::TypeSlice) -> Self {
-        Self { elem: node.elem.map_into() }
+        Self {
+            attrs: node.attrs.map_into(),
+            elem: node.elem.map_into(),
+        }
     }
 }
 impl From<&TypeSlice> for syn::TypeSlice {
     fn from(node: &TypeSlice) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             bracket_token: default(),
             elem: node.elem.map_into(),
         }
@@ -3223,6 +3306,7 @@ syn_trait_impl!(syn::TypeTraitObject);
 impl From<&syn::TypeTraitObject> for TypeTraitObject {
     fn from(node: &syn::TypeTraitObject) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             dyn_token: node.dyn_token.is_some(),
             bounds: node.bounds.map_into(),
         }
@@ -3231,6 +3315,7 @@ impl From<&syn::TypeTraitObject> for TypeTraitObject {
 impl From<&TypeTraitObject> for syn::TypeTraitObject {
     fn from(node: &TypeTraitObject) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             dyn_token: default_or_none(node.dyn_token),
             bounds: node.bounds.map_into(),
         }
@@ -3240,6 +3325,7 @@ syn_trait_impl!(syn::TypeTuple);
 impl From<&syn::TypeTuple> for TypeTuple {
     fn from(node: &syn::TypeTuple) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             elems: node.elems.map_into(),
         }
     }
@@ -3247,6 +3333,7 @@ impl From<&syn::TypeTuple> for TypeTuple {
 impl From<&TypeTuple> for syn::TypeTuple {
     fn from(node: &TypeTuple) -> Self {
         Self {
+            attrs: node.attrs.map_into(),
             paren_token: default(),
             elems: node.elems.map_into(),
         }
@@ -3458,6 +3545,23 @@ impl From<&WhereClause> for syn::WhereClause {
         Self {
             where_token: default(),
             predicates: node.predicates.map_into(),
+        }
+    }
+}
+syn_trait_impl!(syn::WhereClausePlacement);
+impl From<&syn::WhereClausePlacement> for WhereClausePlacement {
+    fn from(node: &syn::WhereClausePlacement) -> Self {
+        match node {
+            syn::WhereClausePlacement::Early => WhereClausePlacement::Early,
+            syn::WhereClausePlacement::Late => WhereClausePlacement::Late,
+        }
+    }
+}
+impl From<&WhereClausePlacement> for syn::WhereClausePlacement {
+    fn from(node: &WhereClausePlacement) -> Self {
+        match node {
+            WhereClausePlacement::Early => syn::WhereClausePlacement::Early,
+            WhereClausePlacement::Late => syn::WhereClausePlacement::Late,
         }
     }
 }

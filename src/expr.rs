@@ -9,9 +9,9 @@ pub use crate::{
         ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak, ExprCall,
         ExprCast, ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprGroup, ExprIf,
         ExprIndex, ExprInfer, ExprLet, ExprLit, ExprLoop, ExprMacro, ExprMatch, ExprMethodCall,
-        ExprParen, ExprPath, ExprRange, ExprReference, ExprRepeat, ExprReturn, ExprStruct, ExprTry,
-        ExprTryBlock, ExprTuple, ExprUnary, ExprUnsafe, ExprWhile, ExprYield, FieldValue, Index,
-        Label,
+        ExprParen, ExprPath, ExprRange, ExprRawAddr, ExprReference, ExprRepeat, ExprReturn,
+        ExprStruct, ExprTry, ExprTryBlock, ExprTuple, ExprUnary, ExprUnsafe, ExprWhile, ExprYield,
+        FieldValue, Index, Label,
     },
 };
 
@@ -21,8 +21,6 @@ ast_struct! {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         pub(crate) attrs: Vec<Attribute>,
         pub(crate) pat: Pat,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub(crate) guard: Option<Box<Expr>>,
         pub(crate) body: Box<Expr>,
         // #[serde(default, skip_serializing_if = "not")]
         // pub(crate) comma: bool,
@@ -69,6 +67,7 @@ pub(crate) fn requires_terminator(expr: &Expr) -> bool {
         | Expr::Try(_)
         | Expr::Tuple(_)
         | Expr::Unary(_)
+        | Expr::RawAddr(_)
         | Expr::Yield(_)
         | Expr::Verbatim(_) => true
     }
@@ -90,12 +89,7 @@ mod convert {
                     assert!(other.comma.is_some(), "expected `,`");
                 }
 
-                Arm {
-                    attrs: other.attrs.map_into(),
-                    pat: other.pat.ref_into(),
-                    guard: other.guard.ref_map(|(_, x)| x.map_into()),
-                    body,
-                }
+                Arm { attrs: other.attrs.map_into(), pat: other.pat.ref_into(), body }
             })
             .collect()
     }
@@ -129,12 +123,7 @@ mod convert {
                 assert!(other.comma.is_some(), "expected `,`");
             }
 
-            Self {
-                attrs: other.attrs.map_into(),
-                pat: other.pat.ref_into(),
-                guard: other.guard.ref_map(|(_, x)| x.map_into()),
-                body,
-            }
+            Self { attrs: other.attrs.map_into(), pat: other.pat.ref_into(), body }
         }
     }
     impl From<&Arm> for syn::Arm {
@@ -142,7 +131,6 @@ mod convert {
             Self {
                 attrs: other.attrs.map_into(),
                 pat: other.pat.ref_into(),
-                guard: other.guard.ref_map(|x| (default(), x.map_into())),
                 fat_arrow_token: default(),
                 body: other.body.map_into(),
                 comma: default_or_none(requires_terminator(&other.body)),
