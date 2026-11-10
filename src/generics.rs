@@ -2,7 +2,7 @@
 
 use super::*;
 pub use crate::{
-    ast_enum::{GenericParam, TraitBoundModifier, TypeParamBound, WherePredicate},
+    ast_enum::{GenericParam, TypeParamBound, WherePredicate},
     ast_struct::{
         BoundLifetimes, ConstParam, LifetimeParam, PredicateLifetime, TraitBound, TypeParam,
         WhereClause,
@@ -30,24 +30,11 @@ impl Generics {
     }
 }
 
-impl TraitBoundModifier {
-    pub(crate) fn is_none(&self) -> bool {
-        match self {
-            TraitBoundModifier::None => true,
-            TraitBoundModifier::Maybe => false,
-        }
-    }
-}
-
-impl Default for TraitBoundModifier {
-    fn default() -> Self {
-        TraitBoundModifier::None
-    }
-}
-
 ast_struct! {
     /// An adapter for [`struct@syn::PredicateType`].
     pub struct PredicateType {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pub(crate) attrs: Vec<Attribute>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub(crate) lifetimes: Option<BoundLifetimes>,
         pub(crate) bounded_ty: Type,

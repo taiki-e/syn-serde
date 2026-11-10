@@ -59,14 +59,6 @@ ast_struct! {
     }
 }
 
-ast_enum! {
-    /// An adapter for [`enum@syn::StrStyle`].
-    pub enum StrStyle {
-        Cooked,
-        Raw(usize),
-    }
-}
-
 mod value {
     use core::{
         char,

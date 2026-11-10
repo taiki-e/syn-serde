@@ -3,13 +3,15 @@
 use super::*;
 pub use crate::{
     ast_enum::{
-        FnArg, ForeignItem, ImplItem, ImplRestriction, Item, StaticMutability, TraitItem, UseTree,
+        FnArg, ForeignItem, ImplItem, Item, Safety, StaticMutability, TraitItem, UseTree,
+        WhereClausePlacement,
     },
     ast_struct::{
-        ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType, ImplItemConst,
-        ImplItemFn, ImplItemMacro, ImplItemType, ItemConst, ItemEnum, ItemExternCrate, ItemFn,
-        ItemForeignMod, ItemImpl, ItemMacro, ItemStatic, ItemTrait, ItemTraitAlias, ItemType,
-        ItemUnion, ItemUse, Signature, TraitItemConst, TraitItemMacro, TraitItemType, UseGroup,
+        ConstModifiers, FnModifiers, ForeignItemFn, ForeignItemMacro, ForeignItemStatic,
+        ForeignItemType, ImplItemConst, ImplItemFn, ImplItemMacro, ImplItemType, ImplModifiers,
+        ItemConst, ItemEnum, ItemExternCrate, ItemFn, ItemForeignMod, ItemImpl, ItemMacro,
+        ItemStatic, ItemTrait, ItemTraitAlias, ItemType, ItemUnion, ItemUse, Signature,
+        TraitItemConst, TraitItemMacro, TraitItemType, TraitModifiers, TypeModifiers, UseGroup,
         UseName, UsePath, UseRename, Variadic,
     },
 };
@@ -79,8 +81,8 @@ ast_struct! {
         pub(crate) mutability: bool,
         #[serde(default, skip_serializing_if = "not")]
         pub(crate) colon_token: bool,
-        // TODO: skip if colon_token=false?
-        pub(crate) ty: Box<Type>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub(crate) ty: Option<Box<Type>>,
     }
 }
 
@@ -92,6 +94,17 @@ impl StaticMutability {
 impl Default for StaticMutability {
     fn default() -> Self {
         Self::None
+    }
+}
+
+impl Safety {
+    pub(crate) fn is_default(&self) -> bool {
+        matches!(self, Self::Default)
+    }
+}
+impl Default for Safety {
+    fn default() -> Self {
+        Self::Default
     }
 }
 
@@ -151,6 +164,7 @@ mod convert {
         fn from(other: &TraitItemFn) -> Self {
             Self {
                 attrs: other.attrs.map_into(),
+                modifiers: default(),
                 sig: other.sig.ref_into(),
                 default: other.default.map_into(),
                 semi_token: default_or_none(other.default.is_none()),
@@ -162,29 +176,60 @@ mod convert {
     syn_trait_impl!(syn::Receiver);
     impl From<&syn::Receiver> for Receiver {
         fn from(node: &syn::Receiver) -> Self {
-            Self {
-                attrs: node.attrs.map_into(),
-                reference: node.reference.is_some(),
-                lifetime: node.reference.as_ref().and_then(|(_0, _1)| _1.map_into()),
-                mutability: node.mutability.is_some(),
-                colon_token: node.colon_token.is_some(),
-                ty: node.ty.map_into(),
+            use syn::ReceiverKind;
+            match &node.kind {
+                ReceiverKind::Value => Self {
+                    attrs: node.attrs.map_into(),
+                    reference: false,
+                    lifetime: None,
+                    mutability: node.mutability.is_some(),
+                    colon_token: false,
+                    ty: None,
+                },
+                ReceiverKind::Reference(_, lt, mut_) => Self {
+                    attrs: node.attrs.map_into(),
+                    reference: true,
+                    lifetime: lt.map_into(),
+                    mutability: mut_.is_some(),
+                    colon_token: false,
+                    ty: None,
+                },
+                ReceiverKind::Typed(_, ty) => Self {
+                    attrs: node.attrs.map_into(),
+                    reference: false,
+                    lifetime: None,
+                    mutability: false,
+                    colon_token: true,
+                    ty: Some(ty.map_into()),
+                },
+                _ => unreachable!(),
             }
         }
     }
     impl From<&Receiver> for syn::Receiver {
         fn from(node: &Receiver) -> Self {
+            use syn::ReceiverKind;
+            let kind = if node.colon_token {
+                ReceiverKind::Typed(
+                    default(),
+                    node.ty.as_ref().expect("ty required when colon_token").map_into(),
+                )
+            } else if node.reference {
+                ReceiverKind::Reference(
+                    default(),
+                    node.lifetime.map_into(),
+                    default_or_none(node.mutability),
+                )
+            } else {
+                ReceiverKind::Value
+            };
             Self {
                 attrs: node.attrs.map_into(),
-                reference: if node.reference {
-                    Some((default(), node.lifetime.map_into()))
-                } else {
-                    None
-                },
-                mutability: default_or_none(node.mutability),
+                mutability: default_or_none(
+                    !node.reference && !node.colon_token && node.mutability,
+                ),
                 self_token: default(),
-                colon_token: default_or_none(node.colon_token),
-                ty: node.ty.map_into(),
+                kind,
             }
         }
     }

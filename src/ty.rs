@@ -4,9 +4,9 @@ use alloc::boxed::Box;
 
 use super::*;
 pub use crate::{
-    ast_enum::Type,
+    ast_enum::{PointerMutability, Type},
     ast_struct::{
-        Abi, BareFnArg, BareVariadic, TypeArray, TypeBareFn, TypeGroup, TypeImplTrait, TypeMacro,
+        Abi, FnPtrVariadic, NamedArg, TypeArray, TypeFnPtr, TypeGroup, TypeImplTrait, TypeMacro,
         TypeParen, TypePath, TypePtr, TypeReference, TypeSlice, TypeTraitObject, TypeTuple,
     },
 };
